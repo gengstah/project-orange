@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableJpaRepositories("org.geeksexception.project.catalog.dao")
+@EnableJpaRepositories("org.geeksexception.project.talent.dao")
 @Production
 public class ProductionDataConfig extends AbstractDataConfig {
 	

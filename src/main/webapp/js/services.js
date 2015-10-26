@@ -2,7 +2,7 @@
 
 /* Services */
 
-var services = angular.module('CatalogServices', ['ngResource']);
+var services = angular.module('TalentManagementServices', ['ngResource']);
 
 services.factory('Header', ['$resource', 
 	function($resource) {
@@ -20,12 +20,6 @@ services.factory('Car', ['$resource',
 	function($resource) {
 		return $resource('/api/service/car/:year/:make/:model/:submodel/:engine');
 	}
-]);
-
-services.factory('AutoPart', ['$resource', 
-	function($resource) {
-		return $resource('/api/service/part/:section/:car');
- 	}
 ]);
 
 services.factory('Attribute', ['$resource', 
@@ -106,34 +100,6 @@ services.service('CarService',
 		
 		return this;
 	}	
-);
-
-services.service('HeaderService',
-	function() {
-		this.setHeaders = function(headers) {
-			this.headers = headers;
-		};
-		
-		this.getHeaders = function() {
-			return this.headers;
-		};
-		
-		return this;
-	}
-);
-
-services.service('SectionService',
-	function() {
-		this.setSection = function(section) {
-			this.section = section;
-		};
-		
-		this.getSection = function() {
-			return this.section;
-		};
-		
-		return this;
-	}
 );
 
 services.factory('AuthInterceptor', ['$rootScope', '$q', 'AUTH_EVENTS',

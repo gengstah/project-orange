@@ -10,37 +10,31 @@
 						http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
 						http://cxf.apache.org/policy http://cxf.apache.org/schemas/policy.xsd
 						http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd">
+	
 	<cxf:bus>
 		<cxf:features>
 			<cxf:logging />
 		</cxf:features>
 	</cxf:bus>
 	
-	<bean id="carManager"
-		class="org.geeksexception.project.catalog.api.CarManager" />
-	<bean id="autoPartManager"
-		class="org.geeksexception.project.catalog.api.AutoPartManager" />
-	<bean id="headerManager"
-		class="org.geeksexception.project.catalog.api.HeaderManager" />
-	<bean id="sectionManager"
-		class="org.geeksexception.project.catalog.api.SectionManager" />
 	<bean id="userManager"
-		class="org.geeksexception.project.catalog.api.UserManager" />
-	<bean id="attributeManager"
-		class="org.geeksexception.project.catalog.api.AttributeManager" />
+		class="org.geeksexception.project.talent.api.UserManager" />
+	<bean id="talentManager"
+		class="org.geeksexception.project.talent.api.TalentManager" />
 
 	<!-- Providers -->
 	<bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider">
 		<property name="mapper">
-			<bean class="org.geeksexception.project.catalog.hibernate.mapper.HibernateAwareObjectMapper"></bean>
+			<bean class="org.geeksexception.project.talent.hibernate.mapper.HibernateAwareObjectMapper"></bean>
 		</property>
 	</bean>
-	<bean id="catalogExceptionHandler" 
-		class="org.geeksexception.project.catalog.exception.CatalogServiceApiExceptionHandler" />
+	
+	<bean id="talentManagementExceptionHandler" 
+		class="org.geeksexception.project.talent.exception.TalentManagementServiceApiExceptionHandler" />
 	<bean id="dateParameterHandler" 
-		class="org.geeksexception.project.catalog.handler.DateParameterHandler" />
+		class="org.geeksexception.project.talent.handler.DateParameterHandler" />
 	<bean id="validationExceptionMapper" 
-		class="org.geeksexception.project.catalog.exception.ValidationExceptionMapper" />
+		class="org.geeksexception.project.talent.exception.ValidationExceptionMapper" />
 	<bean id="corsFilter" 
 		class="org.apache.cxf.rs.security.cors.CrossOriginResourceSharingFilter"/>
 		
@@ -50,17 +44,13 @@
 	<jaxrs:server id="ApplicationManagerServer"
 		address="/service">
 		<jaxrs:serviceBeans>
-			<ref bean="carManager" />
-			<ref bean="autoPartManager" />
-			<ref bean="headerManager" />
-			<ref bean="sectionManager" />
 			<ref bean="userManager" />
-			<ref bean="attributeManager" />
+			<ref bean="talentManager" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean="corsFilter" />
 			<ref bean="jsonProvider" />
-			<ref bean="catalogExceptionHandler" />
+			<ref bean="talentManagementExceptionHandler" />
 			<ref bean="dateParameterHandler" />
 			<ref bean="validationExceptionMapper" />
 		</jaxrs:providers>

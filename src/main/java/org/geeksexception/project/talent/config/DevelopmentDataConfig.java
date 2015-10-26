@@ -12,7 +12,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 @Configuration
-@EnableJpaRepositories("org.geeksexception.project.catalog.dao")
+@EnableJpaRepositories("org.geeksexception.project.talent.dao")
 @Development
 public class DevelopmentDataConfig extends AbstractDataConfig {
 	

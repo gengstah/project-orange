@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	
-	<display-name>Catalog</display-name>
+	<display-name>Talent Management</display-name>
   
 	<!-- Java-based Spring container definition -->
 	<context-param>
@@ -15,7 +15,7 @@
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
     	<param-value>
-    		org.geeksexception.project.catalog.config
+    		org.geeksexception.project.talent.config
     	</param-value>
 	</context-param>
 	
@@ -42,7 +42,7 @@
 	
 	<servlet>
 		<description>Apache CXF Endpoint</description>
-		<display-name>Catalog</display-name>
+		<display-name>Talent Management Service API</display-name>
 		<servlet-name>webService</servlet-name>
 		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
 		<load-on-startup>2</load-on-startup>

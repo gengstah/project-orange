@@ -2,7 +2,7 @@
 
 /* Filters */
 
-var filters = angular.module('CatalogFilters', []);
+var filters = angular.module('TalentManagementFilters', []);
 
 filters.filter('slice', function() {
 	return function(arr, start, end) {

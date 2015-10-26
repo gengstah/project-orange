@@ -1,14 +1,14 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('Catalog', [
+angular.module('TalentManagement', [
 	'ui.router',
 	'ngCookies',
 	'ui.utils',
-	'CatalogFilters',
-	'CatalogServices',
-	'CatalogDirectives',
-	'CatalogControllers'
+	'TalentManagementFilters',
+	'TalentManagementServices',
+	'TalentManagementDirectives',
+	'TalentManagementControllers'
 ]).
 config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', 
 	function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
@@ -18,14 +18,6 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 			.state('home', {
 				url: '/', 
 				templateUrl: 'templates/home.html'
-			})
-			.state('autoPartsSections', {
-				url: '/autoPartsSections', 
-				templateUrl: 'templates/auto-parts-sections.html'
-			})
-			.state('autoParts', {
-				url: '/autoParts', 
-				templateUrl: 'templates/auto-parts.html'
 			});
 		
 		$locationProvider.hashPrefix('!');
@@ -43,8 +35,8 @@ run(['$rootScope',
 constant('USER_ROLES', {
 	all: '*',
 	admin: 'ROLE_ADMIN',
-	encoder: 'ROLE_ENCODER',
-	member: 'ROLE_MEMBER'
+	agency: 'ROLE_AGENCY',
+	user: 'ROLE_USER'
 }).
 constant('AUTH_EVENTS', {
 	loginSuccess: 'auth-login-success',

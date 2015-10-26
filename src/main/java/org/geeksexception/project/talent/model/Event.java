@@ -9,7 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -44,5 +49,82 @@ public class Event implements Serializable {
 	@Column(name = "TALENT_FEE", nullable = true)
 	private BigDecimal talentFee;
 	
+	@ManyToOne
+	@JoinColumn(name="AGENCY_ID")
+	private Agency agency;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_CREATED", nullable = false)
+	private Date dateCreated;
+	
 	public Event() { }
+	
+	@PrePersist
+	public void prePersist() {
+		dateCreated = new Date();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getRunDateFrom() {
+		return runDateFrom;
+	}
+
+	public void setRunDateFrom(Date runDateFrom) {
+		this.runDateFrom = runDateFrom;
+	}
+
+	public Date getRunDateTo() {
+		return runDateTo;
+	}
+
+	public void setRunDateTo(Date runDateTo) {
+		this.runDateTo = runDateTo;
+	}
+
+	public BigDecimal getTalentFee() {
+		return talentFee;
+	}
+
+	public void setTalentFee(BigDecimal talentFee) {
+		this.talentFee = talentFee;
+	}
+
+	public Agency getAgency() {
+		return agency;
+	}
+
+	public void setAgency(Agency agency) {
+		this.agency = agency;
+	}
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
 }

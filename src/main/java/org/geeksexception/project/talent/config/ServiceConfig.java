@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan("org.geeksexception.project.catalog.service")
+@ComponentScan("org.geeksexception.project.talent.service")
 public class ServiceConfig {
 	
 }
