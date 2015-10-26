@@ -21,7 +21,16 @@ services.factory('Auth', ['$resource',
   				params: { 
   					action: 'logout'
   				}
-  			}
+  			},
+			register: { 
+				method: 'POST', 
+				params: { 
+  					action: 'register'
+  				},
+				headers : { 
+  					'Content-Type': 'multipart/form-data' 
+  				}
+			}
   		});
   	}
 ]);

@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		/* Prod */
 		http
 			.authorizeRequests()
-				.antMatchers("/api/service/user/authenticate", "/api/service/lender/*/register", "/api/service/borrower/register", "/api/service/lender/getAll", "/api/service/user/forgotpassword").permitAll()
+				.antMatchers("/api/service/user/authenticate", "/api/service/user/register", "/api/service/lender/getAll", "/api/service/user/forgotpassword").permitAll()
 				.antMatchers(HttpMethod.OPTIONS, "/api/service/lender/**", "/api/service/borrower/**", "/api/service/loancriteria/**", "/api/service/loanrequest/**", "/api/service/loan/**").permitAll()
 				.antMatchers("/api/service/user/**", "/api/service/contact/**", "/api/service/countydetail/**", "/api/service/loan/**").authenticated()
 				.antMatchers("/api/service/lender/**", "/api/service/loancriteria/**").hasRole("LENDER")

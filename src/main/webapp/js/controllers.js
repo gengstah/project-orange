@@ -24,8 +24,8 @@ controllers.controller('HomeController', ['$scope', '$rootScope', '$state',
 	}
 ]);
 
-controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'WorkExperience',
-	function($scope, $rootScope, $state, WorkExperience) {
+controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'Auth', 'WorkExperience',
+	function($scope, $rootScope, $state, Auth, WorkExperience) {
 		// reCAPTCHA
 		/*$scope.response = null;
 	    $scope.widgetId = null;
@@ -47,11 +47,13 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	    }*/
 	    // reCAPTCHA
 	    
-		$scope.talent = {
-			gender: 'F'
+		$scope.user = {
+			talent: {
+				gender: 'F'
+			}
 		};
 	
-		$("input#birthDate").datepicker({
+		$("input#birthDateStandardFormat").datepicker({
 			autoclose: true,
 			toggleActive: true
 		});
@@ -92,9 +94,18 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 			
 		});
 		
-		$scope.talentSignUp = function talentSignUp(talent) {
+		$scope.talentSignUp = function talentSignUp(user) {
+			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
+			if(user.password != user.password2) return false;
 			
-			console.log(talent);
+			var images = user.talent.images;
+			
+			delete user.talent.images;
+			delete user.talent.birthDateStandardFormat;
+			delete user.password2;
+			console.log({ user: user, images: images });
+			
+			Auth.register($.param({ user: user, images: images }));
 			
 		};
 	}
