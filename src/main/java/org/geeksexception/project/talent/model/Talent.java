@@ -13,6 +13,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -92,9 +95,14 @@ public class Talent implements Serializable {
 	
 	@ElementCollection
 	@Column(name = "FILE_LOCATION")
-	@Fetch(FetchMode.JOIN)
 	@NotNull(message = "Please upload at least 1 picture")
 	private List<String> imageFileNames;
+	
+	@ManyToMany
+	@JoinTable(name = "TALENT_WORK_EXPERIENCE", 
+		joinColumns = {@JoinColumn(name="TALENT_ID")},
+		inverseJoinColumns = {@JoinColumn(name="WORK_EXPERIENCE_ID")})
+	private List<WorkExperience> workExperiences;
 	
 	@OneToOne(mappedBy = "talent")
 	@Fetch(FetchMode.JOIN)
