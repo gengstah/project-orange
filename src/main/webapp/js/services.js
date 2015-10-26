@@ -26,9 +26,9 @@ services.factory('Auth', ['$resource',
   	}
 ]);
 
-services.factory('Header', ['$resource', 
+services.factory('WorkExperience', ['$resource', 
 	function($resource) {
-		return $resource('/api/service/header');
+		return $resource('/api/service/exp');
  	}
 ]);
 

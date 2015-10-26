@@ -128,10 +128,18 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>			
 			<hr />
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-6">
+					<div class="form-group has-feedback"
+							data-ng-class="{ 'has-success' : talentSignUpForm.exp.$valid, 'has-error' : talentSignUpForm.exp.$invalid  }">
+						<label for="exp">Work Experiences</label>
+						<input type="text" class="form-control" id="exp" value="" data-ng-model="talent.exp" required="required" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+				<div class="col-md-6">
 					<div class="form-group has-feedback">
 						<label class="control-label">Select at least 1 photo (max: 5)</label>
 						<input id="fileInput" name="fileInput" type="file" class="file" multiple="multiple" data-show-upload="false" data-show-caption="true" data-min-file-count="1" data-max-file-count="5" data-ng-model="talent.images">

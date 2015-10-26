@@ -24,8 +24,8 @@ controllers.controller('HomeController', ['$scope', '$rootScope', '$state',
 	}
 ]);
 
-controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state',
-	function($scope, $rootScope, $state) {
+controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'WorkExperience',
+	function($scope, $rootScope, $state, WorkExperience) {
 		// reCAPTCHA
 		/*$scope.response = null;
 	    $scope.widgetId = null;
@@ -66,6 +66,31 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	        removeLabel: "Delete",
 	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
 	    });
+		
+		WorkExperience.query(function(exps) {
+			
+			var workExperiences = [];
+			
+			for(var expIndex = 0;expIndex < exps.length;expIndex++) {
+				var exp = exps[expIndex];
+				workExperiences.push({ value: exp.name });
+			}
+			
+			var engine = new Bloodhound({
+				local: workExperiences,
+				datumTokenizer: function(d) {
+					return Bloodhound.tokenizers.whitespace(d.value);
+				},
+				queryTokenizer: Bloodhound.tokenizers.whitespace
+			});
+
+			engine.initialize();
+
+			$('#exp').tokenfield({
+				typeahead: [null, { source: engine.ttAdapter() }]
+			});
+			
+		});
 		
 		$scope.talentSignUp = function talentSignUp(talent) {
 			
