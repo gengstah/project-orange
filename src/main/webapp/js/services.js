@@ -4,6 +4,28 @@
 
 var services = angular.module('TalentManagementServices', ['ngResource']);
 
+services.factory('Auth', ['$resource', 
+  	function($resource) {
+  		return $resource('/api/service/user/:action', {}, {
+  			authenticate: { 
+  				method: 'POST', 
+  				params: { 
+  					action: 'authenticate'
+  				}, 
+  				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+  			},
+  			logout: { 
+  				method: 'GET', 
+  				params: { 
+  					action: 'logout'
+  				}
+  			}
+  		});
+  	}
+]);
+
 services.factory('Header', ['$resource', 
 	function($resource) {
 		return $resource('/api/service/header');
