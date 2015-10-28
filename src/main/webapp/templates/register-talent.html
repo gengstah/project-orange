@@ -1,0 +1,183 @@
+<section class="row" data-ng-controller="RegisterTalentController">
+	<div class="col-md-1"></div>
+	
+	<div class="col-md-10">
+		<div class="page-header">
+			<h1>Join Us <small>Register as a Talent</small></h1>
+		</div>
+		
+		<div class="alert alert-info" role="alert">Fields with <span class="glyphicon glyphicon-asterisk"></span> are required</div>
+		<form name="talentSignUpForm" role="form" method="POST" data-ng-submit="talentSignUp(talent)" enctype="multipart/form-data">
+			
+			<div class="page-header">
+				<h3>We'd like to know you <small>These information will also help you to find a perfect gig just for you</small></h3>
+			</div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group has-feedback" 
+							data-ng-class="{ 'has-success' : talentSignUpForm.firstName.$valid, 'has-error' : talentSignUpForm.firstName.$invalid  }">
+						<label for="firstName">First Name</label>
+						<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required="required" data-ng-model="talent.firstName" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group has-feedback"
+							data-ng-class="{ 'has-success' : talentSignUpForm.lastName.$valid, 'has-error' : talentSignUpForm.lastName.$invalid  }">
+						<label for="lastName">Last Name</label>
+						<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required="required" data-ng-model="talent.lastName" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group has-feedback" 
+							data-ng-class="{ 'has-success' : talentSignUpForm.birthDate.$valid, 'has-error' : talentSignUpForm.birthDate.$invalid  }">
+						<label for="birthDate">Birth Date</label>
+						<input type="text" class="form-control" id="birthDate" name="birthDate" placeholder="Birth Date" required="required" data-ng-model="talent.birthDate" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group has-feedback"
+							data-ng-class="{ 'has-success' : talentSignUpForm.contactNo.$valid, 'has-error' : talentSignUpForm.contactNo.$invalid  }">
+						<label for="contactNo">Contact No</label>
+						<input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact No" required="required" data-ng-model="talent.contactNo" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group has-feedback"
+							data-ng-class="{ 'has-success' : talentSignUpForm.city.$valid, 'has-error' : talentSignUpForm.city.$invalid  }">
+						<label for="city">City</label>
+						<input type="text" class="form-control" id="city" name="city" placeholder="City" required="required" data-ng-model="talent.city" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<div class="col-xs-12">
+							<label for="feet">Weight &amp; Height</label>
+						</div>
+						
+						<div class="col-xs-4">
+							<div class="input-group">
+								<input type="number" class="form-control" id="weight" name="weight" placeholder="" data-ng-model="talent.weight" /><span class="input-group-addon">kg</span>
+							</div>
+						</div>
+						
+						<div class="col-xs-4">
+							<div class="input-group">
+								<input type="number" class="form-control" id="feet" name="feet" placeholder="" data-ng-model="talent.feet" /><span class="input-group-addon">ft</span>
+							</div>
+						</div>
+						
+						<div class="col-xs-4">
+							<div class="input-group">
+								<input type="number" class="form-control" id="inches" name="inches" placeholder="" data-ng-model="talent.inches" /><span class="input-group-addon">in</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<div class="col-xs-12">
+							<label for="vital1">Vital Statistics</label>
+						</div>
+						
+						<div class="col-xs-4">
+							<div class="input-group">
+								<span class="input-group-addon" id="bust">B</span>
+								<input type="number" class="form-control" id="vital1" name="vital1" placeholder="" data-ng-model="talent.vital1" />
+							</div>
+						</div>
+						
+						<div class="col-xs-4">
+							<div class="input-group">
+								<span class="input-group-addon" id="waist">W</span>
+								<input type="number" class="form-control" id="vital2" name="vital2" placeholder="" data-ng-model="talent.vital2" />
+							</div>
+						</div>
+						
+						<div class="col-xs-4">
+							<div class="input-group">
+								<span class="input-group-addon" id="hip">H</span>
+								<input type="number" class="form-control" id="vital3" name="vital3" placeholder="" data-ng-model="talent.vital3" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="control-label">Select at least 1 photo (max: 5)</label>
+						<input id="fileInput" type="file" class="file" multiple="multiple" data-show-upload="false" data-show-caption="false" data-min-file-count="1" data-max-file-count="5">
+					</div>
+				</div>
+			</div>
+			
+			<div class="page-header">
+				<h3>Let's create your account <small>These information will allow you to login back and apply to future gigs</small></h3>
+			</div>
+			
+			<div class="alert alert-danger" role="alert" data-ng-show="(talentSignUpForm.password1.$valid && talentSignUpForm.password2.$valid) && talent.user.password !== talent.user.password2"><span class="glyphicon glyphicon-remove"></span> Passwords don't match</div>
+			<div class="alert alert-success" role="alert" data-ng-show="(talentSignUpForm.password1.$valid && talentSignUpForm.password2.$valid) && talent.user.password === talent.user.password2"><span class="glyphicon glyphicon-ok"></span> Passwords match. You may proceed.</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group has-feedback"
+							data-ng-class="{ 'has-success' : talentSignUpForm.email.$valid, 'has-error' : talentSignUpForm.email.$invalid }">
+						<label for="email">Email</label>
+						<input type="email" class="form-control" id="email" name="email" placeholder="Email" required="required" data-ng-model="talent.user.email" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group has-feedback" data-ng-class="{ 'has-success' : talentSignUpForm.password1.$valid && talent.user.password === talent.user.password2, 'has-error' : talent.user.password !== talent.user.password2 || talentSignUpForm.password1.$invalid }">
+						<label for="password1">Password</label>
+						<input type="password" class="form-control" id="password1" name="password1" placeholder="Password" required="required" data-ng-model="talent.user.password" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group has-feedback" data-ng-class="{ 'has-success' : talentSignUpForm.password2.$valid && talent.user.password === talent.user.password2, 'has-error' : talent.user.password !== talent.user.password2 || talentSignUpForm.password2.$invalid }">
+						<label for="password2">Re-enter password</label>
+						<input type="password" class="form-control" id="password2" name="password2" placeholder="Re-enter password" required="required" data-ng-model="talent.user.password2" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+			</div>
+			
+			<!-- <div class="row">
+				<div
+	                vc-recaptcha
+	                theme="'light'"
+	                key="model.key"
+	                on-create="setWidgetId(widgetId)"
+	                on-success="setResponse(response)"
+	                on-expire="cbExpiration()"></div>
+			</div> -->
+			
+			<div class="text-center">
+				<a href="#!/" class="btn btn-default">Cancel</a>
+				<button type="submit" class="btn btn-primary" 
+					data-ng-disabled="talentSignUpForm.$invalid ||
+								talent.user.password !== talent.user.password2">
+					<span class="glyphicon glyphicon-ok-sign"></span> Sign up
+				</button>
+			</div>
+		</form>
+	</div>
+	
+	<div class="col-md-1"></div>
+</section>

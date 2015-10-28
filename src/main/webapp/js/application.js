@@ -21,6 +21,20 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 				data: {
 					authorizedRoles: [roles.all]
 				}
+			})
+			.state('events', {
+				url: '/gigs', 
+				templateUrl: 'templates/events.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
+			})
+			.state('registerTalent', {
+				url: '/talent/register', 
+				templateUrl: 'templates/register-talent.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
 			});
 		
 		$locationProvider.hashPrefix('!');
