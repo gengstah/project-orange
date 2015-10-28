@@ -7,7 +7,7 @@
 		</div>
 		
 		<div class="alert alert-info" role="alert">Fields with <span class="glyphicon glyphicon-asterisk"></span> are required</div>
-		<form name="talentSignUpForm" role="form" method="POST" data-ng-submit="talentSignUp(talent)" enctype="multipart/form-data">
+		<form name="talentSignUpForm" role="form" method="POST" data-ng-submit="talentSignUp(talent)" enctype="multipart/form-data" novalidate="novalidate">
 			
 			<div class="page-header">
 				<h3>We'd like to know you <small>These information will also help you to find a perfect gig just for you</small></h3>
@@ -52,12 +52,24 @@
 			</div>
 			
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-xs-6 col-md-6">
 					<div class="form-group has-feedback"
 							data-ng-class="{ 'has-success' : talentSignUpForm.city.$valid, 'has-error' : talentSignUpForm.city.$invalid  }">
 						<label for="city">City</label>
 						<input type="text" class="form-control" id="city" name="city" placeholder="City" required="required" data-ng-model="talent.city" />
 						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-6">
+					<div class="form-group has-feedback"
+							data-ng-class="{ 'has-success' : talentSignUpForm.gender.$valid, 'has-error' : talentSignUpForm.gender.$invalid  }">
+						<label for="gender">Gender</label><br />
+						<label class="radio-inline">
+							<input type="radio" name="gender" value="M" data-ng-model="talent.gender"> Male
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="gender" value="F" data-ng-model="talent.gender"> Female
+						</label>
 					</div>
 				</div>
 			</div>
@@ -120,9 +132,9 @@
 			<hr />
 			<div class="row">
 				<div class="col-md-12">
-					<div class="form-group">
+					<div class="form-group has-feedback">
 						<label class="control-label">Select at least 1 photo (max: 5)</label>
-						<input id="fileInput" type="file" class="file" multiple="multiple" data-show-upload="false" data-show-caption="false" data-min-file-count="1" data-max-file-count="5">
+						<input id="fileInput" name="fileInput" type="file" class="file" multiple="multiple" data-show-upload="false" data-show-caption="true" data-min-file-count="1" data-max-file-count="5" data-ng-model="talent.images">
 					</div>
 				</div>
 			</div>

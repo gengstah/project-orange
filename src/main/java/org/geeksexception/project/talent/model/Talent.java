@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.geeksexception.project.talent.enums.Gender;
 import org.geeksexception.project.talent.enums.TalentClass;
 import org.geeksexception.project.talent.enums.TalentStatus;
 import org.hibernate.annotations.Fetch;
@@ -49,6 +50,10 @@ public class Talent implements Serializable {
 	@Column(name = "LASTNAME", nullable = false)
 	@NotEmpty(message = "lastName must not be empty")
 	private String lastName;
+	
+	@Column(name = "GENDER", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "BIRTHDATE", nullable = false)
@@ -128,6 +133,14 @@ public class Talent implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 
 	public Date getBirthDate() {

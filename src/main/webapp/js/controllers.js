@@ -47,17 +47,29 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	    }*/
 	    // reCAPTCHA
 	    
+		$scope.talent = {
+			gender: 'F'
+		};
+	
 		$("input#birthDate").datepicker({
 			autoclose: true,
 			toggleActive: true
 		});
 		
 		$("#fileInput").fileinput({
-	        allowedFileExtensions : ['jpg', 'jpeg', 'png','gif']
+	        allowedFileExtensions : ['jpg', 'jpeg', 'png','gif'],
+	        previewFileType: "image",
+	        browseClass: "btn btn-success",
+	        browseLabel: "Pick Image",
+	        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
+	        removeClass: "btn btn-danger",
+	        removeLabel: "Delete",
+	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
 	    });
 		
 		$scope.talentSignUp = function talentSignUp(talent) {
 			
+			console.log(talent);
 			
 		};
 	}
