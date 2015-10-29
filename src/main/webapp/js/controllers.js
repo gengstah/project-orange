@@ -24,8 +24,8 @@ controllers.controller('HomeController', ['$scope', '$rootScope', '$state',
 	}
 ]);
 
-controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'Auth', 'WorkExperience',
-	function($scope, $rootScope, $state, Auth, WorkExperience) {
+controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'Auth', 'WorkExperience', 'TalentRegistrationService',
+	function($scope, $rootScope, $state, Auth, WorkExperience, TalentRegistrationService) {
 		// reCAPTCHA
 		/*$scope.response = null;
 	    $scope.widgetId = null;
@@ -98,14 +98,23 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
 			if(user.password != user.password2) return false;
 			
+			var workExperiences = [];
+			var exps = user.talent.exp.split(",");
+			for(var exp in exps) {
+				workExperiences.push({ name: exps[exp] });
+			}
+			
+			user.talent.workExperiences = workExperiences;
+			
 			var images = user.talent.images;
 			
+			delete user.talent.exp;
 			delete user.talent.images;
 			delete user.talent.birthDateStandardFormat;
 			delete user.password2;
 			console.log({ user: user, images: images });
 			
-			Auth.register($.param({ user: user, images: images }));
+			TalentRegistrationService.registerUser(user, images, "/api/service/user/register");
 			
 		};
 	}

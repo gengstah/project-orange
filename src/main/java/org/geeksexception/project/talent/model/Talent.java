@@ -95,7 +95,6 @@ public class Talent implements Serializable {
 	
 	@ElementCollection
 	@Column(name = "FILE_LOCATION")
-	@NotNull(message = "Please upload at least 1 picture")
 	private List<String> imageFileNames;
 	
 	@ManyToMany
@@ -237,6 +236,14 @@ public class Talent implements Serializable {
 
 	public void setImageFileNames(List<String> imageFileNames) {
 		this.imageFileNames = imageFileNames;
+	}
+
+	public List<WorkExperience> getWorkExperiences() {
+		return workExperiences;
+	}
+
+	public void setWorkExperiences(List<WorkExperience> workExperiences) {
+		this.workExperiences = workExperiences;
 	}
 
 	public User getUser() {
