@@ -104,17 +104,21 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 				workExperiences.push({ name: exps[exp] });
 			}
 			
+			user.talent.images = [];
+			for(var imageFileName in user.talent.imageFileNames) {
+				user.talent.images.push({ fileLocation: user.talent.imageFileNames[imageFileName] });
+			}
+			
 			user.talent.workExperiences = workExperiences;
 			
-			var images = user.talent.images;
-			
+			delete user.talent.imageFileNames;
 			delete user.talent.exp;
-			delete user.talent.images;
 			delete user.talent.birthDateStandardFormat;
 			delete user.password2;
-			console.log({ user: user, images: images });
+			console.log({ user: user });
 			
-			TalentRegistrationService.registerUser(user, images, "/api/service/user/register");
+			Auth.register(user);
+			//TalentRegistrationService.registerUser(user, images, "/api/service/user/register");
 			
 		};
 	}

@@ -3,6 +3,7 @@ package org.geeksexception.project.talent.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -64,7 +65,7 @@ public class User implements Serializable {
 	@JoinColumn(name="AGENCY_ID")
 	private @Valid Agency agency;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@Fetch(FetchMode.JOIN)
 	@JoinColumn(name="TALENT_ID")
 	private @Valid Talent talent;

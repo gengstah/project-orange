@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -93,15 +94,15 @@ public class Talent implements Serializable {
 	@Column(name = "VITAL3", nullable = true)
 	private Integer vital3;
 	
-	@ElementCollection
-	@Column(name = "FILE_LOCATION")
-	private List<String> imageFileNames;
+	@OneToMany(mappedBy = "talent", cascade = CascadeType.ALL)
+	@NotNull(message = "Please upload at least 1 picture")
+	private @Valid List<Image> images;
 	
 	@ManyToMany
 	@JoinTable(name = "TALENT_WORK_EXPERIENCE", 
 		joinColumns = {@JoinColumn(name="TALENT_ID")},
 		inverseJoinColumns = {@JoinColumn(name="WORK_EXPERIENCE_ID")})
-	private List<WorkExperience> workExperiences;
+	private @Valid List<WorkExperience> workExperiences;
 	
 	@OneToOne(mappedBy = "talent")
 	@Fetch(FetchMode.JOIN)
@@ -230,12 +231,12 @@ public class Talent implements Serializable {
 		this.vital3 = vital3;
 	}
 
-	public List<String> getImageFileNames() {
-		return imageFileNames;
+	public List<Image> getImages() {
+		return images;
 	}
 
-	public void setImageFileNames(List<String> imageFileNames) {
-		this.imageFileNames = imageFileNames;
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 
 	public List<WorkExperience> getWorkExperiences() {

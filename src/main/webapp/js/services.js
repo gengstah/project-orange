@@ -21,6 +21,12 @@ services.factory('Auth', ['$resource',
   				params: { 
   					action: 'logout'
   				}
+  			},
+  			register: { 
+  				method: 'POST', 
+  				params: { 
+  					action: 'register'
+  				}
   			}
   		});
   	}

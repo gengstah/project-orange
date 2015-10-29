@@ -13,6 +13,8 @@ public interface UserService {
 	
 	User save(User user) throws TalentManagementServiceApiException;
 	
+	void saveImages(User user, String rootLocation) throws TalentManagementServiceApiException;
+	
 	User getLoggedInUser();
 	
 	List<User> findTalentUsers(Integer page, Integer size);
