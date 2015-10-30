@@ -32,14 +32,21 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 			})
 			.state('registerTalent', {
 				url: '/talent/register', 
-				templateUrl: 'templates/register-talent.html',
+				templateUrl: 'templates/talent/register.html',
 				data: {
 					authorizedRoles: [roles.all]
 				}
 			})
-			.state('profile', {
-				url: '/profile', 
-				templateUrl: 'templates/profile-page.html',
+			.state('talentProfile', {
+				url: '/talent/profile', 
+				templateUrl: 'templates/talent/profile-page.html',
+				data: {
+					authorizedRoles: [roles.user, roles.agency, roles.admin]
+				}
+			})
+			.state('updateProfile', {
+				url: '/talent/profile/update', 
+				templateUrl: 'templates/talent/profile-update.html',
 				data: {
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}

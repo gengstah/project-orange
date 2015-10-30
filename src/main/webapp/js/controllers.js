@@ -192,13 +192,71 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 controllers.controller('ProfileController', ['$scope', '$rootScope', '$state', 'Auth',
 	function($scope, $rootScope, $state, Auth) {
 		Auth.viewProfile(function(user) {
-			console.log(user);
 			$scope.user = user;
 		});
 		
 		$('#profileTabs a').click(function (e) {
 			e.preventDefault();
 			$(this).tab('show');
+		});
+	}
+]);
+
+controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$state', '$filter', 'Auth', 'WorkExperience',
+	function($scope, $rootScope, $state, $filter, Auth, WorkExperience) {
+		Auth.viewProfile(function(user) {
+			$scope.user = user;
+			var dateParts = user.talent.birthDate.split("-");
+			$("input#birthDateStandardFormat").datepicker('setDate', new Date(dateParts[1] + "/" + dateParts[2] + "/" + dateParts[0]));
+			
+			var exps = [];
+			for(var workExperienceIndex in user.talent.workExperiences) {
+				exps.push(user.talent.workExperiences[workExperienceIndex].name);
+			}
+			
+			$('#exp').val(exps.join(','));
+			user.talent.exp = exps.join(',');
+		});
+		
+		$("input#birthDateStandardFormat").datepicker({
+			autoclose: true,
+			toggleActive: true
+		});
+		
+		$("#fileInput").fileinput({
+	        allowedFileExtensions : ['jpg', 'jpeg', 'png','gif'],
+	        previewFileType: "image",
+	        browseClass: "btn btn-success",
+	        browseLabel: "Pick Image",
+	        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
+	        removeClass: "btn btn-danger",
+	        removeLabel: "Delete",
+	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
+	    });
+		
+		WorkExperience.query(function(exps) {
+			
+			var workExperiences = [];
+			
+			for(var expIndex = 0;expIndex < exps.length;expIndex++) {
+				var exp = exps[expIndex];
+				workExperiences.push({ value: exp.name });
+			}
+			
+			var engine = new Bloodhound({
+				local: workExperiences,
+				datumTokenizer: function(d) {
+					return Bloodhound.tokenizers.whitespace(d.value);
+				},
+				queryTokenizer: Bloodhound.tokenizers.whitespace
+			});
+
+			engine.initialize();
+
+			$('#exp').tokenfield({
+				typeahead: [null, { source: engine.ttAdapter() }]
+			});
+			
 		});
 	}
 ]);

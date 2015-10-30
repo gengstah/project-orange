@@ -1,0 +1,69 @@
+<section class="row" data-ng-controller="ProfileController">
+	<div class="col-md-1"></div>
+	
+	<div class="col-md-10">
+		<div class="row">
+			<div class="col-sm-6 col-md-4">
+				<div class="thumbnail">
+					<img src="/img/mahha-1.jpeg" alt="..." data-ng-src="{{user.talent.images[0].fileLocation}}">
+					<div class="caption">
+						<h3>{{user.talent.firstName}} {{user.talent.lastName}}</h3>
+						<div><span class="glyphicon" data-ng-class="{ 'glyphicon-queen' : user.talent.gender == 'F', 'glyphicon-king' : user.talent.gender == 'M' }" aria-hidden="true"></span>&nbsp;&nbsp;<span data-ng-if="user.talent.gender == 'F'">Female</span><span data-ng-if="user.talent.gender == 'M'">Male</span></div>
+						<div><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;&nbsp;Manila</div>
+						<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Born on {{user.talent.birthDate | date:'mediumDate'}}, {{ user.talent.birthDate | ageFilter }} yrs. old</div>
+						<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Joined on {{user.dateCreated | date:'mediumDate'}}</div>
+						<div><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;&nbsp;{{ user.email }}</div>
+						<div><span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;&nbsp;{{ user.talent.contactNo }}</div>
+						<hr />
+						<div class="row">
+							<div class="col-sm-4 col-md-4">
+								<h3 class="text-center"><b>3</b></h3>
+								<div class="text-center"><small>Followers</small></div>
+							</div>
+							<div class="col-sm-4 col-md-4">
+								<h3 class="text-center"><b>4</b></h3>
+								<div class="text-center"><small>Events</small></div>
+							</div>
+							<div class="col-sm-4 col-md-4">
+								<h3 class="text-center"><b>5</b></h3>
+								<div class="text-center"><small>Following</small></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-sm-6 col-md-8">
+				<ul id="profileTabs" class="nav nav-tabs">
+					<li role="presentation" class="active"><a href="#basic" aria-controls="basicInfo" role="tab" data-toggle="tab">Basic info</a></li>
+				</ul>
+				
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane fade in active" id="basic">
+						<dl class="dl-horizontal">
+							<dt>Height</dt>
+							<dd>{{ user.talent.feet }}" {{ user.talent.inches }}'</dd>
+							<dt>Weight</dt>
+							<dd>{{ user.talent.weight }} kgs</dd>
+							<dt>Vital Statistics</dt>
+							<dd>{{ user.talent.vital1 }} - {{ user.talent.vital2 }} - {{ user.talent.vital3 }}</dd>
+							<dt>Expected Salary</dt>
+							<dd>Php {{ user.talent.expectedSalary | number }}</dd>
+							<dt>Work Experiences</dt>
+							<dd>
+								<ul>
+									<li data-ng-repeat="workExperience in user.talent.workExperiences">{{ workExperience.name }}</li>
+								</ul>
+							</dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-4">
+				<a href="#!/talent/profile/update" class="btn btn-default">Edit profile</a>
+			</div>
+		</div>
+	</div>
+	
+	<div class="col-md-1"></div>
+</section>
