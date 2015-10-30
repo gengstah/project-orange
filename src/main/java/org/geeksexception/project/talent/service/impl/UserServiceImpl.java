@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.cxf.helpers.IOUtils;
+import org.geeksexception.project.talent.dao.ImageRepository;
 import org.geeksexception.project.talent.dao.UserRepository;
 import org.geeksexception.project.talent.dao.WorkExperienceRepository;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
@@ -40,6 +41,8 @@ public class UserServiceImpl implements UserService {
 	private @Inject UserRepository userRepository;
 	
 	private @Inject WorkExperienceRepository workExperienceRepository;
+	
+	private @Inject ImageRepository imageRepository;
 	
 	public UserServiceImpl() { }
 	
@@ -175,6 +178,21 @@ public class UserServiceImpl implements UserService {
 	public List<User> findAgencyUsers(Integer page, Integer size) {
 		
 		return userRepository.findAgencyUsers(new PageRequest(page, size));
+		
+	}
+
+	@Override
+	public User getFullProfile() {
+		
+		User user = getLoggedInUser();
+		Long talentId = user.getTalent().getId();
+		List<Image> images = imageRepository.findImagesByTalentId(talentId);
+		List<WorkExperience> workExperiences = workExperienceRepository.findWorkExperienceByTalentId(talentId);
+		
+		user.getTalent().setWorkExperiences(workExperiences);
+		user.getTalent().setImages(images);
+		
+		return user;
 		
 	}
 

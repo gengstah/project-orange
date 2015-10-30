@@ -1,12 +1,14 @@
 package org.geeksexception.project.talent.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -30,6 +32,9 @@ public class WorkExperience implements Serializable {
 	@NotEmpty(message = "Work experience name must not be empty")
 	private String name;
 	
+	@ManyToMany(mappedBy = "workExperiences")
+	private List<Talent> talents;
+	
 	public WorkExperience() { }
 	
 	public WorkExperience(String name) { this.name = name; }
@@ -48,6 +53,14 @@ public class WorkExperience implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<Talent> getTalents() {
+		return talents;
+	}
+
+	public void setTalents(List<Talent> talents) {
+		this.talents = talents;
 	}
 
 	@Override

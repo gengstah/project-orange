@@ -14,6 +14,8 @@ import javax.ws.rs.core.Context;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
+import org.geeksexception.project.talent.model.Error;
+import org.geeksexception.project.talent.model.Errors;
 import org.geeksexception.project.talent.model.User;
 import org.geeksexception.project.talent.service.AuthenticationService;
 import org.geeksexception.project.talent.service.UserService;
@@ -47,7 +49,12 @@ public class UserManager {
 	@Path("/register")
 	public User register(@NotNull @Valid User user) throws TalentManagementServiceApiException {
 		
-		return userService.save(user, context.getServletContext().getRealPath("/"));
+		String clearPassword = user.getPassword();
+		User savedUser = userService.save(user, context.getServletContext().getRealPath("/"));
+		
+		if(savedUser != null) authenticateAndLoadUser(savedUser.getEmail(), clearPassword);
+		
+		return savedUser;
 		
 	}
 	
@@ -61,10 +68,25 @@ public class UserManager {
 			throws TalentManagementServiceApiException {
 		
 		User user = userService.findUserByEmail(email);
-		if(user != null)
+		if(user == null)
+			throw new TalentManagementServiceApiException(
+					"Invalid email or password", 
+					new Errors()
+						.addError(new Error("email", "Invalid email or password")));
+		else
 			authenticationService.authenticate(email, password);
 		
-		return user;			
+		return user;
+		
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/profile")
+	public User viewFullProfile() {
+		
+		return userService.getFullProfile();
 		
 	}
 	

@@ -15,6 +15,8 @@ public interface UserService {
 	
 	User getLoggedInUser();
 	
+	User getFullProfile();
+	
 	List<User> findTalentUsers(Integer page, Integer size);
 	
 	List<User> findAgencyUsers(Integer page, Integer size);

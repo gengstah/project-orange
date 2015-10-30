@@ -27,6 +27,12 @@ services.factory('Auth', ['$resource',
   				params: { 
   					action: 'register'
   				}
+  			},
+  			viewProfile: {
+  				method: 'GET', 
+  				params: { 
+  					action: 'profile'
+  				}
   			}
   		});
   	}

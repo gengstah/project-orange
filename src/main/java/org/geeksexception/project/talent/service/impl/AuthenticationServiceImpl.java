@@ -36,10 +36,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		} catch(AuthenticationException e) {
 			logger.warn("Authentication failed: {}", e.getMessage());
 			throw new TalentManagementServiceApiException(
-					"Error while authenticating", 
+					"Invalid email or password", 
 					new Errors()
-						.addError(new Error("email", e.getMessage()))
-						.addError(new Error("password", e.getMessage())),
+						.addError(new Error("email", "Invalid email or password")),
 					e);
 		}
 

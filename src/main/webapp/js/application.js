@@ -35,6 +35,20 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 				data: {
 					authorizedRoles: [roles.all]
 				}
+			})
+			.state('profile', {
+				url: '/profile', 
+				templateUrl: 'templates/profile-page.html',
+				data: {
+					authorizedRoles: [roles.user, roles.agency, roles.admin]
+				}
+			})
+			.state('about', {
+				url: '/about', 
+				templateUrl: 'templates/about.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
 			});
 		
 		$locationProvider.hashPrefix('!');

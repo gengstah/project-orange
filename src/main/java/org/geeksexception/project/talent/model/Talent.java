@@ -85,6 +85,10 @@ public class Talent implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private TalentClass talentClass;
 	
+	@Column(name = "EXPECTED_SALARY", nullable = false)
+	@NotNull(message = "Please indicate your expected salary")
+	private BigDecimal expectedSalary;
+	
 	@Column(name = "VITAL1", nullable = true)
 	private Integer vital1;
 	
@@ -205,6 +209,14 @@ public class Talent implements Serializable {
 
 	public void setTalentClass(TalentClass talentClass) {
 		this.talentClass = talentClass;
+	}
+
+	public BigDecimal getExpectedSalary() {
+		return expectedSalary;
+	}
+
+	public void setExpectedSalary(BigDecimal expectedSalary) {
+		this.expectedSalary = expectedSalary;
 	}
 
 	public Integer getVital1() {

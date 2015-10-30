@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,11 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		/* Prod */
 		http
 			.authorizeRequests()
-				.antMatchers("/api/service/user/authenticate", "/api/service/user/register", "/api/service/lender/getAll", "/api/service/user/forgotpassword").permitAll()
-				.antMatchers(HttpMethod.OPTIONS, "/api/service/lender/**", "/api/service/borrower/**", "/api/service/loancriteria/**", "/api/service/loanrequest/**", "/api/service/loan/**").permitAll()
-				.antMatchers("/api/service/user/**", "/api/service/contact/**", "/api/service/countydetail/**", "/api/service/loan/**").authenticated()
-				.antMatchers("/api/service/lender/**", "/api/service/loancriteria/**").hasRole("LENDER")
-				.antMatchers("/api/service/borrower/**", "/api/service/loanrequest/**").hasRole("BORROWER")
+				.antMatchers("/api/service/user/authenticate", "/api/service/user/register").permitAll()
+				.antMatchers("/api/service/user/**", "/img/**").authenticated()
 				.antMatchers("/api/service/admin/**").hasRole("ADMIN")
 				.and()
 			.csrf().disable()

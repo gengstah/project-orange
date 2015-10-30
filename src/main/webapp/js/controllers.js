@@ -45,14 +45,31 @@ controllers.controller('HeaderController', ['$scope', '$rootScope', 'AUTH_EVENTS
   	}
 ]);
 
-controllers.controller('HomeController', ['$scope', '$rootScope', '$state',
-    function($scope, $rootScope, $state) {
+controllers.controller('HomeController', ['$scope', '$rootScope', '$state', 'Auth', 'Session', 'AUTH_EVENTS',
+    function($scope, $rootScope, $state, Auth, Session, events) {
+		$scope.credentials = {};
+		
+		$scope.login = function login(credentials) {
+			var $loginButton = $("#loginButton").button("loading");
+			Auth.authenticate($.param({email: $scope.credentials.email, password: $scope.credentials.password}), function(user) {
+				delete $scope.loginErrors;
+				$scope.credentials = {};
+				Session.create(user);
+				$loginButton.button("reset");
+				$rootScope.$broadcast(events.loginSuccess);
+			}, function(error) {
+				$scope.loginErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				console.log($scope.loginErrors);
+				$loginButton.button("reset");
+				$rootScope.$broadcast(events.loginFailed);
+			});
+		};
 		
 	}
 ]);
 
-controllers.controller('RegisterTalentController', ['$scope', '$rootScope', 'Auth', 'WorkExperience', 'Session', 'AUTH_EVENTS',
-	function($scope, $rootScope, Auth, WorkExperience, Session, events) {
+controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'Auth', 'WorkExperience', 'Session', 'AUTH_EVENTS',
+	function($scope, $rootScope, $state, Auth, WorkExperience, Session, events) {
 		// reCAPTCHA
 		/*$scope.response = null;
 	    $scope.widgetId = null;
@@ -74,6 +91,8 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', 'Aut
 	    }*/
 	    // reCAPTCHA
 	    
+		if(!!Session.user) $state.go("home");
+	
 		$scope.user = {
 			talent: {
 				gender: 'F'
@@ -122,6 +141,7 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', 'Aut
 		});
 		
 		$scope.talentSignUp = function talentSignUp(user) {
+			var $signUpButton = $("#signUpButton").button("loading");
 			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
 			if(user.password != user.password2) return false;
 			
@@ -138,6 +158,11 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', 'Aut
 			
 			user.talent.workExperiences = workExperiences;
 			
+			var imageFileNames = user.talent.imageFileNames;
+			var exp = user.talent.exp;
+			var birthDateStandardFormat = user.talent.birthDateStandardFormat;
+			var password2 = user.password2;
+			
 			delete user.talent.imageFileNames;
 			delete user.talent.exp;
 			delete user.talent.birthDateStandardFormat;
@@ -145,14 +170,34 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', 'Aut
 			
 			Auth.register(user, function(userResponse) {
 				Session.create(userResponse);
+				$signUpButton.button("reset");
 				$rootScope.$broadcast(events.loginSuccess);
 				delete $scope.user;
 				delete $scope.userSignUpErrors;
 			}, function(error) {
+				user.talent.imageFileNames = imageFileNames;
+				user.talent.exp = exp;
+				user.talent.birthDateStandardFormat = birthDateStandardFormat;
+				user.password2 = password2;
+				$signUpButton.button("reset");
 				$scope.userSignUpErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
 			});
 			
 		};
+	}
+]);
+
+controllers.controller('ProfileController', ['$scope', '$rootScope', '$state', 'Auth',
+	function($scope, $rootScope, $state, Auth) {
+		Auth.viewProfile(function(user) {
+			console.log(user);
+			$scope.user = user;
+		});
+		
+		$('#profileTabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
 	}
 ]);
 

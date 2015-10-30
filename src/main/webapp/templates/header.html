@@ -17,11 +17,17 @@
 				<li data-ui-route="/events" data-ng-class="{active: $uiRoute}">
 					<a href="#!/gigs">Gigs</a>
 				</li>
+				<li data-ui-route="/about" data-ng-class="{active: $uiRoute}">
+					<a href="#!/about">About</a>
+				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown" data-ng-if="isAuthenticated()">
 					<a href="" class="dropdown-toggle" data-toggle="dropdown"><span data-ng-bind="user.email">Geng</span> <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
+						<li>
+							<a href="#!/profile">Your profile</a>
+						</li>
 						<li>
 							<a href="" data-ng-click="logout()">Sign out</a>
 						</li>
