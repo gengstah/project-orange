@@ -47,10 +47,10 @@ public class UserManager {
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/register")
-	public User register(@NotNull @Valid User user) throws TalentManagementServiceApiException {
+	public User register(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
 		
 		String clearPassword = user.getPassword();
-		User savedUser = userService.save(user, context.getServletContext().getRealPath("/"));
+		User savedUser = userService.save(user, context.getServletContext().getRealPath("/"), user.getReCaptchaResponse());
 		
 		if(savedUser != null) authenticateAndLoadUser(savedUser.getEmail(), clearPassword);
 		

@@ -68,14 +68,14 @@ controllers.controller('HomeController', ['$scope', '$rootScope', '$state', 'Aut
 	}
 ]);
 
-controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'Auth', 'WorkExperience', 'Session', 'AUTH_EVENTS',
-	function($scope, $rootScope, $state, Auth, WorkExperience, Session, events) {
+controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'vcRecaptchaService', 'Auth', 'WorkExperience', 'Session', 'AUTH_EVENTS',
+	function($scope, $rootScope, $state, vcRecaptchaService, Auth, WorkExperience, Session, events) {
 		// reCAPTCHA
-		/*$scope.response = null;
+		$scope.response = null;
 	    $scope.widgetId = null;
 	    
 	    $scope.model = {
-	    	key: '6LejxQ8TAAAAADY4bvpWWTHpF3IP0VWqiKYj6weM'
+	    	key: '6LcIBBATAAAAADjwWGkqfRDhKudYMUnsCVcks090'
 	    }
 	    
 	    $scope.setResponse = function (response) {
@@ -88,7 +88,7 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	    
 	    $scope.cbExpiration = function() {
 	    	$scope.response = null;
-	    }*/
+	    }
 	    // reCAPTCHA
 	    
 		if(!!Session.user) $state.go("home");
@@ -167,7 +167,8 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 			delete user.talent.exp;
 			delete user.talent.birthDateStandardFormat;
 			delete user.password2;
-			
+			var response = vcRecaptchaService.getResponse();
+			user.reCaptchaResponse = response;
 			Auth.register(user, function(userResponse) {
 				Session.create(userResponse);
 				$signUpButton.button("reset");
@@ -180,6 +181,7 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 				user.talent.birthDateStandardFormat = birthDateStandardFormat;
 				user.password2 = password2;
 				$signUpButton.button("reset");
+				vcRecaptchaService.reload();
 				$scope.userSignUpErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
 			});
 			

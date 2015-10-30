@@ -5,6 +5,7 @@ angular.module('TalentManagement', [
 	'ui.router',
 	'ngCookies',
 	'ui.utils',
+	'vcRecaptcha',
 	'TalentManagementFilters',
 	'TalentManagementServices',
 	'TalentManagementDirectives',

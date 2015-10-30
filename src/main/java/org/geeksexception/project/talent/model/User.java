@@ -17,6 +17,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
@@ -75,6 +76,10 @@ public class User implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_CREATED", nullable = false)
 	private Date dateCreated;
+	
+	@Transient
+	@NotEmpty(message = "Please solve the reCaptcha")
+	private String reCaptchaResponse;
 	
 	public User() { }
 	
@@ -149,6 +154,15 @@ public class User implements Serializable {
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
+	}
+
+	public String getReCaptchaResponse() {
+		return reCaptchaResponse;
+	}
+	
+	@JsonProperty
+	public void setReCaptchaResponse(String reCaptchaResponse) {
+		this.reCaptchaResponse = reCaptchaResponse;
 	}
 	
 }

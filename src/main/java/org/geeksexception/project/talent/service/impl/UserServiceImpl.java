@@ -17,17 +17,21 @@ import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.cxf.helpers.IOUtils;
+import org.geeksexception.project.talent.api.ReCaptchaManager;
 import org.geeksexception.project.talent.dao.ImageRepository;
 import org.geeksexception.project.talent.dao.UserRepository;
 import org.geeksexception.project.talent.dao.WorkExperienceRepository;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Errors;
 import org.geeksexception.project.talent.model.Image;
+import org.geeksexception.project.talent.model.ReCaptchaResponse;
 import org.geeksexception.project.talent.model.Error;
 import org.geeksexception.project.talent.model.User;
 import org.geeksexception.project.talent.model.WorkExperience;
 import org.geeksexception.project.talent.service.UserService;
 import org.geeksexception.project.talent.util.PasswordUtil;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
+@PropertySource("classpath:/reCaptcha.properties")
 public class UserServiceImpl implements UserService {
 	
 	private @Inject UserRepository userRepository;
@@ -43,6 +48,10 @@ public class UserServiceImpl implements UserService {
 	private @Inject WorkExperienceRepository workExperienceRepository;
 	
 	private @Inject ImageRepository imageRepository;
+	
+	private @Inject ReCaptchaManager reCaptchaManager;
+	
+	private @Inject Environment env;
 	
 	public UserServiceImpl() { }
 	
@@ -62,7 +71,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(readOnly = false)
-	public User save(User user, String imageRootLocation) throws TalentManagementServiceApiException {
+	public User save(User user, String imageRootLocation, String reCaptchaResponse) throws TalentManagementServiceApiException {
+		
+		ReCaptchaResponse response = reCaptchaManager.verify(env.getProperty("secret"), reCaptchaResponse);
+		
+		if(!response.isSuccess())
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("recaptcha", "Please solve the reCaptcha")));
 		
 		if(findUserByEmail(user.getEmail()) != null)
 			throw new TalentManagementServiceApiException("Error!", 
