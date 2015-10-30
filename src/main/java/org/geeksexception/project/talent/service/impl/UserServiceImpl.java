@@ -7,7 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -15,12 +18,15 @@ import javax.inject.Inject;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.cxf.helpers.IOUtils;
 import org.geeksexception.project.talent.dao.UserRepository;
+import org.geeksexception.project.talent.dao.WorkExperienceRepository;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Errors;
 import org.geeksexception.project.talent.model.Image;
 import org.geeksexception.project.talent.model.Error;
 import org.geeksexception.project.talent.model.User;
+import org.geeksexception.project.talent.model.WorkExperience;
 import org.geeksexception.project.talent.service.UserService;
+import org.geeksexception.project.talent.util.PasswordUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,6 +38,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 	
 	private @Inject UserRepository userRepository;
+	
+	private @Inject WorkExperienceRepository workExperienceRepository;
 	
 	public UserServiceImpl() { }
 	
@@ -51,41 +59,52 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(readOnly = false)
-	public User save(User user) throws TalentManagementServiceApiException {
+	public User save(User user, String imageRootLocation) throws TalentManagementServiceApiException {
 		
 		if(findUserByEmail(user.getEmail()) != null)
 			throw new TalentManagementServiceApiException("Error!", 
 					new Errors().addError(new Error("email", "Email is already in use")));
 		
+		user.getTalent().setUser(user);
+		user.setPassword(PasswordUtil.generatePassword(user.getPassword()));
+		
+		saveWorkExperiences(user);
+		saveImages(user, imageRootLocation);
+		
 		return userRepository.save(user);
 		
 	}
-
-	@Override
-	public User getLoggedInUser() {
+	
+	private void saveWorkExperiences(User user) {
 		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		List<WorkExperience> workExperiences = eliminateDuplicateWorkExperiences(user.getTalent().getWorkExperiences());
+		List<WorkExperience> savedWorkExperiences = new ArrayList<WorkExperience>();
 		
-		return findUserByEmail(authentication.getName());
+		for(WorkExperience workExperience : workExperiences) {
+			WorkExperience savedWorkExperience = workExperienceRepository.findWorkExperienceByName(workExperience.getName().trim());
+			if(savedWorkExperience == null) {
+				workExperience.setName(workExperience.getName().trim());
+				savedWorkExperience = workExperienceRepository.save(workExperience);
+			}
+			savedWorkExperiences.add(savedWorkExperience);
+		}
 		
-	}
-
-	@Override
-	public List<User> findTalentUsers(Integer page, Integer size) {
-		
-		return userRepository.findTalentUsers(new PageRequest(page, size));
-		
-	}
-
-	@Override
-	public List<User> findAgencyUsers(Integer page, Integer size) {
-		
-		return userRepository.findAgencyUsers(new PageRequest(page, size));
+		user.getTalent().setWorkExperiences(savedWorkExperiences);
 		
 	}
-
-	@Override
-	public void saveImages(User user, String rootLocation) throws TalentManagementServiceApiException {
+	
+	List<WorkExperience> eliminateDuplicateWorkExperiences(List<WorkExperience> workExperiences) {
+		
+		Set<WorkExperience> workExperienceSet = new HashSet<WorkExperience>();
+		workExperienceSet.addAll(workExperiences);
+		workExperiences.clear();
+		workExperiences.addAll(workExperienceSet);
+		
+		return workExperiences;
+		
+	}
+	
+	private void saveImages(User user, String rootLocation) throws TalentManagementServiceApiException {
 		
 		if(user.getTalent() != null && user.getTalent().getImages().size() > 0) {
 			for(Image image : user.getTalent().getImages()) {
@@ -98,7 +117,7 @@ public class UserServiceImpl implements UserService {
 					String fileExtension = fileType.split("/")[1];
 					String imageName = UUID.randomUUID().toString() + "." + fileExtension;
 					String fileName = rootLocation + "img/" + imageName;
-					image.setFileLocation(fileName);
+					image.setFileLocation("/img/" + imageName);
 					
 					String base64data = data[1];
 					Base64InputStream inputStream = new Base64InputStream(new ByteArrayInputStream(base64data.getBytes(StandardCharsets.UTF_8)));
@@ -133,6 +152,29 @@ public class UserServiceImpl implements UserService {
 					
 			}
 		}
+		
+	}
+
+	@Override
+	public User getLoggedInUser() {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		return findUserByEmail(authentication.getName());
+		
+	}
+
+	@Override
+	public List<User> findTalentUsers(Integer page, Integer size) {
+		
+		return userRepository.findTalentUsers(new PageRequest(page, size));
+		
+	}
+
+	@Override
+	public List<User> findAgencyUsers(Integer page, Integer size) {
+		
+		return userRepository.findAgencyUsers(new PageRequest(page, size));
 		
 	}
 

@@ -11,9 +11,7 @@ public interface UserService {
 	
 	User findUserByEmail(String email);
 	
-	User save(User user) throws TalentManagementServiceApiException;
-	
-	void saveImages(User user, String rootLocation) throws TalentManagementServiceApiException;
+	User save(User user, String imageRootLocation) throws TalentManagementServiceApiException;
 	
 	User getLoggedInUser();
 	

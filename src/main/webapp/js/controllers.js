@@ -4,9 +4,36 @@
 
 var controllers = angular.module('TalentManagementControllers', []);
 
-controllers.controller('ApplicationController', ['$scope', '$state',
-	function($scope, $state) {
+controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES', 'AuthService', 'AUTH_EVENTS', 'Session', 'Auth',
+	function($scope, $state, roles, AuthService, events, Session, Auth) {
+		$scope.user = Session.user;
+		$scope.userRoles = roles;
+		$scope.isAuthenticated = AuthService.isAuthenticated;
+		$scope.isAuthorized = AuthService.isAuthorized;
 		
+		$scope.setCurrentUser = function (user) {
+			$scope.user = user;
+		};
+		
+		$scope.$on(events.notAuthenticated, function() {
+			$state.go('home');
+		});
+
+		$scope.$on(events.loginSuccess, function() {
+			$scope.setCurrentUser(Session.user);
+			$state.go('home');
+		});
+
+		$scope.$on(events.loginFailed, function() {
+			
+		});
+
+		$scope.$on(events.logoutSuccess, function() {
+			Auth.logout(function() {
+				Session.destroy();
+				$state.go('home');
+			});
+		});
 	}
 ]);
 
@@ -24,8 +51,8 @@ controllers.controller('HomeController', ['$scope', '$rootScope', '$state',
 	}
 ]);
 
-controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'Auth', 'WorkExperience', 'TalentRegistrationService',
-	function($scope, $rootScope, $state, Auth, WorkExperience, TalentRegistrationService) {
+controllers.controller('RegisterTalentController', ['$scope', '$rootScope', 'Auth', 'WorkExperience', 'Session', 'AUTH_EVENTS',
+	function($scope, $rootScope, Auth, WorkExperience, Session, events) {
 		// reCAPTCHA
 		/*$scope.response = null;
 	    $scope.widgetId = null;
@@ -115,10 +142,15 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 			delete user.talent.exp;
 			delete user.talent.birthDateStandardFormat;
 			delete user.password2;
-			console.log({ user: user });
 			
-			Auth.register(user);
-			//TalentRegistrationService.registerUser(user, images, "/api/service/user/register");
+			Auth.register(user, function(userResponse) {
+				Session.create(userResponse);
+				$rootScope.$broadcast(events.loginSuccess);
+				delete $scope.user;
+				delete $scope.userSignUpErrors;
+			}, function(error) {
+				$scope.userSignUpErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+			});
 			
 		};
 	}

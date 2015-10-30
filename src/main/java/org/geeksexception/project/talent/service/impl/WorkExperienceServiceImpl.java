@@ -25,4 +25,19 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		
 	}
 
+	@Override
+	public WorkExperience findWorkExperienceByName(String name) {
+		
+		return workExperienceRepository.findWorkExperienceByName(name);
+		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public WorkExperience save(WorkExperience workExperience) {
+		
+		return workExperienceRepository.save(workExperience);
+		
+	}
+
 }

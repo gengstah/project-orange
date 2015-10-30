@@ -47,9 +47,7 @@ public class UserManager {
 	@Path("/register")
 	public User register(@NotNull @Valid User user) throws TalentManagementServiceApiException {
 		
-		userService.saveImages(user, context.getServletContext().getRealPath("/"));
-		
-		return userService.save(user);
+		return userService.save(user, context.getServletContext().getRealPath("/"));
 		
 	}
 	

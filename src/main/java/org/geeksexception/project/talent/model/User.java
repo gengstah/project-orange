@@ -28,6 +28,8 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -80,6 +82,7 @@ public class User implements Serializable {
 	public void prePersist() {
 		dateCreated = new Date();
 		userStatus = UserStatus.ACTIVE;
+		userRole = UserRole.ROLE_USER;
 	}
 
 	public Long getId() {
@@ -97,11 +100,13 @@ public class User implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
 
+	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}

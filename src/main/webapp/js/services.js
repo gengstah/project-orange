@@ -130,23 +130,6 @@ services.service('CarService',
 	}	
 );
 
-services.service('TalentRegistrationService', ['$http', function ($http) {
-	this.registerUser = function registerUser(user, images, uploadUrl){
-		
-		var formData = new FormData();
-		formData.append("images", images);
-		formData.append("user", angular.toJson(user));
-		
-		$http.post(uploadUrl, formData, {
-			transformRequest: angular.identity,
-			headers: { 'Content-Type': undefined },
-			data: { user: user, images: images }
-		})
-		.success(function(){ console.log("done post"); })
-        .error(function(errorMessage){ console.log("Error encountered while trying to register user: " + errorMessage); });
-	}
-}]);
-
 services.factory('AuthInterceptor', ['$rootScope', '$q', 'AUTH_EVENTS',
 	function($rootScope, $q, events) {
 		return {

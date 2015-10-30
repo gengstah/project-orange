@@ -31,6 +31,8 @@ public class WorkExperience implements Serializable {
 	private String name;
 	
 	public WorkExperience() { }
+	
+	public WorkExperience(String name) { this.name = name; }
 
 	public Long getId() {
 		return id;
@@ -46,6 +48,31 @@ public class WorkExperience implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name.toUpperCase() == null) ? 0 : name.toUpperCase().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WorkExperience other = (WorkExperience) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.toUpperCase().equals(other.name.toUpperCase()))
+			return false;
+		return true;
 	}
 	
 }
