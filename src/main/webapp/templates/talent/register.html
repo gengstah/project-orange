@@ -162,7 +162,7 @@
 				<div class="col-md-6">
 					<div class="form-group has-feedback">
 						<label class="control-label">Select at least 1 photo (max: 5)</label>
-						<input id="fileInput" name="fileInput" type="file" class="file" multiple="multiple" data-show-upload="false" data-show-caption="true" data-min-file-count="1" data-max-file-count="5" fileread="user.talent.imageFileNames">
+						<input id="fileInput" name="fileInput" type="file" class="file-loading" multiple="multiple" accept="image/*" data-show-upload="false" data-show-caption="true" data-min-file-count="1" data-max-file-count="5" fileread="user.talent.imageFileNames">
 					</div>
 				</div>
 			</div>
@@ -199,13 +199,15 @@
 			</div>
 			
 			<div class="row">
-				<div
-	                vc-recaptcha
-	                theme="'light'"
-	                key="model.key"
-	                on-create="setWidgetId(widgetId)"
-	                on-success="setResponse(response)"
-	                on-expire="cbExpiration()"></div>
+				<div class="col-xs-12 col-md-12">
+					<div
+		                vc-recaptcha
+		                theme="'light'"
+		                key="model.key"
+		                on-create="setWidgetId(widgetId)"
+		                on-success="setResponse(response)"
+		                on-expire="cbExpiration()"></div>
+				</div>
 			</div>
 			
 			<div class="text-center">

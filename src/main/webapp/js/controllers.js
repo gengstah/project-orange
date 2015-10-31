@@ -256,7 +256,13 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 	        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
 	        removeClass: "btn btn-danger",
 	        removeLabel: "Delete",
-	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
+	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+	        validateInitialCount: true,
+	        overwriteInitial: false,
+	        initialPreview: [
+	            "<img style='height:160px' src='/img/mahha-1.jpeg'>",
+	            "<img style='height:160px' src='/img/mahha-2.jpeg'>"
+	        ]
 	    });
 	}
 ]);
