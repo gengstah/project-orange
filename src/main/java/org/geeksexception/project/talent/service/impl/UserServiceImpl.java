@@ -211,4 +211,20 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
+	@Override
+	public User changePassword(String oldPassword, String newPassword) throws TalentManagementServiceApiException {
+		
+		User user = getLoggedInUser();
+		
+		if(!user.getPassword().equals(PasswordUtil.generatePassword(oldPassword)))
+			throw new TalentManagementServiceApiException("Current password is incorrect", 
+					new Errors().addError(new Error("password", "Current password is incorrect")));
+		
+		user.setPassword(PasswordUtil.generatePassword(newPassword));
+		user = userRepository.save(user);
+		
+		return user;
+		
+	}
+
 }

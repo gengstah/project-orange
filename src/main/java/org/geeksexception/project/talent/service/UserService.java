@@ -13,6 +13,8 @@ public interface UserService {
 	
 	User save(User user, String imageRootLocation, String reCaptchaResponse) throws TalentManagementServiceApiException;
 	
+	User changePassword(String oldPassword, String newPassword) throws TalentManagementServiceApiException;
+	
 	User getLoggedInUser();
 	
 	User getFullProfile();

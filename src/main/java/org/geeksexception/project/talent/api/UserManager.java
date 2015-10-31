@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -87,6 +88,19 @@ public class UserManager {
 	public User viewFullProfile() {
 		
 		return userService.getFullProfile();
+		
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/changepassword")
+	public User changePassword(
+			@NotEmpty(message = "old password must not be empty") @FormParam("oldPassword") String oldPassword, 
+			@NotEmpty(message = "new password must not be empty") @Size(min = 8, message = "new password must consist of at least 8 characters") @FormParam("newPassword") String newPassword) 
+			throws TalentManagementServiceApiException {
+		
+		return userService.changePassword(oldPassword, newPassword);
 		
 	}
 	
