@@ -209,13 +209,38 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 			var dateParts = user.talent.birthDate.split("-");
 			$("input#birthDateStandardFormat").datepicker('setDate', new Date(dateParts[1] + "/" + dateParts[2] + "/" + dateParts[0]));
 			
-			var exps = [];
-			for(var workExperienceIndex in user.talent.workExperiences) {
-				exps.push(user.talent.workExperiences[workExperienceIndex].name);
-			}
-			
-			$('#exp').val(exps.join(','));
-			user.talent.exp = exps.join(',');
+			WorkExperience.query(function(exps) {
+				
+				var workExperiences = [];
+				
+				for(var expIndex = 0;expIndex < exps.length;expIndex++) {
+					var exp = exps[expIndex];
+					workExperiences.push({ value: exp.name });
+				}
+				
+				var engine = new Bloodhound({
+					local: workExperiences,
+					datumTokenizer: function(d) {
+						return Bloodhound.tokenizers.whitespace(d.value);
+					},
+					queryTokenizer: Bloodhound.tokenizers.whitespace
+				});
+
+				engine.initialize();
+				
+				var expsStringArray = [];
+				for(var workExperienceIndex in user.talent.workExperiences) {
+					expsStringArray.push(user.talent.workExperiences[workExperienceIndex].name);
+				}
+				
+				user.talent.exp = exps.join(',');
+				
+				$('#exp').tokenfield({
+					tokens: expsStringArray,
+					typeahead: [null, { source: engine.ttAdapter() }]
+				});
+				
+			});
 		});
 		
 		$("input#birthDateStandardFormat").datepicker({
@@ -233,31 +258,6 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 	        removeLabel: "Delete",
 	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
 	    });
-		
-		WorkExperience.query(function(exps) {
-			
-			var workExperiences = [];
-			
-			for(var expIndex = 0;expIndex < exps.length;expIndex++) {
-				var exp = exps[expIndex];
-				workExperiences.push({ value: exp.name });
-			}
-			
-			var engine = new Bloodhound({
-				local: workExperiences,
-				datumTokenizer: function(d) {
-					return Bloodhound.tokenizers.whitespace(d.value);
-				},
-				queryTokenizer: Bloodhound.tokenizers.whitespace
-			});
-
-			engine.initialize();
-
-			$('#exp').tokenfield({
-				typeahead: [null, { source: engine.ttAdapter() }]
-			});
-			
-		});
 	}
 ]);
 
