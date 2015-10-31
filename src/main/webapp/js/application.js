@@ -55,7 +55,7 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 				url: '/changePassword', 
 				templateUrl: 'templates/change-password.html',
 				data: {
-					authorizedRoles: [roles.lender, roles.borrower]
+					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}
 			})
 			.state('about', {

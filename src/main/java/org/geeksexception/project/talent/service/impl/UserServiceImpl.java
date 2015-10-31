@@ -35,6 +35,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -212,15 +213,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public User changePassword(String oldPassword, String newPassword) throws TalentManagementServiceApiException {
 		
 		User user = getLoggedInUser();
 		
-		if(!user.getPassword().equals(PasswordUtil.generatePassword(oldPassword)))
-			throw new TalentManagementServiceApiException("Current password is incorrect", 
-					new Errors().addError(new Error("password", "Current password is incorrect")));
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
+		
+		if(!encoder.matches(oldPassword, user.getPassword()))
+			throw new TalentManagementServiceApiException("Old password is incorrect", 
+					new Errors().addError(new Error("password", "Old password is incorrect")));
 		
 		user.setPassword(PasswordUtil.generatePassword(newPassword));
+		user.setReCaptchaResponse("Not required");
 		user = userRepository.save(user);
 		
 		return user;

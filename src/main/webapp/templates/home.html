@@ -14,9 +14,7 @@
 			</div>
 			<div class="panel-body">
 				<div class="alert alert-danger" role="alert" data-ng-show="loginErrors">
-					<ul>
-						<li data-ng-repeat="loginError in loginErrors track by $index"><span>{{ loginError.message }}</span></li>
-					</ul>
+					<div data-ng-repeat="loginError in loginErrors track by $index"><span class="glyphicon glyphicon-remove"></span> {{ loginError.message }}</div>
 				</div>
 				<form name="loginForm" role="form" method="POST" data-ng-submit="login(credentials)">
 					<div class="form-group">

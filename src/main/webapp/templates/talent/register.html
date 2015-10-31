@@ -7,10 +7,7 @@
 		</div>
 		
 		<div class="alert alert-danger" role="alert" data-ng-show="userSignUpErrors">
-			<p>Error(s) encountered:</p>
-			<ul>
-				<li data-ng-repeat="userSignUpError in userSignUpErrors track by $index"><span>{{ userSignUpError.message }}</span></li>
-			</ul>
+			<div data-ng-repeat="userSignUpError in userSignUpErrors track by $index"><span class="glyphicon glyphicon-remove"></span> {{ userSignUpError.message }}</div>
 		</div>
 		<div class="alert alert-info" role="alert">Fields with <span class="glyphicon glyphicon-asterisk"></span> are required</div>
 		<form name="talentSignUpForm" role="form" method="POST" data-ng-submit="talentSignUp(user)" novalidate="novalidate">
