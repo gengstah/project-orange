@@ -23,7 +23,7 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.all]
 				}
 			})
-			.state('events', {
+			.state('gigs', {
 				url: '/gigs', 
 				templateUrl: 'templates/events.html',
 				data: {
@@ -49,6 +49,13 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 				templateUrl: 'templates/talent/profile-update.html',
 				data: {
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
+				}
+			})
+			.state('changePassword', {
+				url: '/changePassword', 
+				templateUrl: 'templates/change-password.html',
+				data: {
+					authorizedRoles: [roles.lender, roles.borrower]
 				}
 			})
 			.state('about', {

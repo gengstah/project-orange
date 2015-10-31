@@ -272,3 +272,25 @@ controllers.controller('EventsController', ['$scope', '$rootScope', '$state',
 		
 	}
 ]);
+
+controllers.controller('PasswordController', ['$scope', 'Session', 'Auth',
+  	function($scope, Session, Auth) {
+	
+  		$scope.changePassword = function changePassword(oldPassword, newPassword) {
+  			var username = Session.user.username;
+  			
+  			Auth.changePassword($.param({username: username, oldPassword: oldPassword, newPassword: newPassword}), function(user) {
+  				$scope.oldPassword = '';
+  				$scope.newPassword = '';
+  				$scope.newPassword2 = '';
+  			}, function(error) {
+  				console.log(JSON.parse(error.headers('X-TalentManagementServiceApi-Exception')));
+  			});
+  		}
+  		
+  		$scope.oldPassword = '';
+  		$scope.newPassword = '';
+  		$scope.newPassword2 = '';
+  		
+  	}
+]);

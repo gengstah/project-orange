@@ -33,7 +33,16 @@ services.factory('Auth', ['$resource',
   				params: { 
   					action: 'profile'
   				}
-  			}
+  			},
+			changePassword: {
+				method: 'POST',
+				params: { 
+					action: 'changepassword'
+				},
+				headers : { 
+					'Content-Type': 'application/x-www-form-urlencoded' 
+				}
+			}
   		});
   	}
 ]);
