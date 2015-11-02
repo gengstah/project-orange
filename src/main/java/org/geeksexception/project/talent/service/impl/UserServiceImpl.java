@@ -1,22 +1,15 @@
 package org.geeksexception.project.talent.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.apache.commons.codec.binary.Base64InputStream;
-import org.apache.cxf.helpers.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.geeksexception.project.talent.api.ReCaptchaManager;
 import org.geeksexception.project.talent.dao.ImageRepository;
 import org.geeksexception.project.talent.dao.UserRepository;
@@ -72,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(readOnly = false)
-	public User save(User user, String imageRootLocation, String reCaptchaResponse) throws TalentManagementServiceApiException {
+	public User save(User user, String imageTempLocation, String reCaptchaResponse) throws TalentManagementServiceApiException {
 		
 		ReCaptchaResponse response = reCaptchaManager.verify(env.getProperty("secret"), reCaptchaResponse);
 		
@@ -88,7 +81,7 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(PasswordUtil.generatePassword(user.getPassword()));
 		
 		saveWorkExperiences(user);
-		saveImages(user, imageRootLocation);
+		saveImages(user, imageTempLocation);
 		
 		return userRepository.save(user);
 		
@@ -123,53 +116,38 @@ public class UserServiceImpl implements UserService {
 		
 	}
 	
-	private void saveImages(User user, String rootLocation) throws TalentManagementServiceApiException {
+	private void saveImages(User user, String imageTempLocation) throws TalentManagementServiceApiException {
 		
-		if(user.getTalent() != null && user.getTalent().getImages().size() > 0) {
-			for(Image image : user.getTalent().getImages()) {
-				String data[] = image.getFileLocation().split(",");
-				if(data.length == 2) {
-					
-					String fileType = data[0].split(":")[1].split(";")[0];
-					image.setFileType(fileType);
-					
-					String fileExtension = fileType.split("/")[1];
-					String imageName = UUID.randomUUID().toString() + "." + fileExtension;
-					String fileName = rootLocation + "img/" + imageName;
-					image.setFileLocation("/img/" + imageName);
-					
-					String base64data = data[1];
-					Base64InputStream inputStream = new Base64InputStream(new ByteArrayInputStream(base64data.getBytes(StandardCharsets.UTF_8)));
-					OutputStream outputStream = null;
-					BufferedOutputStream writer = null;
-					
-					try {
-						outputStream = new FileOutputStream(new File(fileName));
-						writer = new BufferedOutputStream(outputStream);
-						writer.write(IOUtils.readBytesFromStream(inputStream));
-					} catch(IOException e) {
-						throw new TalentManagementServiceApiException(
-								"Error while registering", 
-								new Errors()
-									.addError(new Error("user", e.getMessage())), e);
-					} finally {
-						try {
-							if(writer != null) {
-								writer.flush();
-								writer.close();
-							}
-							
-							if(outputStream != null) {
-								outputStream.flush();
-								outputStream.close();
-							}
-						} catch(IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-					
+		File temp = new File(imageTempLocation);
+		if(temp.exists()) {
+			File[] files = temp.listFiles();
+			
+			if(files.length == 0)
+				throw new TalentManagementServiceApiException(
+						"Please upload at least 1 image", 
+						new Errors()
+							.addError(new Error("image", "Please upload at least 1 image")));
+			
+			if(user.getTalent().getImages() == null) user.getTalent().setImages(new ArrayList<Image>());
+			for(File file : files) {
+				user.getTalent().getImages().add(new Image("/img/" + file.getName()));
 			}
+			
+			try {
+				FileUtils.copyDirectory(temp, temp.getParentFile().getParentFile());
+				FileUtils.deleteDirectory(temp);
+			} catch (IOException e) {
+				throw new TalentManagementServiceApiException(
+						"Error while copying images from temp directory to main directory", 
+						new Errors()
+							.addError(new Error("image", e.getMessage())), e);
+			}
+			
+		} else {
+			throw new TalentManagementServiceApiException(
+					"Please upload at least 1 image", 
+					new Errors()
+						.addError(new Error("image", "Please upload at least 1 image")));
 		}
 		
 	}

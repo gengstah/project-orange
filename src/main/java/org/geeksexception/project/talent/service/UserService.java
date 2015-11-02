@@ -11,7 +11,7 @@ public interface UserService {
 	
 	User findUserByEmail(String email);
 	
-	User save(User user, String imageRootLocation, String reCaptchaResponse) throws TalentManagementServiceApiException;
+	User save(User user, String imageTempLocation, String reCaptchaResponse) throws TalentManagementServiceApiException;
 	
 	User changePassword(String oldPassword, String newPassword) throws TalentManagementServiceApiException;
 	

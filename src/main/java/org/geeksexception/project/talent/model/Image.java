@@ -32,14 +32,13 @@ public class Image implements Serializable {
 	@NotEmpty(message = "File must not be empty")
 	private String fileLocation;
 	
-	@Column(name = "FILE_TYPE", nullable = false)
-	private String fileType;
-	
 	@ManyToOne
 	@JoinColumn(name="TALENT_ID")
 	private Talent talent;
 	
 	public Image() { }
+	
+	public Image(String fileLocation) { this.fileLocation = fileLocation; }
 
 	public Long getId() {
 		return id;
@@ -55,14 +54,6 @@ public class Image implements Serializable {
 
 	public void setFileLocation(String fileLocation) {
 		this.fileLocation = fileLocation;
-	}
-
-	public String getFileType() {
-		return fileType;
-	}
-
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
 	}
 	
 }

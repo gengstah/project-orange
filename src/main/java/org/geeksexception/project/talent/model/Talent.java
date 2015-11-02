@@ -99,7 +99,6 @@ public class Talent implements Serializable {
 	private Integer vital3;
 	
 	@OneToMany(mappedBy = "talent", cascade = CascadeType.ALL)
-	@NotNull(message = "Please upload at least 1 picture")
 	private @Valid List<Image> images;
 	
 	@ManyToMany

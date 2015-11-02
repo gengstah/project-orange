@@ -109,6 +109,9 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 		    uploadAsync: true,
 			minFileCount: 1,
 		    maxFileCount: 5,
+		    validateInitialCount: true,
+		    overwriteInitial: false,
+		    initialPreviewShowDelete: true,
 	        allowedFileExtensions : ['jpg', 'jpeg', 'png','gif'],
 	        previewFileType: "image",
 	        browseClass: "btn btn-success",
@@ -116,8 +119,7 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
 	        removeClass: "btn btn-danger",
 	        removeLabel: "Delete",
-	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
-	        uploadExtraData: { id: 100, value: '100 details'}
+	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
 	    });
 		
 		$('#fileInput').on('filesuccessremove', function(event, id) {
@@ -149,13 +151,7 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 			
 		});
 		
-		$scope.talentSignUp = function talentSignUp(user) {
-			var paths = [];
-			$('.uploaded-img').each(function(i, v) {
-			    paths.push(this.src); // Save found image paths
-			})
-			console.log(paths); // Preview the selection in console
-			
+		$scope.talentSignUp = function talentSignUp(user) {			
 			var $signUpButton = $("#signUpButton").button("loading");
 			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
 			if(user.password != user.password2) return false;
@@ -166,33 +162,25 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 				workExperiences.push({ name: exps[exp] });
 			}
 			
-			user.talent.images = [];
-			for(var imageFileName in user.talent.imageFileNames) {
-				user.talent.images.push({ fileLocation: user.talent.imageFileNames[imageFileName] });
-			}
-			
 			user.talent.workExperiences = workExperiences;
 			
-			var imageFileNames = user.talent.imageFileNames;
 			var exp = user.talent.exp;
 			var birthDateStandardFormat = user.talent.birthDateStandardFormat;
 			var password2 = user.password2;
 			
-			delete user.talent.imageFileNames;
 			delete user.talent.exp;
 			delete user.talent.birthDateStandardFormat;
 			delete user.password2;
-			var response = vcRecaptchaService.getResponse();
+			var response = vcRecaptchaService.getResponse($scope.widgetId);
 			user.reCaptchaResponse = response;
 			Auth.register(user, function(userResponse) {
 				Session.create(userResponse);
 				$signUpButton.button("reset");
-				$rootScope.$broadcast(events.loginSuccess);
 				vcRecaptchaService.reload();
+				$rootScope.$broadcast(events.loginSuccess);
 				delete $scope.user;
 				delete $scope.userSignUpErrors;
 			}, function(error) {
-				user.talent.imageFileNames = imageFileNames;
 				user.talent.exp = exp;
 				user.talent.birthDateStandardFormat = birthDateStandardFormat;
 				user.password2 = password2;

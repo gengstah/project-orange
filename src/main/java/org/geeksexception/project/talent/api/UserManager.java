@@ -1,13 +1,7 @@
 package org.geeksexception.project.talent.api;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.UUID;
 
-import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -18,17 +12,19 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
-import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Error;
 import org.geeksexception.project.talent.model.Errors;
+import org.geeksexception.project.talent.model.ImageUploadResponse;
 import org.geeksexception.project.talent.model.User;
 import org.geeksexception.project.talent.service.AuthenticationService;
+import org.geeksexception.project.talent.service.ImageUploadService;
 import org.geeksexception.project.talent.service.UserService;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.http.MediaType;
@@ -42,6 +38,8 @@ public class UserManager {
 	private @Inject UserService userService;
 	
 	private @Inject AuthenticationService authenticationService;
+	
+	private @Inject ImageUploadService imageUploadService;
 	
 	public UserManager() { }
 	
@@ -61,7 +59,7 @@ public class UserManager {
 	public User register(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
 		
 		String clearPassword = user.getPassword();
-		User savedUser = userService.save(user, context.getServletContext().getRealPath("/"), user.getReCaptchaResponse());
+		User savedUser = userService.save(user, context.getServletContext().getRealPath("/") + "img/temp/" + context.getHttpServletRequest().getSession().getId(), user.getReCaptchaResponse());
 		
 		if(savedUser != null) authenticateAndLoadUser(savedUser.getEmail(), clearPassword);
 		
@@ -130,53 +128,27 @@ public class UserManager {
 	@Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/uploadImage")
-	public void uploadPicture(Attachment attachment) throws TalentManagementServiceApiException {
+	public ImageUploadResponse uploadPicture(Attachment attachment) throws TalentManagementServiceApiException {
 		
-		DataHandler handler = attachment.getDataHandler();
 		HttpSession session = context.getHttpServletRequest().getSession();
 		String sessionId = session.getId();
-		String absolutePath = context.getServletContext().getRealPath("/") + "img/temp/" + sessionId;
+		String tempLocation = context.getServletContext().getRealPath("/") + "img/temp/";
 		
-		File newTempFolder = new File(absolutePath);
-		if(newTempFolder.exists() || newTempFolder.mkdir()) {
-			String fileNameExtension = handler.getContentType().split("/")[1];
-			String fileName = UUID.randomUUID().toString() + "." + fileNameExtension;
-			
-			File newImage = new File(absolutePath + "/" + fileName);
-			OutputStream outputStream = null;
-			BufferedOutputStream writer = null;
-			try {
-				newImage.createNewFile();
-				outputStream = new FileOutputStream(newImage);
-				writer = new BufferedOutputStream(outputStream);
-				writer.write(IOUtils.readBytesFromStream(handler.getInputStream()));
-			} catch (IOException e) {
-				throw new TalentManagementServiceApiException(
-						"Unable to upload image", 
-						new Errors()
-							.addError(new Error("image", "Unable to upload image")));
-			} finally {
-				try {
-					if(writer != null) {
-						writer.flush();
-						writer.close();
-					}
-					
-					if(outputStream != null) {
-						outputStream.flush();
-						outputStream.close();
-					}
-				} catch(IOException e) {  }
-			}
-		}
+		return imageUploadService.uploadImage(attachment, sessionId, tempLocation);
 		
 	}
 	
 	@POST
-	@Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
-	@Path("/deleteImage")
-	public void deletePicture() {
+	@Path("/deleteImage/{fileName}")
+	public void deletePicture(@NotNull @PathParam("fileName") String fileName) {
+		
+		HttpSession session = context.getHttpServletRequest().getSession();
+		String sessionId = session.getId();
+		
+		File image = new File(session.getServletContext().getRealPath("/") + "/img/temp/" + sessionId + "/" + fileName);
+		if(image.exists()) image.delete();
 		
 	}
 	
