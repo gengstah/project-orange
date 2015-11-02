@@ -116,8 +116,13 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
 	        removeClass: "btn btn-danger",
 	        removeLabel: "Delete",
-	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
+	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+	        uploadExtraData: { id: 100, value: '100 details'}
 	    });
+		
+		$('#fileInput').on('filesuccessremove', function(event, id) {
+			console.log("geng: " + id);
+		});
 		
 		WorkExperience.query(function(exps) {
 			

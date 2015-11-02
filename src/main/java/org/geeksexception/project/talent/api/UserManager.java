@@ -172,4 +172,12 @@ public class UserManager {
 		
 	}
 	
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/deleteImage")
+	public void deletePicture() {
+		
+	}
+	
 }
