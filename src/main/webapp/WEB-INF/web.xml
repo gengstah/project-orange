@@ -24,6 +24,10 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
+	<listener>
+		<listener-class>org.geeksexception.project.talent.listener.UserSessionListener</listener-class>
+	</listener>
+	
 	<!-- Handles requests into the application -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
@@ -54,6 +58,6 @@
 	</servlet-mapping>
 	
 	<session-config>
-		<session-timeout>60</session-timeout>
+		<session-timeout>30</session-timeout>
 	</session-config>
 </web-app>

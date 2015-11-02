@@ -1,5 +1,13 @@
 package org.geeksexception.project.talent.api;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.UUID;
+
+import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -13,7 +21,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Error;
 import org.geeksexception.project.talent.model.Errors;
@@ -113,6 +123,52 @@ public class UserManager {
 		if(session != null) session.invalidate();
 		
 		SecurityContextHolder.clearContext();
+		
+	}
+	
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/uploadImage")
+	public void uploadPicture(Attachment attachment) throws TalentManagementServiceApiException {
+		
+		DataHandler handler = attachment.getDataHandler();
+		HttpSession session = context.getHttpServletRequest().getSession();
+		String sessionId = session.getId();
+		String absolutePath = context.getServletContext().getRealPath("/") + "img/temp/" + sessionId;
+		
+		File newTempFolder = new File(absolutePath);
+		if(newTempFolder.exists() || newTempFolder.mkdir()) {
+			String fileNameExtension = handler.getContentType().split("/")[1];
+			String fileName = UUID.randomUUID().toString() + "." + fileNameExtension;
+			
+			File newImage = new File(absolutePath + "/" + fileName);
+			OutputStream outputStream = null;
+			BufferedOutputStream writer = null;
+			try {
+				newImage.createNewFile();
+				outputStream = new FileOutputStream(newImage);
+				writer = new BufferedOutputStream(outputStream);
+				writer.write(IOUtils.readBytesFromStream(handler.getInputStream()));
+			} catch (IOException e) {
+				throw new TalentManagementServiceApiException(
+						"Unable to upload image", 
+						new Errors()
+							.addError(new Error("image", "Unable to upload image")));
+			} finally {
+				try {
+					if(writer != null) {
+						writer.flush();
+						writer.close();
+					}
+					
+					if(outputStream != null) {
+						outputStream.flush();
+						outputStream.close();
+					}
+				} catch(IOException e) {  }
+			}
+		}
 		
 	}
 	

@@ -105,6 +105,10 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 		});
 		
 		$("#fileInput").fileinput({
+			uploadUrl: "/api/service/user/uploadImage",
+		    uploadAsync: true,
+			minFileCount: 1,
+		    maxFileCount: 5,
 	        allowedFileExtensions : ['jpg', 'jpeg', 'png','gif'],
 	        previewFileType: "image",
 	        browseClass: "btn btn-success",
@@ -141,6 +145,12 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 		});
 		
 		$scope.talentSignUp = function talentSignUp(user) {
+			var paths = [];
+			$('.uploaded-img').each(function(i, v) {
+			    paths.push(this.src); // Save found image paths
+			})
+			console.log(paths); // Preview the selection in console
+			
 			var $signUpButton = $("#signUpButton").button("loading");
 			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
 			if(user.password != user.password2) return false;
@@ -173,6 +183,7 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 				Session.create(userResponse);
 				$signUpButton.button("reset");
 				$rootScope.$broadcast(events.loginSuccess);
+				vcRecaptchaService.reload();
 				delete $scope.user;
 				delete $scope.userSignUpErrors;
 			}, function(error) {
