@@ -23,4 +23,20 @@ public class ImageServiceImpl implements ImageService {
 		
 	}
 
+	@Override
+	@Transactional(readOnly = false)
+	public Image save(Image image) {
+		
+		return imageRepository.save(image);
+		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void delete(Image image) {
+		
+		imageRepository.delete(image);
+		
+	}
+
 }

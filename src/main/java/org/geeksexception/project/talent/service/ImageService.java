@@ -6,4 +6,8 @@ public interface ImageService {
 	
 	Image findImageByFileLocation(String fileLocation);
 	
+	Image save(Image image);
+	
+	void delete(Image image);
+	
 }

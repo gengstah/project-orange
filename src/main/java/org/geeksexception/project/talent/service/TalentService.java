@@ -13,6 +13,8 @@ public interface TalentService {
 	
 	List<Talent> findApprovedTalentsByClass(TalentClass talentClass, Integer page, Integer size);
 	
+	void deleteSavedImage(String fileName, String rootLocation);
+	
 	Talent save(Talent talent);
 	
 }

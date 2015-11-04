@@ -21,11 +21,9 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Error;
 import org.geeksexception.project.talent.model.Errors;
-import org.geeksexception.project.talent.model.Image;
 import org.geeksexception.project.talent.model.ImageUploadResponse;
 import org.geeksexception.project.talent.model.User;
 import org.geeksexception.project.talent.service.AuthenticationService;
-import org.geeksexception.project.talent.service.ImageService;
 import org.geeksexception.project.talent.service.ImageUploadService;
 import org.geeksexception.project.talent.service.TalentService;
 import org.geeksexception.project.talent.service.UserService;
@@ -43,8 +41,6 @@ public class UserManager {
 	private @Inject AuthenticationService authenticationService;
 	
 	private @Inject ImageUploadService imageUploadService;
-	
-	private @Inject ImageService imageService;
 	
 	private @Inject TalentService talentService;
 	
@@ -177,23 +173,8 @@ public class UserManager {
 		
 		HttpSession session = context.getHttpServletRequest().getSession();
 		String rootLocation = session.getServletContext().getRealPath("/");
-		String fileLocation = "/img/" + fileName;
-		Image image = imageService.findImageByFileLocation(fileLocation);
-		User user = userService.getFullProfile();
+		talentService.deleteSavedImage(fileName, rootLocation);
 		
-		if(currentUserOwnsImage(user, image)) {
-			
-			user.getTalent().getImages().remove(image);
-			talentService.save(user.getTalent());
-			File imageFile = new File(rootLocation + "img/" + fileName);
-			if(imageFile.exists()) imageFile.delete();
-			
-		}
-		
-	}
-	
-	private boolean currentUserOwnsImage(User user, Image image) {
-		return user.getTalent().equals(image.getTalent());
 	}
 	
 }

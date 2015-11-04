@@ -1,13 +1,18 @@
 package org.geeksexception.project.talent.service.impl;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.geeksexception.project.talent.dao.TalentRepository;
 import org.geeksexception.project.talent.enums.TalentClass;
+import org.geeksexception.project.talent.model.Image;
 import org.geeksexception.project.talent.model.Talent;
+import org.geeksexception.project.talent.model.User;
+import org.geeksexception.project.talent.service.ImageService;
 import org.geeksexception.project.talent.service.TalentService;
+import org.geeksexception.project.talent.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class TalentServiceImpl implements TalentService {
 	
 	private @Inject TalentRepository talentRepository;
+	
+	private @Inject ImageService imageService;
+	
+	private @Inject UserService userService;
 	
 	public TalentServiceImpl() { }
 	
@@ -42,10 +51,35 @@ public class TalentServiceImpl implements TalentService {
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public Talent save(Talent talent) {
 		
 		return talentRepository.save(talent);
 		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void deleteSavedImage(String fileName, String rootLocation) {
+		
+		String fileLocation = "/img/" + fileName;
+		Image image = imageService.findImageByFileLocation(fileLocation);
+		User user = userService.getLoggedInUser();
+		
+		if(currentUserOwnsImage(user, image)) {
+			
+			image.setTalent(null);
+			user.getTalent().getImages().remove(image);
+			save(user.getTalent());
+			File imageFile = new File(rootLocation + "img/" + fileName);
+			if(imageFile.exists()) imageFile.delete();
+			
+		}
+		
+	}
+	
+	private boolean currentUserOwnsImage(User user, Image image) {
+		return user.getTalent().equals(image.getTalent());
 	}
 
 }

@@ -98,7 +98,7 @@ public class Talent implements Serializable {
 	@Column(name = "VITAL3", nullable = true)
 	private Integer vital3;
 	
-	@OneToMany(mappedBy = "talent", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
 	private @Valid List<Image> images;
 	
 	@ManyToMany

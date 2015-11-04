@@ -250,10 +250,12 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 			WorkExperience.query(function(exps) {
 				
 				var workExperiences = [];
+				var stringValues = [];
 				
 				for(var expIndex = 0;expIndex < exps.length;expIndex++) {
 					var exp = exps[expIndex];
 					workExperiences.push({ value: exp.name });
+					stringValues.push(exp.name);
 				}
 				
 				var engine = new Bloodhound({
@@ -271,17 +273,18 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 					expsStringArray.push(user.talent.workExperiences[workExperienceIndex].name);
 				}
 				
-				user.talent.exp = exps.join(',');
-				
 				$('#exp').tokenfield({
 					tokens: expsStringArray,
 					typeahead: [null, { source: engine.ttAdapter() }]
 				});
 				
+				user.talent.exp = stringValues.join(',');
+				
 			});
 		});
 		
 		$scope.updateProfile = function updateProfile(user) {
+			user.password = '        ';
 			var $updateButton = $("#updateButton").button("loading");
 			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
 			
@@ -300,7 +303,7 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 			delete user.talent.birthDateStandardFormat;
 			Auth.update(user, function(userResponse) {
 				$updateButton.button("reset");
-				vcRecaptchaService.reload();
+				$state.go("home");
 				delete $scope.user;
 				delete $scope.userUpdateErrors;
 			}, function(error) {

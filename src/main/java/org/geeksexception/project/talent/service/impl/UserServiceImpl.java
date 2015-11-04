@@ -22,6 +22,7 @@ import org.geeksexception.project.talent.model.ReCaptchaResponse;
 import org.geeksexception.project.talent.model.Error;
 import org.geeksexception.project.talent.model.User;
 import org.geeksexception.project.talent.model.WorkExperience;
+import org.geeksexception.project.talent.service.ImageService;
 import org.geeksexception.project.talent.service.UserService;
 import org.geeksexception.project.talent.util.PasswordUtil;
 import org.springframework.context.annotation.PropertySource;
@@ -43,6 +44,8 @@ public class UserServiceImpl implements UserService {
 	private @Inject WorkExperienceRepository workExperienceRepository;
 	
 	private @Inject ImageRepository imageRepository;
+	
+	private @Inject ImageService imageService;
 	
 	private @Inject ReCaptchaManager reCaptchaManager;
 	
@@ -92,6 +95,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional(readOnly = false)
 	public User update(User user, String imageTempLocation) throws TalentManagementServiceApiException {
 		
+		user.getTalent().setImages(getLoggedInUser().getTalent().getImages());
 		saveWorkExperiences(user);
 		saveImages(user, imageTempLocation);
 		
@@ -143,8 +147,9 @@ public class UserServiceImpl implements UserService {
 			if(user.getTalent().getImages() == null) user.getTalent().setImages(new ArrayList<Image>());
 			for(File file : files) {
 				Image image = new Image("/img/" + file.getName());
-				user.getTalent().getImages().add(image);
 				image.setTalent(user.getTalent());
+				imageService.save(image);
+				user.getTalent().getImages().add(image);
 			}
 			
 			try {
@@ -156,6 +161,8 @@ public class UserServiceImpl implements UserService {
 						new Errors()
 							.addError(new Error("image", e.getMessage())), e);
 			}
+			
+		} else if(user.getTalent().getImages() != null) {
 			
 		} else {
 			throw new TalentManagementServiceApiException(
