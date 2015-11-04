@@ -23,8 +23,8 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.all]
 				}
 			})
-			.state('gigs', {
-				url: '/gigs', 
+			.state('events', {
+				url: '/events', 
 				templateUrl: 'templates/events.html',
 				data: {
 					authorizedRoles: [roles.all]
