@@ -55,5 +55,44 @@ public class Image implements Serializable {
 	public void setFileLocation(String fileLocation) {
 		this.fileLocation = fileLocation;
 	}
+
+	public Talent getTalent() {
+		return talent;
+	}
+
+	public void setTalent(Talent talent) {
+		this.talent = talent;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((fileLocation == null) ? 0 : fileLocation.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Image other = (Image) obj;
+		if (fileLocation == null) {
+			if (other.fileLocation != null)
+				return false;
+		} else if (!fileLocation.equals(other.fileLocation))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 	
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.geeksexception.project.talent.api.ReCaptchaManager;
 import org.geeksexception.project.talent.dao.ImageRepository;
 import org.geeksexception.project.talent.dao.UserRepository;
@@ -69,7 +70,7 @@ public class UserServiceImpl implements UserService {
 		
 		ReCaptchaResponse response = reCaptchaManager.verify(env.getProperty("secret"), reCaptchaResponse);
 		
-		if(!response.isSuccess())
+		if(StringUtils.isEmpty(reCaptchaResponse) || !response.isSuccess())
 			throw new TalentManagementServiceApiException("Error!", 
 					new Errors().addError(new Error("recaptcha", "Please solve the reCaptcha")));
 		
@@ -79,6 +80,17 @@ public class UserServiceImpl implements UserService {
 		
 		user.getTalent().setUser(user);
 		user.setPassword(PasswordUtil.generatePassword(user.getPassword()));
+		
+		saveWorkExperiences(user);
+		saveImages(user, imageTempLocation);
+		
+		return userRepository.save(user);
+		
+	}
+	
+	@Override
+	@Transactional(readOnly = false)
+	public User update(User user, String imageTempLocation) throws TalentManagementServiceApiException {
 		
 		saveWorkExperiences(user);
 		saveImages(user, imageTempLocation);
@@ -130,7 +142,9 @@ public class UserServiceImpl implements UserService {
 			
 			if(user.getTalent().getImages() == null) user.getTalent().setImages(new ArrayList<Image>());
 			for(File file : files) {
-				user.getTalent().getImages().add(new Image("/img/" + file.getName()));
+				Image image = new Image("/img/" + file.getName());
+				user.getTalent().getImages().add(image);
+				image.setTalent(user.getTalent());
 			}
 			
 			try {

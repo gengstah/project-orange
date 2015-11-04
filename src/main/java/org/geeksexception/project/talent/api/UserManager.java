@@ -21,10 +21,13 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Error;
 import org.geeksexception.project.talent.model.Errors;
+import org.geeksexception.project.talent.model.Image;
 import org.geeksexception.project.talent.model.ImageUploadResponse;
 import org.geeksexception.project.talent.model.User;
 import org.geeksexception.project.talent.service.AuthenticationService;
+import org.geeksexception.project.talent.service.ImageService;
 import org.geeksexception.project.talent.service.ImageUploadService;
+import org.geeksexception.project.talent.service.TalentService;
 import org.geeksexception.project.talent.service.UserService;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.http.MediaType;
@@ -40,6 +43,10 @@ public class UserManager {
 	private @Inject AuthenticationService authenticationService;
 	
 	private @Inject ImageUploadService imageUploadService;
+	
+	private @Inject ImageService imageService;
+	
+	private @Inject TalentService talentService;
 	
 	public UserManager() { }
 	
@@ -64,6 +71,16 @@ public class UserManager {
 		if(savedUser != null) authenticateAndLoadUser(savedUser.getEmail(), clearPassword);
 		
 		return savedUser;
+		
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/update")
+	public User updateTalentProfile(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
+		
+		return userService.update(user, context.getServletContext().getRealPath("/") + "img/temp/" + context.getHttpServletRequest().getSession().getId());
 		
 	}
 	
@@ -142,14 +159,41 @@ public class UserManager {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/deleteImage/{fileName}")
-	public void deletePicture(@NotNull @PathParam("fileName") String fileName) {
+	public void deleteImage(@NotNull @PathParam("fileName") String fileName) {
 		
 		HttpSession session = context.getHttpServletRequest().getSession();
 		String sessionId = session.getId();
 		
-		File image = new File(session.getServletContext().getRealPath("/") + "/img/temp/" + sessionId + "/" + fileName);
+		File image = new File(session.getServletContext().getRealPath("/") + "img/temp/" + sessionId + "/" + fileName);
 		if(image.exists()) image.delete();
 		
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/deleteSavedImage/{fileName}")
+	public void deleteSavedImage(@NotNull @PathParam("fileName") String fileName) {
+		
+		HttpSession session = context.getHttpServletRequest().getSession();
+		String rootLocation = session.getServletContext().getRealPath("/");
+		String fileLocation = "/img/" + fileName;
+		Image image = imageService.findImageByFileLocation(fileLocation);
+		User user = userService.getFullProfile();
+		
+		if(currentUserOwnsImage(user, image)) {
+			
+			user.getTalent().getImages().remove(image);
+			talentService.save(user.getTalent());
+			File imageFile = new File(rootLocation + "img/" + fileName);
+			if(imageFile.exists()) imageFile.delete();
+			
+		}
+		
+	}
+	
+	private boolean currentUserOwnsImage(User user, Image image) {
+		return user.getTalent().equals(image.getTalent());
 	}
 	
 }

@@ -13,4 +13,6 @@ public interface TalentService {
 	
 	List<Talent> findApprovedTalentsByClass(TalentClass talentClass, Integer page, Integer size);
 	
+	Talent save(Talent talent);
+	
 }

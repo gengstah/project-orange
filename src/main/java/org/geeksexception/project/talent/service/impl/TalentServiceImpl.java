@@ -41,4 +41,11 @@ public class TalentServiceImpl implements TalentService {
 		
 	}
 
+	@Override
+	public Talent save(Talent talent) {
+		
+		return talentRepository.save(talent);
+		
+	}
+
 }

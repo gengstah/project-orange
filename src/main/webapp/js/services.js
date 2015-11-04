@@ -28,6 +28,12 @@ services.factory('Auth', ['$resource',
   					action: 'register'
   				}
   			},
+  			update: { 
+  				method: 'POST', 
+  				params: { 
+  					action: 'update'
+  				}
+  			},
   			viewProfile: {
   				method: 'GET', 
   				params: { 

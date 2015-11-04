@@ -122,10 +122,6 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
 	    });
 		
-		$('#fileInput').on('filesuccessremove', function(event, id) {
-			console.log("geng: " + id);
-		});
-		
 		WorkExperience.query(function(exps) {
 			
 			var workExperiences = [];
@@ -210,8 +206,46 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 	function($scope, $rootScope, $state, $filter, Auth, WorkExperience) {
 		Auth.viewProfile(function(user) {
 			$scope.user = user;
+			
+			$("input#birthDateStandardFormat").datepicker({
+				autoclose: true,
+				toggleActive: true
+			});
 			var dateParts = user.talent.birthDate.split("-");
 			$("input#birthDateStandardFormat").datepicker('setDate', new Date(dateParts[1] + "/" + dateParts[2] + "/" + dateParts[0]));
+			
+			var initialPreviewList = [];
+			var initialPreviewConfigList = [];
+			
+			var images = user.talent.images;
+			for(var imageIndex in images) {
+				var image = images[imageIndex];
+				var fileNameParts = image.fileLocation.split("/");
+				var fileName = fileNameParts[fileNameParts.length - 1];
+				
+				initialPreviewList.push("<img style='height:160px' src='" + image.fileLocation + "'>");
+				initialPreviewConfigList.push({ url: "/api/service/user/deleteSavedImage/" + fileName });
+			}
+			
+			$("#fileInput").fileinput({
+				uploadUrl: "/api/service/user/uploadImage",
+				uploadAsync: true,
+				minFileCount: 1,
+			    maxFileCount: 5,
+			    validateInitialCount: true,
+			    overwriteInitial: false,
+			    initialPreviewShowDelete: true,
+		        allowedFileExtensions : ['jpg', 'jpeg', 'png','gif'],
+		        previewFileType: "image",
+		        browseClass: "btn btn-success",
+		        browseLabel: "Pick Image",
+		        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
+		        removeClass: "btn btn-danger",
+		        removeLabel: "Delete",
+		        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+		        initialPreview: initialPreviewList,
+		        initialPreviewConfig: initialPreviewConfigList
+		    });
 			
 			WorkExperience.query(function(exps) {
 				
@@ -247,27 +281,36 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 			});
 		});
 		
-		$("input#birthDateStandardFormat").datepicker({
-			autoclose: true,
-			toggleActive: true
-		});
+		$scope.updateProfile = function updateProfile(user) {
+			var $updateButton = $("#updateButton").button("loading");
+			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
+			
+			var workExperiences = [];
+			var exps = user.talent.exp.split(",");
+			for(var exp in exps) {
+				workExperiences.push({ name: exps[exp] });
+			}
+			
+			user.talent.workExperiences = workExperiences;
+			
+			var exp = user.talent.exp;
+			var birthDateStandardFormat = user.talent.birthDateStandardFormat;
+			
+			delete user.talent.exp;
+			delete user.talent.birthDateStandardFormat;
+			Auth.update(user, function(userResponse) {
+				$updateButton.button("reset");
+				vcRecaptchaService.reload();
+				delete $scope.user;
+				delete $scope.userUpdateErrors;
+			}, function(error) {
+				user.talent.exp = exp;
+				user.talent.birthDateStandardFormat = birthDateStandardFormat;
+				$updateButton.button("reset");
+				$scope.userUpdateErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+			});
+		};
 		
-		$("#fileInput").fileinput({
-	        allowedFileExtensions : ['jpg', 'jpeg', 'png','gif'],
-	        previewFileType: "image",
-	        browseClass: "btn btn-success",
-	        browseLabel: "Pick Image",
-	        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
-	        removeClass: "btn btn-danger",
-	        removeLabel: "Delete",
-	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
-	        validateInitialCount: true,
-	        overwriteInitial: false,
-	        initialPreview: [
-	            "<img style='height:160px' src='/img/mahha-1.jpeg'>",
-	            "<img style='height:160px' src='/img/mahha-2.jpeg'>"
-	        ]
-	    });
 	}
 ]);
 

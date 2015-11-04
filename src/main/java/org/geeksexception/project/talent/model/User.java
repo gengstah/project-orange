@@ -78,7 +78,6 @@ public class User implements Serializable {
 	private Date dateCreated;
 	
 	@Transient
-	@NotEmpty(message = "Please solve the reCaptcha")
 	private String reCaptchaResponse;
 	
 	public User() { }
