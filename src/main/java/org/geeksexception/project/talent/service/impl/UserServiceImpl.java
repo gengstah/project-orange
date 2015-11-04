@@ -77,23 +77,31 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findUserByEmail(email);
 		
 	}
+	
+	private void validateEmailIfExisting(User user) throws TalentManagementServiceApiException {
+		if(findUserByEmail(user.getEmail()) != null)
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("email", "Email is already in use")));
+	}
 
-	@Override
-	@Transactional(readOnly = false)
-	public User save(User user, String imageTempLocation, String reCaptchaResponse) throws TalentManagementServiceApiException {
-		
+	private void validateReCaptchaResponse(String reCaptchaResponse) throws TalentManagementServiceApiException {
 		ReCaptchaResponse response = reCaptchaManager.verify(env.getProperty("secret"), reCaptchaResponse);
 		
 		if(StringUtils.isEmpty(reCaptchaResponse) || !response.isSuccess())
 			throw new TalentManagementServiceApiException("Error!", 
 					new Errors().addError(new Error("recaptcha", "Please solve the reCaptcha")));
+	}
+	
+	@Override
+	@Transactional(readOnly = false)
+	public User saveTalentUser(User user, String imageTempLocation, String reCaptchaResponse) throws TalentManagementServiceApiException {
 		
-		if(findUserByEmail(user.getEmail()) != null)
-			throw new TalentManagementServiceApiException("Error!", 
-					new Errors().addError(new Error("email", "Email is already in use")));
+		validateReCaptchaResponse(reCaptchaResponse);
+		validateEmailIfExisting(user);
 		
 		user.getTalent().setUser(user);
 		user.setPassword(PasswordUtil.generatePassword(user.getPassword()));
+		user.setUserRole(UserRole.ROLE_USER);
 		
 		saveWorkExperiences(user);
 		saveImages(user, imageTempLocation);
@@ -104,13 +112,39 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(readOnly = false)
-	public User update(User user, String imageTempLocation) throws TalentManagementServiceApiException {
+	public User saveAgencyUser(User user, String reCaptchaResponse) throws TalentManagementServiceApiException{
+		
+		validateReCaptchaResponse(reCaptchaResponse);
+		validateEmailIfExisting(user);
+		
+		user.getAgency().setUser(user);
+		user.setPassword(PasswordUtil.generatePassword(user.getPassword()));
+		user.setUserRole(UserRole.ROLE_AGENCY);
+		
+		return userRepository.save(user);
+		
+	}
+	
+	@Override
+	@Transactional(readOnly = false)
+	public User updateTalentUser(User user, String imageTempLocation) throws TalentManagementServiceApiException {
 		
 		User savedUser = getLoggedInUser();
 		user.setPassword(savedUser.getPassword());
 		user.getTalent().setImages(savedUser.getTalent().getImages());
 		saveWorkExperiences(user);
 		saveImages(user, imageTempLocation);
+		
+		return userRepository.save(user);
+		
+	}
+	
+	@Override
+	@Transactional(readOnly = false)
+	public User updateAgencyUser(User user) throws TalentManagementServiceApiException {
+		
+		User savedUser = getLoggedInUser();
+		user.setPassword(savedUser.getPassword());
 		
 		return userRepository.save(user);
 		
@@ -242,6 +276,8 @@ public class UserServiceImpl implements UserService {
 			user.getTalent().setEventSize(talentRepository.countEvents(user.getTalent()));
 			user.setFollowerSize(userRepository.countFollowers(user));
 			user.setFollowingSize(userRepository.countFollowing(user));
+		} else if(user.getUserRole() == UserRole.ROLE_AGENCY) {
+			user.getAgency().getEvents();
 		}
 		
 		return user;
@@ -267,5 +303,5 @@ public class UserServiceImpl implements UserService {
 		return user;
 		
 	}
-
+	
 }

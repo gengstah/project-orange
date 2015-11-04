@@ -1,0 +1,146 @@
+<div class="row" data-ng-controller="TalentProfileController">
+	<div class="col-md-1"></div>
+	
+	<div class="col-md-10">
+		<div class="row" data-ng-if="isAuthorized(userRoles.user) && userToView.talent.status == 'FOR_APPROVAL'">
+			<div class="alert alert-info" role="alert">{{ userToView.talent.adminNote }}</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="thumbnail">
+					<img src="/img/talents/mahha-1.jpeg" alt="..." data-ng-src="{{userToView.talent.images[0].fileLocation}}">
+					<div class="caption">
+						<h3>{{userToView.talent.firstName}} {{userToView.talent.lastName}} <i class="fa fa-check-circle wow bounceIn text-success" data-ng-if="userToView.talent.status == 'APPROVED'"></i></h3>
+						<div><span class="glyphicon" data-ng-class="{ 'glyphicon-queen' : userToView.talent.gender == 'F', 'glyphicon-king' : userToView.talent.gender == 'M' }" aria-hidden="true"></span>&nbsp;&nbsp;<span data-ng-if="userToView.talent.gender == 'F'">Female</span><span data-ng-if="userToView.talent.gender == 'M'">Male</span></div>
+						<div><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;&nbsp;{{ userToView.talent.city }}</div>
+						<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Born on {{userToView.talent.birthDate | date:'mediumDate'}}, {{ userToView.talent.birthDate | ageFilter }} yrs. old</div>
+						<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Joined on {{userToView.dateCreated | date:'mediumDate'}}</div>
+						<div><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;&nbsp;{{ userToView.email }}</div>
+						<div><span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;&nbsp;{{ userToView.talent.contactNo }}</div>
+						<hr />
+						<div class="row">
+							<div class="col-sm-4 col-md-4">
+								<h3 class="text-center"><b>{{ userToView.followerSize }}</b></h3>
+								<div class="text-center"><small>Followers</small></div>
+							</div>
+							<div class="col-sm-4 col-md-4">
+								<h3 class="text-center"><b>{{ userToView.talent.eventSize }}</b></h3>
+								<div class="text-center"><small>Events</small></div>
+							</div>
+							<div class="col-sm-4 col-md-4">
+								<h3 class="text-center"><b>{{ userToView.followingSize }}</b></h3>
+								<div class="text-center"><small>Following</small></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-xs-12 col-sm-6 col-md-8">
+				<ul id="profileTabs" class="nav nav-tabs">
+					<li role="presentation" class="active"><a href="#basic" aria-controls="basicInfo" role="tab" data-toggle="tab">Basic info</a></li>
+				</ul>
+				
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane fade in active" id="basic">
+						<dl class="dl-horizontal">
+							<dt>Height</dt>
+							<dd>{{ userToView.talent.feet }}" {{ userToView.talent.inches }}'</dd>
+							<dt>Weight</dt>
+							<dd>{{ userToView.talent.weight }} kgs</dd>
+							<dt>Vital Statistics</dt>
+							<dd>{{ userToView.talent.vital1 }} - {{ userToView.talent.vital2 }} - {{ userToView.talent.vital3 }}</dd>
+							<dt>Talent Fee</dt>
+							<dd>Php {{ userToView.talent.expectedSalary | number }}</dd>
+							<dt>Past Events</dt>
+							<dd>
+								<ul>
+									<li data-ng-repeat="workExperience in userToView.talent.workExperiences">{{ workExperience.name }}</li>
+								</ul>
+							</dd>
+						</dl>
+						
+						<!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
+						<div id="blueimp-gallery" class="blueimp-gallery">
+						    <!-- The container for the modal slides -->
+						    <div class="slides"></div>
+						    <!-- Controls for the borderless lightbox -->
+						    <h3 class="title"></h3>
+						    <a class="prev">‹</a>
+						    <a class="next">›</a>
+						    <a class="close">×</a>
+						    <a class="play-pause"></a>
+						    <ol class="indicator"></ol>
+						    <!-- The modal dialog, which will be used to wrap the lightbox content -->
+						    <div class="modal fade">
+						        <div class="modal-dialog">
+						            <div class="modal-content">
+						                <div class="modal-header">
+						                    <button type="button" class="close" aria-hidden="true">&times;</button>
+						                    <h4 class="modal-title"></h4>
+						                </div>
+						                <div class="modal-body next"></div>
+						                <div class="modal-footer">
+						                    <button type="button" class="btn btn-default pull-left prev">
+						                        <i class="glyphicon glyphicon-chevron-left"></i>
+						                        Previous
+						                    </button>
+						                    <button type="button" class="btn btn-primary next">
+						                        Next
+						                        <i class="glyphicon glyphicon-chevron-right"></i>
+						                    </button>
+						                </div>
+						            </div>
+						        </div>
+						    </div>
+						</div>
+						
+						<div id="links">
+						    <a href="#" data-gallery = "data-gallery" data-ng-href="{{ image.fileLocation }}" data-ng-repeat="image in userToView.talent.images">
+						        <img src="/img/talents/mahha-1.jpeg" data-ng-src="{{ image.thumbnailFileLocation }}">
+						    </a>
+						</div>
+					</div>
+				</div>
+				<hr />
+				<div data-ng-if="userToView.email == user.email">
+					<a href="#!/talent/profile/update" class="btn btn-default">Edit profile</a>
+				</div>
+				
+				<div data-ng-if="isAuthorized(userRoles.admin) && userToView.email != user.email">
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="alert alert-danger" role="alert" data-ng-if="errorMessageApprove"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageApprove }}</div>
+						<div class="alert alert-success" role="alert" data-ng-if="successMessageApprove"><span class="glyphicon glyphicon-ok"></span> {{ successMessageApprove }}</div>
+						<div class="form-group">
+							<label for="clazz">Talent Class</label><br />
+							<label class="radio-inline">
+								<input type="radio" name="clazz" value="AA" data-ng-model="clazz" required="required"> AA
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="clazz" value="A" data-ng-model="clazz" required="required"> A
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="clazz" value="B" data-ng-model="clazz" required="required"> B
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="clazz" value="C" data-ng-model="clazz" required="required"> C
+							</label>
+						</div>
+						<button class="btn btn-primary" data-ng-click="approve(userToView.talent.id, clazz)" data-ng-disabled="clazz == null || clazz == ''">Approve</button>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="alert alert-danger" role="alert" data-ng-if="errorMessageDeny"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageDeny }}</div>
+						<div class="alert alert-success" role="alert" data-ng-if="successMessageDeny"><span class="glyphicon glyphicon-ok"></span> {{ successMessageDeny }}</div>
+						<div class="form-group">
+							<label for="note">Note</label>
+							<input type="text" class="form-control" id="note" name="note" placeholder="Note" required="required" data-ng-model="note" />
+						</div>
+						<button class="btn btn-default" data-ng-click="deny(userToView.talent.id, note)" data-ng-disabled="note == null || note == ''">Deny</button> <button class="btn btn-default" data-ng-click="setForApproval(userToView.talent.id, note)" data-ng-disabled="note == null || note == ''">Add note</button>
+					</div>					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="col-md-1"></div>
+</div>

@@ -5,13 +5,17 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import org.geeksexception.project.talent.enums.AgencyStatus;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -25,6 +29,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Agency implements Serializable {
 	
 	private static final long serialVersionUID = 379016750642204578L;
+	
+	private static final String FOR_APPROVAL_NOTE = "Your account is still for approval. Please allow us to process your registration within 24-48 hours. You can still update your profile whenever you wish.";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.TABLE)
@@ -44,7 +50,7 @@ public class Agency implements Serializable {
 	private String contactNo;
 	
 	@Column(name = "AGENCY_NAME", nullable = false)
-	@NotEmpty(message = "lastName must not be empty")
+	@NotEmpty(message = "Agency name must not be empty")
 	private String agencyName;
 	
 	@Column(name = "AGENCY_ADDRESS", nullable = true)
@@ -57,7 +63,20 @@ public class Agency implements Serializable {
 	@OneToMany(mappedBy = "agency")
 	private List<Event> events;
 	
+	@Column(name = "AGENCY_STATUS", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private AgencyStatus status;
+	
+	@Column(name = "ADMIN_NOTE", nullable = true)
+	private String adminNote;
+	
 	public Agency() { }
+	
+	@PrePersist
+	public void prePersist() {
+		status = AgencyStatus.FOR_APPROVAL;
+		adminNote = FOR_APPROVAL_NOTE;
+	}
 
 	public Long getId() {
 		return id;
@@ -121,6 +140,22 @@ public class Agency implements Serializable {
 
 	public void setEvents(List<Event> events) {
 		this.events = events;
+	}
+
+	public AgencyStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(AgencyStatus status) {
+		this.status = status;
+	}
+
+	public String getAdminNote() {
+		return adminNote;
+	}
+
+	public void setAdminNote(String adminNote) {
+		this.adminNote = adminNote;
 	}
 	
 }

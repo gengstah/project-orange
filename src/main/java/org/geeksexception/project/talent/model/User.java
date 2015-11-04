@@ -66,7 +66,7 @@ public class User implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private UserStatus userStatus;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@Fetch(FetchMode.JOIN)
 	@JoinColumn(name="AGENCY_ID")
 	private @Valid Agency agency;
@@ -108,7 +108,6 @@ public class User implements Serializable {
 	public void prePersist() {
 		dateCreated = new Date();
 		userStatus = UserStatus.ACTIVE;
-		userRole = UserRole.ROLE_USER;
 	}
 
 	public Long getId() {

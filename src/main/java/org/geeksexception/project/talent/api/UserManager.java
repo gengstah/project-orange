@@ -59,11 +59,11 @@ public class UserManager {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
-	@Path("/register")
-	public User register(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
+	@Path("/registerTalent")
+	public User registerTalentProfile(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
 		
 		String clearPassword = user.getPassword();
-		User savedUser = userService.save(user, context.getServletContext().getRealPath("/") + "img/temp/" + context.getHttpServletRequest().getSession().getId(), user.getReCaptchaResponse());
+		User savedUser = userService.saveTalentUser(user, context.getServletContext().getRealPath("/") + "img/temp/" + context.getHttpServletRequest().getSession().getId(), user.getReCaptchaResponse());
 		
 		if(savedUser != null) authenticateAndLoadUser(savedUser.getEmail(), clearPassword);
 		
@@ -74,10 +74,35 @@ public class UserManager {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
-	@Path("/update")
+	@Path("/registerAgency")
+	public User registerAgencyProfile(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
+		
+		String clearPassword = user.getPassword();
+		User savedUser = userService.saveAgencyUser(user, user.getReCaptchaResponse());
+		
+		if(savedUser != null) authenticateAndLoadUser(savedUser.getEmail(), clearPassword);
+		
+		return savedUser;
+		
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/updateTalent")
 	public User updateTalentProfile(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
 		
-		return userService.update(user, context.getServletContext().getRealPath("/") + "img/temp/" + context.getHttpServletRequest().getSession().getId());
+		return userService.updateTalentUser(user, context.getServletContext().getRealPath("/") + "img/temp/" + context.getHttpServletRequest().getSession().getId());
+		
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/updateTalent")
+	public User updateAgencyProfile(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
+		
+		return userService.updateAgencyUser(user);
 		
 	}
 	

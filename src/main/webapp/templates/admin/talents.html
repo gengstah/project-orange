@@ -1,12 +1,12 @@
 <div data-ng-controller="TalentController">
 	
-	<ul id="talentTab" class="nav nav-tabs" role="tablist">
+	<ul id="talentTab" class="nav nav-tabs" role="tablist" data-ng-if="isAuthorized(userRoles.admin)">
 		<li role="presentation" class="active"><a href="#approved" aria-controls="approved" role="tab" data-toggle="tab">Approved <span class="badge">{{ approvedTalentsCount.0 }}</span></a></li>
 		<li role="presentation"><a href="#forApproval" aria-controls="forApproval" role="tab" data-toggle="tab">For Approval <span class="badge">{{ forApprovalTalentsCount.0 }}</span></a></li>
 		<li role="presentation"><a href="#denied" aria-controls="denied" role="tab" data-toggle="tab">Denied <span class="badge">{{ deniedTalentsCount.0 }}</span></a></li>
 	</ul>
 	
-	<div class="tab-content">
+	<div class="tab-content" data-ng-if="isAuthorized(userRoles.admin)">
 		<div role="tabpanel" class="tab-pane fade in active" id="approved">
 			<p data-ng-if="approvedTalents.length == 0">There is no approved talent as of the moment</p>
 			<div class="row" data-ng-repeat="approvedTalentRow in approvedTalents">
@@ -66,6 +66,28 @@
 							<div><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;&nbsp;{{ talent.user.email }}</div>
 							<div><span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;&nbsp;{{ talent.contactNo }}</div>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div data-ng-if="isAuthorized(userRoles.agency)">
+	<p data-ng-if="approvedTalents.length == 0">There is no approved talent as of the moment</p>
+		<div class="row" data-ng-repeat="approvedTalentRow in approvedTalents">
+			<div class="col-sm-6 col-md-4" data-ng-repeat="talent in approvedTalentRow">
+				<div class="thumbnail">
+					<a href="" data-ng-click="viewProfile(talent.user)">
+						<img src="/img/talents/mahha-1.jpeg" alt="..." data-ng-src="{{ talent.images[0].fileLocation }}" />
+					</a>
+					<div class="caption">
+						<a href="" data-ng-click="viewProfile(talent.user)"><h3>{{talent.firstName}} {{talent.lastName}}</h3></a>
+						<div><span class="glyphicon" data-ng-class="{ 'glyphicon-queen' : talent.gender == 'F', 'glyphicon-king' : talent.gender == 'M' }" aria-hidden="true"></span>&nbsp;&nbsp;<span data-ng-if="talent.gender == 'F'">Female</span><span data-ng-if="talent.gender == 'M'">Male</span></div>
+						<div><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;&nbsp;{{ talent.city }}</div>
+						<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Born on {{ talent.birthDate | date:'mediumDate' }}, {{ talent.birthDate | ageFilter }} yrs. old</div>
+						<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Joined on {{ talent.user.dateCreated | date:'mediumDate' }}</div>
+						<div><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;&nbsp;{{ talent.user.email }}</div>
+						<div><span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;&nbsp;{{ talent.contactNo }}</div>
 					</div>
 				</div>
 			</div>

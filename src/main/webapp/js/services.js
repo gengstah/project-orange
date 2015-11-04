@@ -22,16 +22,22 @@ services.factory('Auth', ['$resource',
   					action: 'logout'
   				}
   			},
-  			register: { 
+  			registerTalent: { 
   				method: 'POST', 
   				params: { 
-  					action: 'register'
+  					action: 'registerTalent'
   				}
   			},
-  			update: { 
+  			registerAgency: { 
   				method: 'POST', 
   				params: { 
-  					action: 'update'
+  					action: 'registerAgency'
+  				}
+  			},
+  			updateTalent: { 
+  				method: 'POST', 
+  				params: { 
+  					action: 'updateTalent'
   				}
   			},
   			viewProfile: {

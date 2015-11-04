@@ -10,19 +10,19 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TalentRepository extends JpaRepository<Talent, Long> {
 	
-	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'APPROVED'")
+	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'APPROVED' ORDER BY t.user.dateCreated DESC")
 	List<Talent> findApprovedTalents(Pageable pageable);
 	
 	@Query("SELECT COUNT(t) FROM Talent t WHERE t.status = 'APPROVED'")
 	Integer countApprovedTalents();
 	
-	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'FOR_APPROVAL'")
+	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'FOR_APPROVAL' ORDER BY t.user.dateCreated DESC")
 	List<Talent> findForApprovalTalents(Pageable pageable);
 	
 	@Query("SELECT COUNT(t) FROM Talent t WHERE t.status = 'FOR_APPROVAL'")
 	Integer countForApprovalTalents();
 	
-	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'DENIED'")
+	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'DENIED' ORDER BY t.user.dateCreated DESC")
 	List<Talent> findDeniedTalents(Pageable pageable);
 	
 	@Query("SELECT COUNT(t) FROM Talent t WHERE t.status = 'DENIED'")

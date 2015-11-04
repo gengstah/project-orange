@@ -90,7 +90,7 @@ public class Talent implements Serializable {
 	private TalentClass talentClass;
 	
 	@Column(name = "EXPECTED_SALARY", nullable = false)
-	@NotNull(message = "Please indicate your expected salary")
+	@NotNull(message = "Please indicate your talent fee")
 	private BigDecimal expectedSalary;
 	
 	@Column(name = "VITAL1", nullable = true)
@@ -102,7 +102,7 @@ public class Talent implements Serializable {
 	@Column(name = "VITAL3", nullable = true)
 	private Integer vital3;
 	
-	@OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "talent", cascade = CascadeType.ALL)
 	private @Valid List<Image> images;
 	
 	@ManyToMany

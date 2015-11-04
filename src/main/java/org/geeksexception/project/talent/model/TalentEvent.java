@@ -46,6 +46,12 @@ public class TalentEvent implements Serializable {
 	@NotNull(message = "Successful field must not be null")
 	private Boolean successful;
 	
+	@Column(name = "RATING")
+	private Integer rating;
+	
+	@Column(name = "FEEDBACK")
+	private String feedback;
+
 	public TalentEvent() { }
 	
 	@PrePersist
@@ -83,6 +89,22 @@ public class TalentEvent implements Serializable {
 
 	public void setSuccessful(Boolean successful) {
 		this.successful = successful;
+	}
+	
+	public Integer getRating() {
+		return rating;
+	}
+
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
+
+	public String getFeedback() {
+		return feedback;
+	}
+
+	public void setFeedback(String feedback) {
+		this.feedback = feedback;
 	}
 	
 }

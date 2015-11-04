@@ -78,6 +78,7 @@ public class TalentServiceImpl implements TalentService {
 			
 			image.setTalent(null);
 			user.getTalent().getImages().remove(image);
+			imageService.delete(image);
 			save(user.getTalent());
 			File imageFile = new File(rootLocation + "img/talents/" + fileName);
 			if(imageFile.exists()) imageFile.delete();

@@ -30,9 +30,23 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.all]
 				}
 			})
+			.state('register', {
+				url: '/register', 
+				templateUrl: 'templates/registration.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
+			})
 			.state('registerTalent', {
 				url: '/talent/register', 
 				templateUrl: 'templates/talent/register.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
+			})
+			.state('registerAgency', {
+				url: '/agency/register', 
+				templateUrl: 'templates/agency/register.html',
 				data: {
 					authorizedRoles: [roles.all]
 				}
@@ -44,18 +58,32 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.all]
 				}
 			})
-			.state('profile', {
-				url: '/profile', 
-				templateUrl: 'templates/profile-page.html',
+			.state('talentProfile', {
+				url: '/talent/profile', 
+				templateUrl: 'templates/talent/profile-page.html',
 				data: {
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}
 			})
-			.state('updateProfile', {
+			.state('agencyProfile', {
+				url: '/agency/profile', 
+				templateUrl: 'templates/agency/profile-page.html',
+				data: {
+					authorizedRoles: [roles.agency]
+				}
+			})
+			.state('updateTalentProfile', {
 				url: '/talent/profile/update', 
 				templateUrl: 'templates/talent/profile-update.html',
 				data: {
-					authorizedRoles: [roles.user, roles.agency, roles.admin]
+					authorizedRoles: [roles.user]
+				}
+			})
+			.state('updateAgencyProfile', {
+				url: '/agency/profile/update', 
+				templateUrl: 'templates/agency/profile-update.html',
+				data: {
+					authorizedRoles: [roles.agency]
 				}
 			})
 			.state('changePassword', {
@@ -69,7 +97,7 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 				url: '/talents', 
 				templateUrl: 'templates/admin/talents.html',
 				data: {
-					authorizedRoles: [roles.admin]
+					authorizedRoles: [roles.admin, roles.agency]
 				}
 			});
 		
@@ -107,7 +135,7 @@ run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService', 'USER_ROLES', 'Auth',
             scrollTop: ($("#page-top").offset().top - 50)
         }, 1250, 'easeInOutExpo');
 		
-		if(toState.name != 'profile') UserProfile.destroy();
+		if(toState.name != 'talentProfile') UserProfile.destroy();
 	});
 }]).
 constant('USER_ROLES', {

@@ -40,9 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		/* Prod */
 		http
 			.authorizeRequests()
-				.antMatchers("/api/service/user/authenticate", "/api/service/user/register", "/api/service/user/uploadImage", "/api/service/user/deleteImage/**", "/img/**", "/img/temp/**").permitAll()
+				.antMatchers("/api/service/user/authenticate", "/api/service/user/registerTalent", "/api/service/user/registerAgency", "/api/service/user/uploadImage", "/api/service/user/deleteImage/**", "/img/**", "/img/temp/**").permitAll()
 				.antMatchers("/api/service/user/**", "/img/talents/**").authenticated()
-				.antMatchers("/api/service/talent/forApproval**", "/api/service/talent/approved**").hasRole("ADMIN")
+				.antMatchers("/api/service/talent/approved**").hasAnyRole("ADMIN", "AGENCY")
+				.antMatchers("/api/service/talent/forApproval**", "/api/service/talent/denied**").hasRole("ADMIN")
 				.and()
 			.csrf().disable()
 			.sessionManagement()

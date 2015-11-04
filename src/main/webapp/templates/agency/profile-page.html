@@ -1,4 +1,4 @@
-<div class="row" data-ng-controller="ProfileController">
+<div class="row" data-ng-controller="TalentProfileController">
 	<div class="col-md-1"></div>
 	
 	<div class="col-md-10">
@@ -50,7 +50,7 @@
 							<dd>{{ userToView.talent.weight }} kgs</dd>
 							<dt>Vital Statistics</dt>
 							<dd>{{ userToView.talent.vital1 }} - {{ userToView.talent.vital2 }} - {{ userToView.talent.vital3 }}</dd>
-							<dt>Expected Salary</dt>
+							<dt>Talent Fee</dt>
 							<dd>Php {{ userToView.talent.expectedSalary | number }}</dd>
 							<dt>Past Events</dt>
 							<dd>
@@ -109,6 +109,8 @@
 				
 				<div data-ng-if="isAuthorized(userRoles.admin) && userToView.email != user.email">
 					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="alert alert-danger" role="alert" data-ng-if="errorMessageApprove"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageApprove }}</div>
+						<div class="alert alert-success" role="alert" data-ng-if="successMessageApprove"><span class="glyphicon glyphicon-ok"></span> {{ successMessageApprove }}</div>
 						<div class="form-group">
 							<label for="clazz">Talent Class</label><br />
 							<label class="radio-inline">
@@ -127,6 +129,8 @@
 						<button class="btn btn-primary" data-ng-click="approve(userToView.talent.id, clazz)" data-ng-disabled="clazz == null || clazz == ''">Approve</button>
 					</div>
 					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="alert alert-danger" role="alert" data-ng-if="errorMessageDeny"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageDeny }}</div>
+						<div class="alert alert-success" role="alert" data-ng-if="successMessageDeny"><span class="glyphicon glyphicon-ok"></span> {{ successMessageDeny }}</div>
 						<div class="form-group">
 							<label for="note">Note</label>
 							<input type="text" class="form-control" id="note" name="note" placeholder="Note" required="required" data-ng-model="note" />

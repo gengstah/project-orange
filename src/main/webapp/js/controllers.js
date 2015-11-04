@@ -176,7 +176,7 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 			delete user.password2;
 			var response = vcRecaptchaService.getResponse($scope.widgetId);
 			user.reCaptchaResponse = response;
-			Auth.register(user, function(userResponse) {
+			Auth.registerTalent(user, function(userResponse) {
 				Session.create(userResponse);
 				$signUpButton.button("reset");
 				vcRecaptchaService.reload();
@@ -196,9 +196,61 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	}
 ]);
 
-controllers.controller('ProfileController', ['$scope', '$rootScope', '$state', 'Auth', 'UserProfile', 'USER_ROLES', 'Talent',
+controllers.controller('RegisterAgencyController', ['$scope', '$rootScope', '$state', 'vcRecaptchaService', 'Auth', 'Session', 'AUTH_EVENTS',
+	function($scope, $rootScope, $state, vcRecaptchaService, Auth, Session, events) {
+		// reCAPTCHA
+		$scope.response = null;
+	    $scope.widgetId = null;
+	    
+	    $scope.model = {
+	    	key: '6LcIBBATAAAAADjwWGkqfRDhKudYMUnsCVcks090'
+	    }
+	    
+	    $scope.setResponse = function (response) {
+	    	$scope.response = response;
+	    }
+	    
+	    $scope.setWidgetId = function (widgetId) {
+	    	$scope.widgetId = widgetId;
+	    }
+	    
+	    $scope.cbExpiration = function() {
+	    	$scope.response = null;
+	    }
+	    // reCAPTCHA
+	    
+		if(!!Session.user) $state.go("home");
+		
+		$scope.agencySignUp = function agencySignUp(user) {			
+			var $signUpButton = $("#signUpButton").button("loading");
+			if(user.password != user.password2) return false;
+			
+			var password2 = user.password2;
+			delete user.password2;
+			
+			var response = vcRecaptchaService.getResponse($scope.widgetId);
+			user.reCaptchaResponse = response;
+			Auth.registerAgency(user, function(userResponse) {
+				Session.create(userResponse);
+				$signUpButton.button("reset");
+				vcRecaptchaService.reload();
+				$rootScope.$broadcast(events.loginSuccess);
+				delete $scope.user;
+				delete $scope.userSignUpErrors;
+			}, function(error) {
+				user.password2 = password2;
+				$signUpButton.button("reset");
+				vcRecaptchaService.reload();
+				$scope.userSignUpErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+			});
+			
+		};
+	}
+]);
+
+controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$state', 'Auth', 'UserProfile', 'USER_ROLES', 'Talent',
 	function($scope, $rootScope, $state, Auth, UserProfile, roles, Talent) {
-		if(UserProfile.user && $scope.user.userRole == roles.admin) {
+		if(UserProfile.user && ($scope.user.userRole == roles.admin || $scope.user.userRole == roles.agency)) {
 			Auth.viewProfile({ email : UserProfile.user.email }, function(user) {
 				$scope.userToView = user;
 			});
@@ -214,20 +266,56 @@ controllers.controller('ProfileController', ['$scope', '$rootScope', '$state', '
 		});
 		
 		$scope.approve = function approve(id, clazz) {
-			Talent.approve($.param({id: id, talentClass: clazz}));
+			Talent.approve($.param({id: id, talentClass: clazz}), function() {
+				$scope.successMessageApprove = "Updated";
+				
+				delete $scope.successMessageDeny
+				delete $scope.errorMessageApprove;
+				delete $scope.errorMessageDeny;
+			}, function(error) {
+				$scope.errorMessageApprove = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				
+				delete $scope.successMessageDeny;
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageDeny;
+			});
 		};
 		
 		$scope.deny = function deny(id, note) {
-			Talent.deny($.param({id: id, adminNote: note}));
+			Talent.deny($.param({id: id, adminNote: note}), function() {
+				$scope.successMessageDeny = "Updated";
+				
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageApprove;
+				delete $scope.errorMessageDeny;
+			}, function(error) {
+				$scope.errorMessageDeny = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageApprove;
+				delete $scope.successMessageDeny;
+			});
 		};
 		
 		$scope.setForApproval = function setForApproval(id, note) {
-			Talent.setForApproval($.param({id: id, adminNote: note}));
+			Talent.setForApproval($.param({id: id, adminNote: note}), function() {
+				$scope.successMessageDeny = "Updated";
+				
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageApprove;
+				delete $scope.errorMessageDeny;
+			}, function(error) {
+				$scope.errorMessageDeny = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageApprove;
+				delete $scope.successMessageDeny;
+			});
 		};
 	}
 ]);
 
-controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$state', '$filter', 'Auth', 'WorkExperience',
+controllers.controller('TalentProfileUpdateController', ['$scope', '$rootScope', '$state', '$filter', 'Auth', 'WorkExperience',
 	function($scope, $rootScope, $state, $filter, Auth, WorkExperience) {
 		Auth.viewProfile(function(user) {
 			$scope.userToUpdate = user;
@@ -308,7 +396,7 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 			});
 		});
 		
-		$scope.updateProfile = function updateProfile(user) {
+		$scope.updateTalentProfile = function updateTalentProfile(user) {
 			user.password = '        ';
 			var $updateButton = $("#updateButton").button("loading");
 			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
@@ -326,7 +414,7 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 			
 			delete user.talent.exp;
 			delete user.talent.birthDateStandardFormat;
-			Auth.update(user, function(userResponse) {
+			Auth.updateTalent(user, function(userResponse) {
 				$updateButton.button("reset");
 				$state.go("home");
 				delete $scope.user;
@@ -348,8 +436,8 @@ controllers.controller('EventsController', ['$scope', '$rootScope', '$state',
 	}
 ]);
 
-controllers.controller('TalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile',
-	function($scope, $rootScope, $state, Talent, DATA, UserProfile) {
+controllers.controller('TalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile', 'Session', 'USER_ROLES',
+	function($scope, $rootScope, $state, Talent, DATA, UserProfile, Session, roles) {
 		var columnCount = 4;
 		
 		Talent.approved({ page: 1, size: DATA.pageSize }, function(approvedTalents) {
@@ -368,46 +456,48 @@ controllers.controller('TalentController', ['$scope', '$rootScope', '$state', 'T
 			});
 		});
 		
-		Talent.forApproval({ page: 1, size: DATA.pageSize }, function(forApprovalTalents){
-			var talentsPerRow = Math.ceil(forApprovalTalents.length / columnCount);
-			var talentRows = [];
-			
-			for(var talentIndex = 0;talentIndex < forApprovalTalents.length;talentIndex += talentsPerRow) {
-				var talentRow = forApprovalTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, forApprovalTalents.length));
-				talentRows.push(talentRow);
-			}
-			
-			$scope.forApprovalTalents = talentRows;
-			
-			Talent.countForApprovalTalents(function(forApprovalTalentsCount) {
-				$scope.forApprovalTalentsCount = forApprovalTalentsCount;
+		if(Session.user.userRole == roles.admin) {
+			Talent.forApproval({ page: 1, size: DATA.pageSize }, function(forApprovalTalents){
+				var talentsPerRow = Math.ceil(forApprovalTalents.length / columnCount);
+				var talentRows = [];
+				
+				for(var talentIndex = 0;talentIndex < forApprovalTalents.length;talentIndex += talentsPerRow) {
+					var talentRow = forApprovalTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, forApprovalTalents.length));
+					talentRows.push(talentRow);
+				}
+				
+				$scope.forApprovalTalents = talentRows;
+				
+				Talent.countForApprovalTalents(function(forApprovalTalentsCount) {
+					$scope.forApprovalTalentsCount = forApprovalTalentsCount;
+				});
 			});
-		});
-		
-		Talent.denied({ page: 1, size: DATA.pageSize }, function(deniedTalents){
-			var talentsPerRow = Math.ceil(deniedTalents.length / columnCount);
-			var talentRows = [];
 			
-			for(var talentIndex = 0;talentIndex < deniedTalents.length;talentIndex += talentsPerRow) {
-				var talentRow = deniedTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, deniedTalents.length));
-				talentRows.push(talentRow);
-			}
-			
-			$scope.deniedTalents = talentRows;
-			
-			Talent.countDeniedTalents(function(deniedTalentsCount) {
-				$scope.deniedTalentsCount = deniedTalentsCount;
+			Talent.denied({ page: 1, size: DATA.pageSize }, function(deniedTalents){
+				var talentsPerRow = Math.ceil(deniedTalents.length / columnCount);
+				var talentRows = [];
+				
+				for(var talentIndex = 0;talentIndex < deniedTalents.length;talentIndex += talentsPerRow) {
+					var talentRow = deniedTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, deniedTalents.length));
+					talentRows.push(talentRow);
+				}
+				
+				$scope.deniedTalents = talentRows;
+				
+				Talent.countDeniedTalents(function(deniedTalentsCount) {
+					$scope.deniedTalentsCount = deniedTalentsCount;
+				});
 			});
-		});
-		
-		$('#talentTab a').click(function (e) {
-			e.preventDefault();
-			$(this).tab('show');
-		});
+			
+			$('#talentTab a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		}
 		
 		$scope.viewProfile = function viewProfile(user) {
 			UserProfile.setUser(user);
-			$state.go("profile");
+			$state.go("talentProfile");
 		};
 	
 	}
