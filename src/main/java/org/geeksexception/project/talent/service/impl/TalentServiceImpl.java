@@ -62,7 +62,7 @@ public class TalentServiceImpl implements TalentService {
 	@Transactional(readOnly = false)
 	public void deleteSavedImage(String fileName, String rootLocation) {
 		
-		String fileLocation = "/img/" + fileName;
+		String fileLocation = "/img/talents/" + fileName;
 		Image image = imageService.findImageByFileLocation(fileLocation);
 		User user = userService.getLoggedInUser();
 		
@@ -71,8 +71,11 @@ public class TalentServiceImpl implements TalentService {
 			image.setTalent(null);
 			user.getTalent().getImages().remove(image);
 			save(user.getTalent());
-			File imageFile = new File(rootLocation + "img/" + fileName);
+			File imageFile = new File(rootLocation + "img/talents/" + fileName);
 			if(imageFile.exists()) imageFile.delete();
+			
+			File imageThumbnailFile = new File(rootLocation + "img/talents/thumbnails/" + fileName);
+			if(imageThumbnailFile.exists()) imageThumbnailFile.delete();
 			
 		}
 		

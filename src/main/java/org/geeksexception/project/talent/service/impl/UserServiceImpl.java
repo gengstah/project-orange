@@ -1,5 +1,6 @@
 package org.geeksexception.project.talent.service.impl;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
@@ -25,6 +27,7 @@ import org.geeksexception.project.talent.model.WorkExperience;
 import org.geeksexception.project.talent.service.ImageService;
 import org.geeksexception.project.talent.service.UserService;
 import org.geeksexception.project.talent.util.PasswordUtil;
+import org.imgscalr.Scalr;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +41,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @PropertySource("classpath:/reCaptcha.properties")
 public class UserServiceImpl implements UserService {
+	
+	public static int THUMB_WIDTH = 77;
+	
+	public static int THUMB_HEIGHT = 57;
 	
 	private @Inject UserRepository userRepository;
 	
@@ -135,8 +142,10 @@ public class UserServiceImpl implements UserService {
 	private void saveImages(User user, String imageTempLocation) throws TalentManagementServiceApiException {
 		
 		File temp = new File(imageTempLocation);
+		File thumbnailTemp = new File(imageTempLocation + "/thumbnails");
 		if(temp.exists()) {
 			File[] files = temp.listFiles();
+			thumbnailTemp.mkdir();
 			
 			if(files.length == 0)
 				throw new TalentManagementServiceApiException(
@@ -146,20 +155,32 @@ public class UserServiceImpl implements UserService {
 			
 			if(user.getTalent().getImages() == null) user.getTalent().setImages(new ArrayList<Image>());
 			for(File file : files) {
-				Image image = new Image("/img/" + file.getName());
+				Image image = new Image("/img/talents/" + file.getName(), "/img/talents/thumbnails/" + file.getName());
 				image.setTalent(user.getTalent());
 				imageService.save(image);
 				user.getTalent().getImages().add(image);
+				
+				try {
+					BufferedImage srcImg = ImageIO.read(file);
+					BufferedImage dstImg = Scalr.resize(srcImg, Scalr.Method.QUALITY, THUMB_WIDTH, THUMB_HEIGHT);
+					ImageIO.write(dstImg, "jpg", new File(imageTempLocation + "/thumbnails/" + file.getName()));
+				} catch(IOException e) {
+					throw new TalentManagementServiceApiException(
+							"Error while creating thumbnails", 
+							new Errors()
+								.addError(new Error("image", "Error while creating thumbnails")), e);
+				}
 			}
 			
 			try {
-				FileUtils.copyDirectory(temp, temp.getParentFile().getParentFile());
+				FileUtils.copyDirectory(temp, new File(temp.getParentFile().getParentFile().getAbsolutePath() + "/talents"));
+				FileUtils.copyDirectory(thumbnailTemp, new File(temp.getParentFile().getParentFile().getAbsolutePath() + "/talents/thumbnails"));
 				FileUtils.deleteDirectory(temp);
 			} catch (IOException e) {
 				throw new TalentManagementServiceApiException(
 						"Error while copying images from temp directory to main directory", 
 						new Errors()
-							.addError(new Error("image", e.getMessage())), e);
+							.addError(new Error("image", "Error while copying images from temp directory to main directory")), e);
 			}
 			
 		} else if(user.getTalent().getImages() != null) {

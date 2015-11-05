@@ -32,13 +32,17 @@ public class Image implements Serializable {
 	@NotEmpty(message = "File must not be empty")
 	private String fileLocation;
 	
+	@Column(name = "THUMBNAIL_FILE_LOCATION", nullable = false)
+	@NotEmpty(message = "Thumbnail file must not be empty")
+	private String thumbnailFileLocation;
+	
 	@ManyToOne
 	@JoinColumn(name="TALENT_ID")
 	private Talent talent;
 	
 	public Image() { }
 	
-	public Image(String fileLocation) { this.fileLocation = fileLocation; }
+	public Image(String fileLocation, String thumbnailFileLocation) { this.fileLocation = fileLocation; this.thumbnailFileLocation = thumbnailFileLocation; }
 
 	public Long getId() {
 		return id;
@@ -54,6 +58,14 @@ public class Image implements Serializable {
 
 	public void setFileLocation(String fileLocation) {
 		this.fileLocation = fileLocation;
+	}
+	
+	public String getThumbnailFileLocation() {
+		return thumbnailFileLocation;
+	}
+
+	public void setThumbnailFileLocation(String thumbnailFileLocation) {
+		this.thumbnailFileLocation = thumbnailFileLocation;
 	}
 
 	public Talent getTalent() {
