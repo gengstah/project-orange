@@ -22,6 +22,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -33,6 +34,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -106,6 +108,12 @@ public class Talent implements Serializable {
 		joinColumns = {@JoinColumn(name="TALENT_ID")},
 		inverseJoinColumns = {@JoinColumn(name="WORK_EXPERIENCE_ID")})
 	private @Valid List<WorkExperience> workExperiences;
+	
+	@OneToMany(mappedBy = "talent")
+	private List<TalentEvent> talentEvents;
+	
+	@Transient
+	private Integer eventSize;
 	
 	@OneToOne(mappedBy = "talent")
 	@Fetch(FetchMode.JOIN)
@@ -256,6 +264,23 @@ public class Talent implements Serializable {
 
 	public void setWorkExperiences(List<WorkExperience> workExperiences) {
 		this.workExperiences = workExperiences;
+	}
+
+	public List<TalentEvent> getTalentEvents() {
+		return talentEvents;
+	}
+
+	public void setTalentEvents(List<TalentEvent> talentEvents) {
+		this.talentEvents = talentEvents;
+	}
+
+	@JsonProperty
+	public Integer getEventSize() {
+		return eventSize;
+	}
+
+	public void setEventSize(Integer eventSize) {
+		this.eventSize = eventSize;
 	}
 
 	public User getUser() {

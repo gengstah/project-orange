@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.geeksexception.project.talent.api.ReCaptchaManager;
 import org.geeksexception.project.talent.dao.ImageRepository;
+import org.geeksexception.project.talent.dao.TalentRepository;
 import org.geeksexception.project.talent.dao.UserRepository;
 import org.geeksexception.project.talent.dao.WorkExperienceRepository;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
@@ -47,6 +48,8 @@ public class UserServiceImpl implements UserService {
 	public static int THUMB_HEIGHT = 57;
 	
 	private @Inject UserRepository userRepository;
+	
+	private @Inject TalentRepository talentRepository;
 	
 	private @Inject WorkExperienceRepository workExperienceRepository;
 	
@@ -227,6 +230,10 @@ public class UserServiceImpl implements UserService {
 		
 		user.getTalent().setWorkExperiences(workExperiences);
 		user.getTalent().setImages(images);
+		
+		user.getTalent().setEventSize(talentRepository.countEvents(user.getTalent()));
+		user.setFollowerSize(userRepository.countFollowers(user));
+		user.setFollowingSize(userRepository.countFollowing(user));
 		
 		return user;
 		

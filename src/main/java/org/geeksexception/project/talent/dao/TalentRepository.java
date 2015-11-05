@@ -19,4 +19,7 @@ public interface TalentRepository extends JpaRepository<Talent, Long> {
 	@Query("SELECT t FROM Talent t WHERE t.status = 'APPROVED' AND t.talentClass = ?1")
 	List<Talent> findApprovedTalentsByClass(TalentClass talentClass, Pageable pageable);
 	
+	@Query("SELECT COUNT(te) FROM Talent t JOIN t.talentEvents te WHERE t = ?1")
+	Integer countEvents(Talent talent);
+	
 }

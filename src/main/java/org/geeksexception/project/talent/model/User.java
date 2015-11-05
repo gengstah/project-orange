@@ -2,6 +2,7 @@ package org.geeksexception.project.talent.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -76,6 +79,25 @@ public class User implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_CREATED", nullable = false)
 	private Date dateCreated;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_LAST_LOGIN", nullable = true)
+	private Date dateLastLogin;
+	
+	@ManyToMany
+	@JoinTable(name = "USER_FOLLOWERS", 
+		joinColumns = {@JoinColumn(name="USER_ID")},
+		inverseJoinColumns = {@JoinColumn(name="FOLLOWER_USER_ID")})
+	private List<User> followers;
+	
+	@Transient
+	private Integer followerSize;
+	
+	@ManyToMany(mappedBy = "followers")
+	private List<User> following;
+	
+	@Transient
+	private Integer followingSize;
 	
 	@Transient
 	private String reCaptchaResponse;
@@ -153,6 +175,48 @@ public class User implements Serializable {
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
+	}
+
+	public Date getDateLastLogin() {
+		return dateLastLogin;
+	}
+
+	public void setDateLastLogin(Date dateLastLogin) {
+		this.dateLastLogin = dateLastLogin;
+	}
+
+	public List<User> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(List<User> followers) {
+		this.followers = followers;
+	}
+
+	@JsonProperty
+	public Integer getFollowerSize() {
+		return followerSize;
+	}
+
+	public void setFollowerSize(Integer followerSize) {
+		this.followerSize = followerSize;
+	}
+
+	public List<User> getFollowing() {
+		return following;
+	}
+
+	public void setFollowing(List<User> following) {
+		this.following = following;
+	}
+
+	@JsonProperty
+	public Integer getFollowingSize() {
+		return followingSize;
+	}
+
+	public void setFollowingSize(Integer followingSize) {
+		this.followingSize = followingSize;
 	}
 
 	public String getReCaptchaResponse() {

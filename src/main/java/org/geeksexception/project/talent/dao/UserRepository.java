@@ -18,4 +18,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("SELECT u FROM User u WHERE u.userRole = 'ROLE_AGENCY'")
 	List<User> findAgencyUsers(Pageable pageable);
 	
+	@Query("SELECT COUNT(f) FROM User u JOIN u.followers f WHERE u = ?1")
+	Integer countFollowers(User user);
+	
+	@Query("SELECT COUNT(f) FROM User u JOIN u.following f WHERE u = ?1")
+	Integer countFollowing(User user);
+	
 }

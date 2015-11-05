@@ -37,6 +37,13 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.all]
 				}
 			})
+			.state('login', {
+				url: '/login', 
+				templateUrl: 'templates/login.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
+			})
 			.state('talentProfile', {
 				url: '/talent/profile', 
 				templateUrl: 'templates/talent/profile-page.html',
@@ -57,13 +64,6 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 				data: {
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}
-			})
-			.state('about', {
-				url: '/about', 
-				templateUrl: 'templates/about.html',
-				data: {
-					authorizedRoles: [roles.all]
-				}
 			});
 		
 		$locationProvider.hashPrefix('!');
@@ -73,8 +73,9 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 		}]);
 	}
 ]).
-run(['$rootScope', 'AUTH_EVENTS', 'AuthService', 'USER_ROLES', 'Auth', 'Session',
-		function($rootScope, events, AuthService, roles, Auth, Session) {
+run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService', 'USER_ROLES', 'Auth', 'Session',
+		function($rootScope, $state, events, AuthService, roles, Auth, Session) {
+	$rootScope.$state = $state;
 	Auth.get(function(user) {
 		if(user != null) {
 			Session.create(user);

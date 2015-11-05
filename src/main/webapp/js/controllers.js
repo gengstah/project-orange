@@ -47,6 +47,13 @@ controllers.controller('HeaderController', ['$scope', '$rootScope', 'AUTH_EVENTS
 
 controllers.controller('HomeController', ['$scope', '$rootScope', '$state', 'Auth', 'Session', 'AUTH_EVENTS',
     function($scope, $rootScope, $state, Auth, Session, events) {
+		
+	}
+]);
+
+controllers.controller('LoginController', ['$scope', '$rootScope', '$state', 'Auth', 'Session', 'AUTH_EVENTS',
+	function($scope, $rootScope, $state, Auth, Session, events) {
+	
 		$scope.credentials = {};
 		
 		$scope.login = function login(credentials) {
@@ -65,7 +72,7 @@ controllers.controller('HomeController', ['$scope', '$rootScope', '$state', 'Aut
 			});
 		};
 		
-	}
+  	}
 ]);
 
 controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$state', 'vcRecaptchaService', 'Auth', 'WorkExperience', 'Session', 'AUTH_EVENTS',
