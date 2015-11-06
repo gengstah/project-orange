@@ -99,6 +99,22 @@ public class EventManager {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/agency/approved/{id}")
+	public List<Event> findAllApprovedEventsOfAgency(
+			@NotNull(message = "id must not be null") @PathParam("id") Long id, 
+			@QueryParam("page") @Min(1) Integer page, 
+			@QueryParam("size") @Min(1) Integer size) {
+		
+		if(page == null) page = 1;
+		if(size == null) size = 20;
+		
+		return eventService.findAllApprovedEventsOfAgency(id, page - 1, size);
+		
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/talent/{id}")
 	public List<Event> findAllEventsOfTalent(
 			@NotNull(message = "id must not be null") @PathParam("id") Long id, 
@@ -162,6 +178,46 @@ public class EventManager {
 	public List<TalentEvent> findAllTalentEventByTalentId(@NotNull(message = "talentId must not be null") @PathParam("talentId") Long talentId) {
 		
 		return talentEventService.findAllTalentEventByTalentId(talentId);
+		
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/countApprovedEvents")
+	public Integer countApprovedEvents() {
+		
+		return eventService.countApprovedEvents();
+		
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/countForApprovalEvents")
+	public Integer countForApprovalEvents() {
+		
+		return eventService.countForApprovalEvents();
+		
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/countDeniedEvents")
+	public Integer countDeniedEvents() {
+		
+		return eventService.countDeniedEvents();
+		
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/countClosedEvents")
+	public Integer countClosedEvents() {
+		
+		return eventService.countClosedEvents();
 		
 	}
 	

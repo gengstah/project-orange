@@ -75,6 +75,13 @@ public class EventServiceImpl implements EventService {
 		return eventRepository.findAllEventsOfAgency(id, new PageRequest(page, size));
 		
 	}
+	
+	@Override
+	public List<Event> findAllApprovedEventsOfAgency(Long id, Integer page, Integer size) {
+		
+		return eventRepository.findAllApprovedEventsOfAgency(id, new PageRequest(page, size));
+		
+	}
 
 	@Override
 	public List<Event> findAllEventsOfTalent(Long id, Integer page, Integer size) {
@@ -122,6 +129,34 @@ public class EventServiceImpl implements EventService {
 		
 		event.setAdminNote(adminNote);
 		event.setStatus(EventStatus.FOR_APPROVAL);
+		
+	}
+
+	@Override
+	public Integer countApprovedEvents() {
+		
+		return eventRepository.countEventsByStatus(EventStatus.APPROVED);
+		
+	}
+
+	@Override
+	public Integer countForApprovalEvents() {
+		
+		return eventRepository.countEventsByStatus(EventStatus.FOR_APPROVAL);
+		
+	}
+
+	@Override
+	public Integer countDeniedEvents() {
+		
+		return eventRepository.countEventsByStatus(EventStatus.DENIED);
+		
+	}
+
+	@Override
+	public Integer countClosedEvents() {
+		
+		return eventRepository.countEventsByStatus(EventStatus.CLOSED);
 		
 	}
 

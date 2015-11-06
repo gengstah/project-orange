@@ -232,6 +232,15 @@ services.factory('Agency', ['$resource',
 				params: { 
 					action: 'countDeniedAgencies'
 				}
+			},
+			addTalentToEvent: {
+				method: 'POST',
+				params: { 
+					action: 'addTalentToEvent'
+				},
+				headers : { 
+					'Content-Type': 'application/x-www-form-urlencoded' 
+				}
 			}
 		});
 	}
@@ -241,6 +250,37 @@ services.factory('Event', ['$resource',
 	function($resource) {
 		return $resource('/api/service/event/:id');
 	}
+]);
+
+services.factory('EventCount', ['$resource', 
+   	function($resource) {
+   		return $resource('/api/service/event/:countType', {}, {
+   			countApprovedEvents: {
+   				method: 'GET',
+				params: { 
+					countType: 'countApprovedEvents'
+				}
+   			},
+   			countForApprovalEvents: {
+   				method: 'GET',
+				params: { 
+					countType: 'countForApprovalEvents'
+				}
+   			},
+   			countDeniedEvents: {
+   				method: 'GET',
+				params: { 
+					countType: 'countDeniedEvents'
+				}
+   			},
+   			countClosedEvents: {
+   				method: 'GET',
+				params: { 
+					countType: 'countClosedEvents'
+				}
+   			}
+   		});
+   	}
 ]);
 
 services.factory('ApprovedEvent', ['$resource', 
@@ -253,6 +293,12 @@ services.factory('AgencyEvent', ['$resource',
 	function($resource) {
 		return $resource('/api/service/event/agency/:id');
 	}
+]);
+
+services.factory('ApprovedAgencyEvent', ['$resource', 
+ 	function($resource) {
+ 		return $resource('/api/service/event/agency/approved/:id');
+ 	}
 ]);
 
 services.factory('TalentEvent', ['$resource', 

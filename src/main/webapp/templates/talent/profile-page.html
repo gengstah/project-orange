@@ -15,8 +15,8 @@
 						<div><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;&nbsp;{{ userToView.talent.city }}</div>
 						<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Born on {{userToView.talent.birthDate | date:'mediumDate'}}, {{ userToView.talent.birthDate | ageFilter }} yrs. old</div>
 						<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Joined on {{userToView.dateCreated | date:'mediumDate'}}</div>
-						<div><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;&nbsp;{{ userToView.email }}</div>
-						<div><span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;&nbsp;{{ userToView.talent.contactNo }}</div>
+						<div data-ng-if="isAuthorized(userRoles.admin)"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;&nbsp;{{ userToView.email }}</div>
+						<div data-ng-if="isAuthorized(userRoles.admin)"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;&nbsp;{{ userToView.talent.contactNo }}</div>
 						<hr />
 						<div class="row">
 							<div class="col-sm-4 col-md-4">
@@ -137,6 +137,19 @@
 						</div>
 						<button class="btn btn-default" data-ng-click="deny(userToView.talent.id, note)" data-ng-disabled="note == null || note == ''">Deny</button> <button class="btn btn-default" data-ng-click="setForApproval(userToView.talent.id, note)" data-ng-disabled="note == null || note == ''">Add note</button>
 					</div>					
+				</div>
+				
+				<div data-ng-if="isAuthorized(userRoles.agency)">
+					<div class="alert alert-danger" role="alert" data-ng-if="errorMessageAddTalent"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageAddTalent }}</div>
+					<div class="alert alert-success" role="alert" data-ng-if="successMessageAddTalent"><span class="glyphicon glyphicon-ok"></span> {{ successMessageAddTalent }}</div>
+					<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Add talent <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li data-ng-repeat="event in events" data-ng-click="addTalentToEvent(userToView.talent.id, event.id)"><a href="">{{ event.name }}</a></li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>

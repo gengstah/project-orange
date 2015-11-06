@@ -25,7 +25,7 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 			})
 			.state('events', {
 				url: '/events', 
-				templateUrl: 'templates/events.html',
+				templateUrl: 'templates/approved-events.html',
 				data: {
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}

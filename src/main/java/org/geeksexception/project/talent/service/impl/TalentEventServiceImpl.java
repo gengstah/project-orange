@@ -42,6 +42,7 @@ public class TalentEventServiceImpl implements TalentEventService {
 		checkEvent(event);
 		
 		TalentEvent talentEvent = new TalentEvent(talent, event);
+		talentEvent.setSuccessful(true);
 		talentEventRepository.save(talentEvent);
 		
 		instantiateTalentEventsIfNull(talent, event);

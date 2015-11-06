@@ -13,8 +13,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Agency;
 import org.geeksexception.project.talent.service.AgencyService;
+import org.geeksexception.project.talent.service.TalentEventService;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.http.MediaType;
 
@@ -22,6 +24,8 @@ import org.springframework.http.MediaType;
 public class AgencyManager {
 	
 	private @Inject AgencyService agencyService;
+	
+	private @Inject TalentEventService talentEventService;
 	
 	public AgencyManager() { }
 	
@@ -84,7 +88,8 @@ public class AgencyManager {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/deny")
-	public void deny(@NotNull(message = "id must not be null") @FormParam("id") Long id, 
+	public void deny(
+			@NotNull(message = "id must not be null") @FormParam("id") Long id, 
 			@NotEmpty(message = "admin note must not be empty") @FormParam("adminNote") String adminNote) {
 		
 		agencyService.denyAgency(id, adminNote);
@@ -95,10 +100,23 @@ public class AgencyManager {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/setForApproval")
-	public void forApproval(@NotNull(message = "id must not be null") @FormParam("id") Long id, 
+	public void forApproval(
+			@NotNull(message = "id must not be null") @FormParam("id") Long id, 
 			@NotEmpty(message = "admin note must not be empty") @FormParam("adminNote") String adminNote) {
 		
 		agencyService.forApprovalAgency(id, adminNote);
+		
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/addTalentToEvent")
+	public void addTalentToEvent(
+			@NotNull(message = "talentId must not be null") @FormParam("talentId") Long talentId, 
+			@NotNull(message = "eventId must not be null") @FormParam("eventId") Long eventId) throws TalentManagementServiceApiException {
+		
+		talentEventService.addTalentToEvent(talentId, eventId);
 		
 	}
 	

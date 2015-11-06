@@ -153,21 +153,21 @@ public class TalentServiceImpl implements TalentService {
 	@Override
 	public Integer countApprovedTalents() {
 		
-		return talentRepository.countApprovedTalents();
+		return talentRepository.countTalentsByStatus(TalentStatus.APPROVED);
 		
 	}
 
 	@Override
 	public Integer countForApprovalTalents() {
 		
-		return talentRepository.countForApprovalTalents();
+		return talentRepository.countTalentsByStatus(TalentStatus.FOR_APPROVAL);
 		
 	}
 
 	@Override
 	public Integer countDeniedTalents() {
 		
-		return talentRepository.countDeniedTalents();
+		return talentRepository.countTalentsByStatus(TalentStatus.DENIED);
 		
 	}
 

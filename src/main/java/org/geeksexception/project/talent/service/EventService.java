@@ -18,6 +18,8 @@ public interface EventService {
 	
 	List<Event> findAllEventsOfAgency(Long id, Integer page, Integer size);
 	
+	List<Event> findAllApprovedEventsOfAgency(Long id, Integer page, Integer size);
+	
 	List<Event> findAllEventsOfTalent(Long id, Integer page, Integer size);
 	
 	void approveEvent(Long id, BigDecimal actualTalentFee) throws TalentManagementServiceApiException;
@@ -25,5 +27,13 @@ public interface EventService {
 	void denyEvent(Long id, String adminNote) throws TalentManagementServiceApiException;
 	
 	void forApprovalEvent(Long id, String adminNote) throws TalentManagementServiceApiException;
+	
+	Integer countApprovedEvents();
+	
+	Integer countForApprovalEvents();
+	
+	Integer countDeniedEvents();
+	
+	Integer countClosedEvents();
 	
 }

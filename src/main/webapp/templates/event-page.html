@@ -44,6 +44,21 @@
 		
 		<hr />
 		
+		<div class="row" data-ng-if="isAuthorized(userRoles.agency) || isAuthorized(userRoles.admin) || event.status == 'CLOSED'">
+			<div class="page-header">
+				<h3>Talents <small>those who <span data-ng-if="user.email == event.agency.user.email">you</span><span data-ng-if="user.email != event.agency.user.email">the agency</span> like for this event</small></h3>
+			</div>
+		</div>
+		
+		<div class="row" data-ng-if="isAuthorized(userRoles.agency) || isAuthorized(userRoles.admin) || event.status == 'CLOSED'">
+			<div class="col-xs-6 col-sm-4 col-md-2" data-ng-repeat="talentEvent in talentEvents" data-ng-if="talentEvent.successful">
+				<a href="" data-ng-click="viewProfile(talentEvent.talent.user)">
+					<img src="/img/talents/mahha-1.jpeg" alt="..." class="img-circle" data-ng-src="{{ talentEvent.talent.images[0].thumbnailFileLocation }}"><br />
+					<small>{{ talentEvent.talent.firstName }} {{ talentEvent.talent.lastName }}</small>
+				</a>
+			</div>
+		</div>
+		
 		<div class="row">
 			<div class="page-header">
 				<h3>Talents <small>those who are interested in this event</small></h3>
@@ -51,7 +66,12 @@
 		</div>
 		
 		<div class="row">
-			<img src="/img/talents/mahha-1.jpeg" alt="..." class="img-circle" data-ng-src="{{ talentEvent.talent.images[0].thumbnailFileLocation }}" data-ng-repeat="talentEvent in talentEvents">
+			<div class="col-xs-6 col-sm-4 col-md-2" data-ng-repeat="talentEvent in talentEvents">
+				<a href="" data-ng-click="viewProfile(talentEvent.talent.user)">
+					<img src="/img/talents/mahha-1.jpeg" alt="..." class="img-circle" data-ng-src="{{ talentEvent.talent.images[0].thumbnailFileLocation }}"><br />
+					<small>{{ talentEvent.talent.firstName }} {{ talentEvent.talent.lastName }}</small>
+				</a>
+			</div>
 		</div>
 		
 		<hr />

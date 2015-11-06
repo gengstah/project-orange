@@ -2,6 +2,7 @@ package org.geeksexception.project.talent.dao;
 
 import java.util.List;
 
+import org.geeksexception.project.talent.enums.EventStatus;
 import org.geeksexception.project.talent.model.Event;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +19,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	@Query("SELECT e FROM Event e WHERE e.agency.id = ?1 ORDER BY e.dateCreated DESC")
 	List<Event> findAllEventsOfAgency(Long id, Pageable pageable);
 	
+	@Query("SELECT e FROM Event e WHERE e.agency.id = ?1 AND e.status = 'APPROVED' ORDER BY e.dateCreated DESC")
+	List<Event> findAllApprovedEventsOfAgency(Long id, Pageable pageable);
+	
 	@Query("SELECT e FROM Event e JOIN e.talentEvents te WHERE te.talent.id = ?1 ORDER BY e.dateCreated DESC")
 	List<Event> findAllEventsOfTalent(Long id, Pageable pageable);
+	
+	@Query("SELECT COUNT(e) FROM Event e WHERE e.status = ?1")
+	Integer countEventsByStatus(EventStatus eventStatus);
 	
 }
