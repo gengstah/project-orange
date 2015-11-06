@@ -53,44 +53,84 @@ services.factory('Auth', ['$resource',
   	}
 ]);
 
+services.factory('Talent', ['$resource', 
+	function($resource) {
+		return $resource('/api/service/talent/:action', {}, {
+			approved: { 
+				method: 'GET', 
+				params: { 
+					action: 'approved'
+				},
+				isArray: true
+			},
+			forApproval: { 
+				method: 'GET', 
+				params: { 
+					action: 'forApproval'
+				},
+				isArray: true
+			},
+			denied: { 
+				method: 'GET', 
+				params: { 
+					action: 'denied'
+				},
+				isArray: true
+			},
+			approve: { 
+				method: 'POST', 
+				params: { 
+					action: 'approve'
+				}, 
+  				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+			},
+			deny: {
+				method: 'POST', 
+				params: { 
+					action: 'deny'
+				}, 
+  				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+			},
+			setForApproval: {
+				method: 'POST',
+				params: { 
+					action: 'setForApproval'
+				},
+				headers : { 
+					'Content-Type': 'application/x-www-form-urlencoded' 
+				}
+			},
+			countApprovedTalents: {
+				method: 'GET',
+				params: { 
+					action: 'countApprovedTalents'
+				}
+			},
+			countForApprovalTalents: {
+				method: 'GET',
+				params: { 
+					action: 'countForApprovalTalents'
+				}
+			},
+			countDeniedTalents: {
+				method: 'GET',
+				params: { 
+					action: 'countDeniedTalents'
+				}
+			}
+		});
+	}
+]);
+
 services.factory('WorkExperience', ['$resource', 
 	function($resource) {
 		return $resource('/api/service/exp');
  	}
 ]);
-
-services.factory('Section', ['$resource', 
-	function($resource) {
-		return $resource('/api/service/section/:header');
-	}
-]);
-
-services.factory('Car', ['$resource', 
-	function($resource) {
-		return $resource('/api/service/car/:year/:make/:model/:submodel/:engine');
-	}
-]);
-
-services.factory('Attribute', ['$resource', 
- 	function($resource) {
- 		return $resource('/api/service/attr/:path/:id', {}, {
- 			findAttributesByAutoPart: { 
- 				method: 'GET',
- 				params: { 
-					path: 'part'
-				},
-				isArray: true
- 			},
- 			findDefaultAttributesOfSection: {
- 				method: 'GET',
- 				params: { 
-					path: 'section'
-				},
-				isArray: true
- 			}
- 		});
- 	}
- ]);
 
 services.factory('AuthService', ['Session',
 	function (Session) {
@@ -125,30 +165,18 @@ services.service('Session',
 	}
 );
 
-services.service('CarService',
+services.service('UserProfile',
 	function() {
-		this.setCars = function(cars) {
-			this.cars = cars;
+		this.setUser = function(user) {
+			this.user = user;
 		};
-		
-		this.getCars = function() {
-			return this.cars;
+
+		this.destroy = function() {
+			this.user = null;
 		};
-		
-		this.setCar = function(car) {
-			this.car = car;
-		};
-		
-		this.getCar = function() {
-			return this.car;
-		};
-		
-		this.destroyCar = function() {
-			this.car = null;
-		};
-		
+
 		return this;
-	}	
+	}
 );
 
 services.factory('AuthInterceptor', ['$rootScope', '$q', 'AUTH_EVENTS',

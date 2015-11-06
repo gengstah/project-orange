@@ -1,7 +1,7 @@
 package org.geeksexception.project.talent.enums;
 
 public enum UserRole {
-	ROLE_ADMIN("Admin"), ROLE_AGENCY("Agency"), ROLE_USER("User");
+	ROLE_ADMIN("ROLE_ADMIN"), ROLE_AGENCY("ROLE_AGENCY"), ROLE_USER("ROLE_USER");
 	
 	private String description;
 	

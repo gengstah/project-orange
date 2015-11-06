@@ -10,13 +10,25 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TalentRepository extends JpaRepository<Talent, Long> {
 	
-	@Query("SELECT t FROM Talent t WHERE t.status = 'APPROVED'")
+	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'APPROVED'")
 	List<Talent> findApprovedTalents(Pageable pageable);
 	
-	@Query("SELECT t FROM Talent t WHERE t.status = 'FOR_APPROVAL'")
+	@Query("SELECT COUNT(t) FROM Talent t WHERE t.status = 'APPROVED'")
+	Integer countApprovedTalents();
+	
+	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'FOR_APPROVAL'")
 	List<Talent> findForApprovalTalents(Pageable pageable);
 	
-	@Query("SELECT t FROM Talent t WHERE t.status = 'APPROVED' AND t.talentClass = ?1")
+	@Query("SELECT COUNT(t) FROM Talent t WHERE t.status = 'FOR_APPROVAL'")
+	Integer countForApprovalTalents();
+	
+	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'DENIED'")
+	List<Talent> findDeniedTalents(Pageable pageable);
+	
+	@Query("SELECT COUNT(t) FROM Talent t WHERE t.status = 'DENIED'")
+	Integer countDeniedTalents();
+	
+	@Query("SELECT t FROM Talent t JOIN FETCH t.images WHERE t.status = 'APPROVED' AND t.talentClass = ?1")
 	List<Talent> findApprovedTalentsByClass(TalentClass talentClass, Pageable pageable);
 	
 	@Query("SELECT COUNT(te) FROM Talent t JOIN t.talentEvents te WHERE t = ?1")

@@ -196,23 +196,41 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 	}
 ]);
 
-controllers.controller('ProfileController', ['$scope', '$rootScope', '$state', 'Auth',
-	function($scope, $rootScope, $state, Auth) {
-		Auth.viewProfile(function(user) {
-			$scope.user = user;
-		});
+controllers.controller('ProfileController', ['$scope', '$rootScope', '$state', 'Auth', 'UserProfile', 'USER_ROLES', 'Talent',
+	function($scope, $rootScope, $state, Auth, UserProfile, roles, Talent) {
+		if(UserProfile.user && $scope.user.userRole == roles.admin) {
+			Auth.viewProfile({ email : UserProfile.user.email }, function(user) {
+				$scope.userToView = user;
+			});
+		} else {
+			Auth.viewProfile(function(user) {
+				$scope.userToView = user;
+			});
+		}
 		
 		$('#profileTabs a').click(function (e) {
 			e.preventDefault();
 			$(this).tab('show');
 		});
+		
+		$scope.approve = function approve(id, clazz) {
+			Talent.approve($.param({id: id, talentClass: clazz}));
+		};
+		
+		$scope.deny = function deny(id, note) {
+			Talent.deny($.param({id: id, adminNote: note}));
+		};
+		
+		$scope.setForApproval = function setForApproval(id, note) {
+			Talent.setForApproval($.param({id: id, adminNote: note}));
+		};
 	}
 ]);
 
 controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$state', '$filter', 'Auth', 'WorkExperience',
 	function($scope, $rootScope, $state, $filter, Auth, WorkExperience) {
 		Auth.viewProfile(function(user) {
-			$scope.user = user;
+			$scope.userToUpdate = user;
 			
 			$("input#birthDateStandardFormat").datepicker({
 				autoclose: true,
@@ -327,6 +345,71 @@ controllers.controller('ProfileUpdateController', ['$scope', '$rootScope', '$sta
 controllers.controller('EventsController', ['$scope', '$rootScope', '$state',
 	function($scope, $rootScope, $state) {
 		
+	}
+]);
+
+controllers.controller('TalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile',
+	function($scope, $rootScope, $state, Talent, DATA, UserProfile) {
+		var columnCount = 4;
+		
+		Talent.approved({ page: 1, size: DATA.pageSize }, function(approvedTalents) {
+			var talentsPerRow = Math.ceil(approvedTalents.length / columnCount);
+			var talentRows = [];
+			
+			for(var talentIndex = 0;talentIndex < approvedTalents.length;talentIndex += talentsPerRow) {
+				var talentRow = approvedTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, approvedTalents.length));
+				talentRows.push(talentRow);
+			}
+			
+			$scope.approvedTalents = talentRows;
+			
+			Talent.countApprovedTalents(function(approvedTalentsCount) {
+				$scope.approvedTalentsCount = approvedTalentsCount
+			});
+		});
+		
+		Talent.forApproval({ page: 1, size: DATA.pageSize }, function(forApprovalTalents){
+			var talentsPerRow = Math.ceil(forApprovalTalents.length / columnCount);
+			var talentRows = [];
+			
+			for(var talentIndex = 0;talentIndex < forApprovalTalents.length;talentIndex += talentsPerRow) {
+				var talentRow = forApprovalTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, forApprovalTalents.length));
+				talentRows.push(talentRow);
+			}
+			
+			$scope.forApprovalTalents = talentRows;
+			
+			Talent.countForApprovalTalents(function(forApprovalTalentsCount) {
+				$scope.forApprovalTalentsCount = forApprovalTalentsCount;
+			});
+		});
+		
+		Talent.denied({ page: 1, size: DATA.pageSize }, function(deniedTalents){
+			var talentsPerRow = Math.ceil(deniedTalents.length / columnCount);
+			var talentRows = [];
+			
+			for(var talentIndex = 0;talentIndex < deniedTalents.length;talentIndex += talentsPerRow) {
+				var talentRow = deniedTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, deniedTalents.length));
+				talentRows.push(talentRow);
+			}
+			
+			$scope.deniedTalents = talentRows;
+			
+			Talent.countDeniedTalents(function(deniedTalentsCount) {
+				$scope.deniedTalentsCount = deniedTalentsCount;
+			});
+		});
+		
+		$('#talentTab a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		
+		$scope.viewProfile = function viewProfile(user) {
+			UserProfile.setUser(user);
+			$state.go("profile");
+		};
+	
 	}
 ]);
 

@@ -1,10 +1,16 @@
 <div data-ng-controller="HeaderController">
 	<ul class="nav nav-pills">
 		<li role="presentation" data-ng-class="{active: $uiRoute}"><a href="#!/">Home</a></li>
-		<li role="presentation" data-ui-route="/talent/profile" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthenticated()"><a href="#!/talent/profile">Profile</a></li>
 		<li role="presentation" data-ui-route="/events" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthenticated()"><a href="#!/events">Events</a></li>
-		<li role="presentation" data-ui-route="/changePassword" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthenticated()"><a href="#!/changePassword">Account</a></li>
+		<li role="presentation" data-ui-route="/talents" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthorized(userRoles.admin)"><a href="#!/talents">Talents</a></li>
 		
-		<li role="presentation"><a href="" data-ng-click="logout()" data-ng-if="isAuthenticated()">Logout</a></li>
+		<li role="presentation" class="dropdown" data-ng-if="isAuthenticated()">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span data-ng-bind="user.email">Geng</span> <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				<li role="presentation" data-ui-route="/profile" data-ng-class="{active: $uiRoute}"><a href="#!/profile">Profile</a></li>
+				<li role="presentation" data-ui-route="/changePassword" data-ng-class="{active: $uiRoute}"><a href="#!/changePassword">Change password</a></li>
+				<li role="presentation"><a href="" data-ng-click="logout()">Logout</a></li>
+			</ul>
+		</li>
 	</ul>
 </div>

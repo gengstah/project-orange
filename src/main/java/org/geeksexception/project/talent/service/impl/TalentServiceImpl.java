@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.geeksexception.project.talent.dao.TalentRepository;
 import org.geeksexception.project.talent.enums.TalentClass;
+import org.geeksexception.project.talent.enums.TalentStatus;
 import org.geeksexception.project.talent.model.Image;
 import org.geeksexception.project.talent.model.Talent;
 import org.geeksexception.project.talent.model.User;
@@ -43,6 +44,13 @@ public class TalentServiceImpl implements TalentService {
 		
 	}
 
+	@Override
+	public List<Talent> findDeniedTalents(Integer page, Integer size) {
+		
+		return talentRepository.findDeniedTalents(new PageRequest(page, size));
+		
+	}
+	
 	@Override
 	public List<Talent> findApprovedTalentsByClass(TalentClass talentClass, Integer page, Integer size) {
 		
@@ -83,6 +91,57 @@ public class TalentServiceImpl implements TalentService {
 	
 	private boolean currentUserOwnsImage(User user, Image image) {
 		return user.getTalent().equals(image.getTalent());
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void approveTalent(Long id, TalentClass talentClass) {
+		
+		Talent talent = talentRepository.findOne(id);
+		talent.setStatus(TalentStatus.APPROVED);
+		talent.setTalentClass(talentClass);
+		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void denyTalent(Long id, String adminNote) {
+		
+		Talent talent = talentRepository.findOne(id);
+		talent.setStatus(TalentStatus.DENIED);
+		talent.setAdminNote(adminNote);
+		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void forApprovalTalent(Long id, String adminNote) {
+		
+		Talent talent = talentRepository.findOne(id);
+		talent.setStatus(TalentStatus.FOR_APPROVAL);
+		talent.setAdminNote(adminNote);
+		
+	}
+
+	@Override
+	public Integer countApprovedTalents() {
+		
+		return talentRepository.countApprovedTalents();
+		
+	}
+
+	@Override
+	public Integer countForApprovalTalents() {
+		
+		return talentRepository.countForApprovalTalents();
+		
+	}
+
+	@Override
+	public Integer countDeniedTalents() {
+		
+		return talentRepository.countDeniedTalents();
+		
 	}
 
 }

@@ -44,6 +44,8 @@ public class Talent implements Serializable {
 	
 	private static final long serialVersionUID = 6866469865603303087L;
 	
+	private static final String FOR_APPROVAL_NOTE = "Your account is still for approval. Please allow us to process your registration within 24-48 hours. You can still update your profile whenever you wish.";
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.TABLE)
 	@Column(name = "TALENT_ID", nullable = false)
@@ -123,11 +125,15 @@ public class Talent implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private TalentStatus status;
 	
+	@Column(name = "ADMIN_NOTE", nullable = true)
+	private String adminNote;
+	
 	public Talent() { }
 	
 	@PrePersist
 	public void prePersist() {
 		status = TalentStatus.FOR_APPROVAL;
+		adminNote = FOR_APPROVAL_NOTE;
 	}
 
 	public Long getId() {
@@ -297,6 +303,14 @@ public class Talent implements Serializable {
 
 	public void setStatus(TalentStatus status) {
 		this.status = status;
+	}
+
+	public String getAdminNote() {
+		return adminNote;
+	}
+
+	public void setAdminNote(String adminNote) {
+		this.adminNote = adminNote;
 	}
 
 	@Override

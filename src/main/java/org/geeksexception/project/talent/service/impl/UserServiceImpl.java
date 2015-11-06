@@ -18,6 +18,7 @@ import org.geeksexception.project.talent.dao.ImageRepository;
 import org.geeksexception.project.talent.dao.TalentRepository;
 import org.geeksexception.project.talent.dao.UserRepository;
 import org.geeksexception.project.talent.dao.WorkExperienceRepository;
+import org.geeksexception.project.talent.enums.UserRole;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Errors;
 import org.geeksexception.project.talent.model.Image;
@@ -105,7 +106,9 @@ public class UserServiceImpl implements UserService {
 	@Transactional(readOnly = false)
 	public User update(User user, String imageTempLocation) throws TalentManagementServiceApiException {
 		
-		user.getTalent().setImages(getLoggedInUser().getTalent().getImages());
+		User savedUser = getLoggedInUser();
+		user.setPassword(savedUser.getPassword());
+		user.getTalent().setImages(savedUser.getTalent().getImages());
 		saveWorkExperiences(user);
 		saveImages(user, imageTempLocation);
 		
@@ -221,19 +224,25 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getFullProfile() {
+	public User getFullProfile(String email) {
 		
-		User user = getLoggedInUser();
-		Long talentId = user.getTalent().getId();
-		List<Image> images = imageRepository.findImagesByTalentId(talentId);
-		List<WorkExperience> workExperiences = workExperienceRepository.findWorkExperienceByTalentId(talentId);
+		User user;
 		
-		user.getTalent().setWorkExperiences(workExperiences);
-		user.getTalent().setImages(images);
+		if(email == null || email.trim().equals("")) user = getLoggedInUser();
+		else user = findUserByEmail(email);
 		
-		user.getTalent().setEventSize(talentRepository.countEvents(user.getTalent()));
-		user.setFollowerSize(userRepository.countFollowers(user));
-		user.setFollowingSize(userRepository.countFollowing(user));
+		if(user.getUserRole() == UserRole.ROLE_USER) {
+			Long talentId = user.getTalent().getId();
+			List<Image> images = imageRepository.findImagesByTalentId(talentId);
+			List<WorkExperience> workExperiences = workExperienceRepository.findWorkExperienceByTalentId(talentId);
+			
+			user.getTalent().setWorkExperiences(workExperiences);
+			user.getTalent().setImages(images);
+			
+			user.getTalent().setEventSize(talentRepository.countEvents(user.getTalent()));
+			user.setFollowerSize(userRepository.countFollowers(user));
+			user.setFollowingSize(userRepository.countFollowing(user));
+		}
 		
 		return user;
 		

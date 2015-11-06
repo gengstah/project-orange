@@ -44,9 +44,9 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.all]
 				}
 			})
-			.state('talentProfile', {
-				url: '/talent/profile', 
-				templateUrl: 'templates/talent/profile-page.html',
+			.state('profile', {
+				url: '/profile', 
+				templateUrl: 'templates/profile-page.html',
 				data: {
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}
@@ -64,6 +64,13 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 				data: {
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}
+			})
+			.state('talents', {
+				url: '/talents', 
+				templateUrl: 'templates/admin/talents.html',
+				data: {
+					authorizedRoles: [roles.admin]
+				}
 			});
 		
 		$locationProvider.hashPrefix('!');
@@ -73,8 +80,8 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 		}]);
 	}
 ]).
-run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService', 'USER_ROLES', 'Auth', 'Session',
-		function($rootScope, $state, events, AuthService, roles, Auth, Session) {
+run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService', 'USER_ROLES', 'Auth', 'Session', 'UserProfile',
+		function($rootScope, $state, events, AuthService, roles, Auth, Session, UserProfile) {
 	$rootScope.$state = $state;
 	Auth.get(function(user) {
 		if(user != null) {
@@ -93,6 +100,14 @@ run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService', 'USER_ROLES', 'Auth',
 				$rootScope.$broadcast(events.notAuthenticated);
 			}
 		}
+	});
+	
+	$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+		$('html, body').stop().animate({
+            scrollTop: ($("#page-top").offset().top - 50)
+        }, 1250, 'easeInOutExpo');
+		
+		if(toState.name != 'profile') UserProfile.destroy();
 	});
 }]).
 constant('USER_ROLES', {

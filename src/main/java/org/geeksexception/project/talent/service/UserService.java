@@ -19,7 +19,7 @@ public interface UserService {
 	
 	User getLoggedInUser();
 	
-	User getFullProfile();
+	User getFullProfile(String email);
 	
 	List<User> findTalentUsers(Integer page, Integer size);
 	
