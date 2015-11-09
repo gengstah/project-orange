@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.geeksexception.project.talent.enums.AgencyStatus;
 import org.hibernate.annotations.Fetch;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -62,6 +64,9 @@ public class Agency implements Serializable {
 	
 	@OneToMany(mappedBy = "agency")
 	private List<Event> events;
+	
+	@Transient
+	private Integer eventSize;
 	
 	@Column(name = "AGENCY_STATUS", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -140,6 +145,15 @@ public class Agency implements Serializable {
 
 	public void setEvents(List<Event> events) {
 		this.events = events;
+	}
+
+	@JsonProperty
+	public Integer getEventSize() {
+		return eventSize;
+	}
+
+	public void setEventSize(Integer eventSize) {
+		this.eventSize = eventSize;
 	}
 
 	public AgencyStatus getStatus() {

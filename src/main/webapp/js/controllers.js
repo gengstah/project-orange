@@ -315,6 +315,68 @@ controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$sta
 	}
 ]);
 
+controllers.controller('AgencyProfileController', ['$scope', '$rootScope', '$state', 'Auth', 'UserProfile', 'USER_ROLES', 'Agency',
+   	function($scope, $rootScope, $state, Auth, UserProfile, roles, Agency) {
+   		if(UserProfile.user && ($scope.user.userRole == roles.admin || $scope.user.userRole == roles.agency)) {
+   			Auth.viewProfile({ email : UserProfile.user.email }, function(user) {
+   				$scope.userToView = user;
+   			});
+   		} else {
+   			Auth.viewProfile(function(user) {
+   				$scope.userToView = user;
+   			});
+   		}
+   		
+   		$scope.approve = function approve(id, clazz) {
+   			Agency.approve($.param({id: id}), function() {
+   				$scope.successMessageApprove = "Updated";
+   				
+   				delete $scope.successMessageDeny
+   				delete $scope.errorMessageApprove;
+   				delete $scope.errorMessageDeny;
+   			}, function(error) {
+   				$scope.errorMessageApprove = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+   				
+   				delete $scope.successMessageDeny;
+   				delete $scope.successMessageApprove;
+   				delete $scope.errorMessageDeny;
+   			});
+   		};
+   		
+   		$scope.deny = function deny(id, note) {
+   			Agency.deny($.param({id: id, adminNote: note}), function() {
+   				$scope.successMessageDeny = "Updated";
+   				
+   				delete $scope.successMessageApprove;
+   				delete $scope.errorMessageApprove;
+   				delete $scope.errorMessageDeny;
+   			}, function(error) {
+   				$scope.errorMessageDeny = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+   				
+   				delete $scope.successMessageApprove;
+   				delete $scope.errorMessageApprove;
+   				delete $scope.successMessageDeny;
+   			});
+   		};
+   		
+   		$scope.setForApproval = function setForApproval(id, note) {
+   			Agency.setForApproval($.param({id: id, adminNote: note}), function() {
+   				$scope.successMessageDeny = "Updated";
+   				
+   				delete $scope.successMessageApprove;
+   				delete $scope.errorMessageApprove;
+   				delete $scope.errorMessageDeny;
+   			}, function(error) {
+   				$scope.errorMessageDeny = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+   				
+   				delete $scope.successMessageApprove;
+   				delete $scope.errorMessageApprove;
+   				delete $scope.successMessageDeny;
+   			});
+   		};
+   	}
+]);
+
 controllers.controller('TalentProfileUpdateController', ['$scope', '$rootScope', '$state', '$filter', 'Auth', 'WorkExperience',
 	function($scope, $rootScope, $state, $filter, Auth, WorkExperience) {
 		Auth.viewProfile(function(user) {

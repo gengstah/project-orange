@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.geeksexception.project.talent.api.ReCaptchaManager;
+import org.geeksexception.project.talent.dao.AgencyRepository;
 import org.geeksexception.project.talent.dao.ImageRepository;
 import org.geeksexception.project.talent.dao.TalentRepository;
 import org.geeksexception.project.talent.dao.UserRepository;
@@ -51,6 +52,8 @@ public class UserServiceImpl implements UserService {
 	private @Inject UserRepository userRepository;
 	
 	private @Inject TalentRepository talentRepository;
+	
+	private @Inject AgencyRepository agencyRepository;
 	
 	private @Inject WorkExperienceRepository workExperienceRepository;
 	
@@ -274,11 +277,12 @@ public class UserServiceImpl implements UserService {
 			user.getTalent().setImages(images);
 			
 			user.getTalent().setEventSize(talentRepository.countEvents(user.getTalent()));
-			user.setFollowerSize(userRepository.countFollowers(user));
-			user.setFollowingSize(userRepository.countFollowing(user));
 		} else if(user.getUserRole() == UserRole.ROLE_AGENCY) {
-			user.getAgency().getEvents();
+			user.getAgency().setEventSize(agencyRepository.countEvents(user.getAgency()));
 		}
+		
+		user.setFollowerSize(userRepository.countFollowers(user));
+		user.setFollowingSize(userRepository.countFollowing(user));
 		
 		return user;
 		

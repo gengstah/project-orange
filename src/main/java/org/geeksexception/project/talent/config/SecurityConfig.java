@@ -40,10 +40,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		/* Prod */
 		http
 			.authorizeRequests()
-				.antMatchers("/api/service/user/authenticate", "/api/service/user/registerTalent", "/api/service/user/registerAgency", "/api/service/user/uploadImage", "/api/service/user/deleteImage/**", "/img/**", "/img/temp/**").permitAll()
+				.antMatchers(
+						"/api/service/user/authenticate", 
+						"/api/service/user/registerTalent", 
+						"/api/service/user/registerAgency", 
+						"/api/service/user/uploadImage", 
+						"/api/service/user/deleteImage/**", 
+						"/img/**", 
+						"/img/temp/**").permitAll()
 				.antMatchers("/api/service/user/**", "/img/talents/**").authenticated()
-				.antMatchers("/api/service/talent/approved**").hasAnyRole("ADMIN", "AGENCY")
-				.antMatchers("/api/service/talent/forApproval**", "/api/service/talent/denied**").hasRole("ADMIN")
+				.antMatchers("/api/service/user/deleteSavedImage/**").hasRole("USER")
+				.antMatchers("/api/service/user/profile").hasAnyRole("AGENCY", "USER")
+				.antMatchers("/api/service/user/updateTalent").hasAnyRole("ADMIN", "USER")
+				.antMatchers(
+						"/api/service/talent/approved**", 
+						"/api/service/user/updateAgency").hasAnyRole("ADMIN", "AGENCY")
+				.antMatchers(
+						"/api/service/talent/**",
+						"/api/service/agency/**",
+						"/api/service/talent/forApproval**", 
+						"/api/service/talent/denied**", 
+						"/api/service/agency/forApproval**", 
+						"/api/service/agency/denied**", 
+						"/api/service/agency/approved**").hasRole("ADMIN")
 				.and()
 			.csrf().disable()
 			.sessionManagement()

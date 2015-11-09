@@ -99,7 +99,7 @@ public class UserManager {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
-	@Path("/updateTalent")
+	@Path("/updateAgency")
 	public User updateAgencyProfile(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
 		
 		return userService.updateAgencyUser(user);

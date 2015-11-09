@@ -1,35 +1,35 @@
-<div class="row" data-ng-controller="TalentProfileUpdateController">
+<div class="row" data-ng-controller="AgencyProfileUpdateController">
 	<div class="col-md-1"></div>
 	
 	<div class="col-md-10">		
 		<div class="page-header">
-			<h1>Update your profile <small>To get advantage over the others</small></h1>
+			<h1>Update your profile <small>To get better results in finding the best talents</small></h1>
 		</div>
 		
 		<div class="alert alert-danger" role="alert" data-ng-show="userUpdateErrors">
 			<div data-ng-repeat="userUpdateError in userUpdateErrors track by $index"><span class="glyphicon glyphicon-remove"></span> {{ userUpdateError.message }}</div>
 		</div>
 		<div class="alert alert-info" role="alert">Fields with <span class="glyphicon glyphicon-asterisk"></span> are required</div>
-		<form name="talentUpdateForm" role="form" method="POST" data-ng-submit="updateTalentProfile(userToUpdate)" novalidate="novalidate">
+		<form name="agencyUpdateForm" role="form" method="POST" data-ng-submit="updateAgencyProfile(userToUpdate)" novalidate="novalidate">
 			
 			<div class="page-header">
-				<h3>We'd like to know you <small>These information will also help you to find the perfect events just for you</small></h3>
+				<h3>We'd like to know you <small>These information will help us to properly communicate with you concerning your events</small></h3>
 			</div>
 		
 			<div class="row">
 				<div class="col-xs-6 col-md-6">
 					<div class="form-group has-feedback" 
-							data-ng-class="{ 'has-success' : talentUpdateForm.firstName.$valid, 'has-error' : talentUpdateForm.firstName.$invalid  }">
+							data-ng-class="{ 'has-success' : agencyUpdateForm.firstName.$valid, 'has-error' : agencyUpdateForm.firstName.$invalid  }">
 						<label for="firstName">First Name</label>
-						<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required="required" data-ng-model="userToUpdate.talent.firstName" />
+						<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required="required" data-ng-model="userToUpdate.agency.firstName" />
 						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
 					</div>
 				</div>
 				<div class="col-xs-6 col-md-6">
 					<div class="form-group has-feedback"
-							data-ng-class="{ 'has-success' : talentUpdateForm.lastName.$valid, 'has-error' : talentUpdateForm.lastName.$invalid  }">
+							data-ng-class="{ 'has-success' : agencyUpdateForm.lastName.$valid, 'has-error' : agencyUpdateForm.lastName.$invalid  }">
 						<label for="lastName">Last Name</label>
-						<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required="required" data-ng-model="userToUpdate.talent.lastName" />
+						<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required="required" data-ng-model="userToUpdate.agency.lastName" />
 						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
 					</div>
 				</div>
@@ -38,140 +38,36 @@
 			<div class="row">
 				<div class="col-xs-6 col-md-6">
 					<div class="form-group has-feedback" 
-							data-ng-class="{ 'has-success' : talentUpdateForm.birthDateStandardFormat.$valid, 'has-error' : talentUpdateForm.birthDateStandardFormat.$invalid  }">
-						<label for="birthDate">Birth Date</label>
-						<input type="text" class="form-control" id="birthDateStandardFormat" name="birthDateStandardFormat" placeholder="Birth Date" required="required" data-ng-model="userToUpdate.talent.birthDateStandardFormat" />
+							data-ng-class="{ 'has-success' : agencyUpdateForm.agencyName.$valid, 'has-error' : agencyUpdateForm.agencyName.$invalid  }">
+						<label for="agencyName">Agency Name</label>
+						<input type="text" class="form-control" id="agencyName" name="agencyName" placeholder="Agency Name" required="required" data-ng-model="userToUpdate.agency.agencyName" />
 						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
 					</div>
 				</div>
 				<div class="col-xs-6 col-md-6">
 					<div class="form-group has-feedback"
-							data-ng-class="{ 'has-success' : talentUpdateForm.contactNo.$valid, 'has-error' : talentUpdateForm.contactNo.$invalid  }">
+							data-ng-class="{ 'has-success' : agencyUpdateForm.contactNo.$valid, 'has-error' : agencyUpdateForm.contactNo.$invalid  }">
 						<label for="contactNo">Contact No</label>
-						<input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact No" required="required" data-ng-model="userToUpdate.talent.contactNo" />
+						<input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact No" required="required" data-ng-model="userToUpdate.agency.contactNo" />
 						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
 					</div>
 				</div>
 			</div>
 			
 			<div class="row">
-				<div class="col-xs-12 col-md-6">
-					<div class="form-group has-feedback"
-							data-ng-class="{ 'has-success' : talentUpdateForm.city.$valid, 'has-error' : talentUpdateForm.city.$invalid  }">
-						<label for="city">City</label>
-						<input type="text" class="form-control" id="city" name="city" placeholder="City" required="required" data-ng-model="userToUpdate.talent.city" />
-						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
-					</div>
-				</div>
-				<div class="col-xs-12 col-md-6">
-					<div class="col-xs-12 col-md-6">
-						<div class="form-group has-feedback"
-								data-ng-class="{ 'has-success' : talentUpdateForm.expectedSalary.$valid, 'has-error' : talentUpdateForm.expectedSalary.$invalid  }">
-							<label for="expectedSalary">Talent Fee</label>
-							<div class="input-group">
-								<span class="input-group-addon" id="bust">Php</span>
-								<input type="number" class="form-control" id="expectedSalary" name="expectedSalary" placeholder="Salary" required="required" data-ng-model="userToUpdate.talent.expectedSalary" />
-								<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
-							</div>
-						</div>
-					</div>
-					
-					<div class="col-xs-12 col-md-6">
-						<div class="form-group has-feedback"
-								data-ng-class="{ 'has-success' : talentUpdateForm.gender.$valid, 'has-error' : talentUpdateForm.gender.$invalid  }">
-							<label for="gender">Gender</label><br />
-							<label class="radio-inline">
-								<input type="radio" name="gender" value="M" data-ng-model="userToUpdate.talent.gender"> Male
-							</label>
-							<label class="radio-inline">
-								<input type="radio" name="gender" value="F" data-ng-model="userToUpdate.talent.gender"> Female
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-6">
+				<div class="col-xs-12 col-md-12">
 					<div class="form-group">
-						<div class="col-xs-12">
-							<label for="feet">Weight &amp; Height</label>
-						</div>
-						
-						<div class="col-xs-12 col-sm-4">
-							<div class="input-group">
-								<input type="number" class="form-control" id="weight" name="weight" placeholder="" data-ng-model="userToUpdate.talent.weight" /><span class="input-group-addon">kg</span>
-							</div>
-						</div>
-						
-						<div class="col-xs-6 col-sm-4">
-							<div class="input-group">
-								<input type="number" class="form-control" id="feet" name="feet" placeholder="" data-ng-model="userToUpdate.talent.feet" /><span class="input-group-addon">ft</span>
-							</div>
-						</div>
-						
-						<div class="col-xs-6 col-sm-4">
-							<div class="input-group">
-								<input type="number" class="form-control" id="inches" name="inches" placeholder="" data-ng-model="userToUpdate.talent.inches" /><span class="input-group-addon">in</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<div class="col-xs-12">
-							<label for="vital1">Vital Statistics</label>
-						</div>
-						
-						<div class="col-xs-12 col-sm-4">
-							<div class="input-group">
-								<span class="input-group-addon" id="bust">B</span>
-								<input type="number" class="form-control" id="vital1" name="vital1" placeholder="" data-ng-model="userToUpdate.talent.vital1" />
-							</div>
-						</div>
-						
-						<div class="col-xs-12 col-sm-4">
-							<div class="input-group">
-								<span class="input-group-addon" id="waist">W</span>
-								<input type="number" class="form-control" id="vital2" name="vital2" placeholder="" data-ng-model="userToUpdate.talent.vital2" />
-							</div>
-						</div>
-						
-						<div class="col-xs-12 col-sm-4">
-							<div class="input-group">
-								<span class="input-group-addon" id="hip">H</span>
-								<input type="number" class="form-control" id="vital3" name="vital3" placeholder="" data-ng-model="userToUpdate.talent.vital3" />
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>			
-			<hr />
-			<div class="row">
-				<div class="col-md-12">
-					<div class="form-group has-feedback"
-							data-ng-class="{ 'has-success' : talentUpdateForm.exp.$valid, 'has-error' : talentUpdateForm.exp.$invalid  }">
-						<label for="exp">Past Events</label>
-						<input type="text" class="form-control" id="exp" name="exp" data-ng-model="userToUpdate.talent.exp" required="required" />
-						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="form-group has-feedback">
-						<label class="control-label">Select at least 1 photo (max: 5)</label>
-						<input id="fileInput" name="fileInput" type="file" class="file-loading" multiple="multiple" accept="image/*" />
+						<label for="agencyAddress">Agency Address</label>
+						<input type="text" class="form-control" id="agencyAddress" name="agencyAddress" placeholder="Agency Address" required="required" data-ng-model="userToUpdate.agency.agencyAddress" />
 					</div>
 				</div>
 			</div>
 			
 			<div class="text-center">
-				<a href="#!/talent/profile" class="btn btn-default">Cancel</a>
+				<a href="#!/" class="btn btn-default">Cancel</a>
 				<button id="updateButton" type="submit" class="btn btn-primary" data-loading-text="Updating..." 
-					data-ng-disabled="talentUpdateForm.$invalid ||
-								userToUpdate.password !== userToUpdate.password2">
-					<span class="glyphicon glyphicon-floppy-disk"></span> Update
+					data-ng-disabled="agencyUpdateForm.$invalid">
+					<span class="glyphicon glyphicon-ok-sign"></span> Sign up
 				</button>
 			</div>
 		</form>

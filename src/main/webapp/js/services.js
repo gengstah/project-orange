@@ -132,6 +132,79 @@ services.factory('Talent', ['$resource',
 	}
 ]);
 
+services.factory('Agency', ['$resource', 
+	function($resource) {
+		return $resource('/api/service/agency/:action', {}, {
+			approved: { 
+				method: 'GET', 
+				params: { 
+					action: 'approved'
+				},
+				isArray: true
+			},
+			forApproval: { 
+				method: 'GET', 
+				params: { 
+					action: 'forApproval'
+				},
+				isArray: true
+			},
+			denied: { 
+				method: 'GET', 
+				params: { 
+					action: 'denied'
+				},
+				isArray: true
+			},
+			approve: { 
+				method: 'POST', 
+				params: { 
+					action: 'approve'
+				}, 
+  				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+			},
+			deny: {
+				method: 'POST', 
+				params: { 
+					action: 'deny'
+				}, 
+  				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+			},
+			setForApproval: {
+				method: 'POST',
+				params: { 
+					action: 'setForApproval'
+				},
+				headers : { 
+					'Content-Type': 'application/x-www-form-urlencoded' 
+				}
+			},
+			countApprovedTalents: {
+				method: 'GET',
+				params: { 
+					action: 'countApprovedAgencies'
+				}
+			},
+			countForApprovalTalents: {
+				method: 'GET',
+				params: { 
+					action: 'countForApprovalAgencies'
+				}
+			},
+			countDeniedTalents: {
+				method: 'GET',
+				params: { 
+					action: 'countDeniedAgencies'
+				}
+			}
+		});
+	}
+]);
+
 services.factory('WorkExperience', ['$resource', 
 	function($resource) {
 		return $resource('/api/service/exp');
