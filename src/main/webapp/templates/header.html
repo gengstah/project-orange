@@ -2,7 +2,16 @@
 	<ul class="nav nav-pills">
 		<li role="presentation" data-ng-class="{active: $uiRoute}"><a href="#!/">Home</a></li>
 		<li role="presentation" data-ui-route="/events" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthenticated()"><a href="#!/events">Events</a></li>
-		<li role="presentation" data-ui-route="/talents" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthorized([userRoles.admin, userRoles.agency])"><a href="#!/talents">Talents</a></li>
+		<li role="presentation" data-ui-route="/talents" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthorized(userRoles.agency)"><a href="#!/talents">Talents <span class="badge">{{ approvedTalentsCount.0 }}</span></a></li>
+		
+		<li role="presentation" class="dropdown" data-ng-if="isAuthorized(userRoles.admin)">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Talents <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				<li role="presentation" data-ui-route="/talents" data-ng-class="{active: $uiRoute}"><a href="#!/talents">Approved <span class="badge">{{ approvedTalentsCount.0 }}</span></a></li>
+				<li role="presentation" data-ui-route="/talents/forApproval" data-ng-class="{active: $uiRoute}"><a href="#!/talents/forApproval">For Approval <span class="badge">{{ forApprovalTalentsCount.0 }}</span></a></li>
+				<li role="presentation" data-ui-route="/talents/denied" data-ng-class="{active: $uiRoute}"><a href="#!/talents/denied">Denied <span class="badge">{{ deniedTalentsCount.0 }}</span></a></li>
+			</ul>
+		</li>
 		
 		<li role="presentation" class="dropdown" data-ng-if="isAuthenticated()">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span data-ng-bind="user.email">Geng</span> <span class="caret"></span></a>

@@ -1,15 +1,24 @@
 package org.geeksexception.project.talent.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.geeksexception.project.talent.dao.EventRepository;
+import org.geeksexception.project.talent.dao.TalentEventRepository;
 import org.geeksexception.project.talent.dao.TalentRepository;
 import org.geeksexception.project.talent.enums.TalentClass;
 import org.geeksexception.project.talent.enums.TalentStatus;
+import org.geeksexception.project.talent.enums.UserRole;
+import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
+import org.geeksexception.project.talent.model.Error;
+import org.geeksexception.project.talent.model.Errors;
+import org.geeksexception.project.talent.model.Event;
 import org.geeksexception.project.talent.model.Image;
 import org.geeksexception.project.talent.model.Talent;
+import org.geeksexception.project.talent.model.TalentEvent;
 import org.geeksexception.project.talent.model.User;
 import org.geeksexception.project.talent.service.ImageService;
 import org.geeksexception.project.talent.service.TalentService;
@@ -23,6 +32,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class TalentServiceImpl implements TalentService {
 	
 	private @Inject TalentRepository talentRepository;
+	
+	private @Inject EventRepository eventRepository;
+	
+	private @Inject TalentEventRepository talentEventRepository;
 	
 	private @Inject ImageService imageService;
 	
@@ -143,6 +156,69 @@ public class TalentServiceImpl implements TalentService {
 		
 		return talentRepository.countDeniedTalents();
 		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void applyToEvent(Long id) throws TalentManagementServiceApiException {
+		
+		User user = userService.getLoggedInUser();
+		checkIfTalentUser(user);
+			
+		Event event = eventRepository.findOne(id);
+		checkIfEventExists(event);
+		
+		TalentEvent talentEvent = new TalentEvent(user.getTalent(), event);
+		talentEventRepository.save(talentEvent);
+		
+		instantiateTalentEventsIfNull(user, event);
+		
+		user.getTalent().getTalentEvents().add(talentEvent);
+		event.getTalentEvents().add(talentEvent);
+		
+	}
+
+	private void instantiateTalentEventsIfNull(User user, Event event) {
+		if(user.getTalent().getTalentEvents() == null) user.getTalent().setTalentEvents(new ArrayList<TalentEvent>());
+		if(event.getTalentEvents() == null) event.setTalentEvents(new ArrayList<TalentEvent>());
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void withdrawApplicationFromEvent(Long id) throws TalentManagementServiceApiException {
+		
+		User user = userService.getLoggedInUser();
+		checkIfTalentUser(user);
+		
+		Event event = eventRepository.findOne(id);
+		checkIfEventExists(event);
+		
+		TalentEvent talentEvent = talentEventRepository.findTalentEventByTalentAndEvent(user.getTalent().getId(), event.getId());
+		checkIfTalentAppliedToEvent(talentEvent);
+		
+		user.getTalent().getTalentEvents().remove(talentEvent);
+		event.getTalentEvents().remove(talentEvent);
+		
+		talentEventRepository.delete(talentEvent);
+		
+	}
+	
+	private void checkIfTalentUser(User user) throws TalentManagementServiceApiException {
+		if(user.getUserRole() != UserRole.ROLE_USER) 
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("eventId", "You must not apply to events")));
+	}
+	
+	private void checkIfEventExists(Event event) throws TalentManagementServiceApiException {
+		if(event == null)
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("eventId", "Event does not exist")));
+	}
+	
+	private void checkIfTalentAppliedToEvent(TalentEvent talentEvent) throws TalentManagementServiceApiException {
+		if(talentEvent == null)
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("eventId", "You did not applied to this event")));
 	}
 
 }

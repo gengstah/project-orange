@@ -1,0 +1,23 @@
+<div data-ng-controller="ForApprovalTalentController">
+	
+	<p data-ng-if="forApprovalTalents.length == 0">There is no talent for approval as of the moment</p>
+	<div class="row" data-ng-repeat="forApprovalTalentRow in forApprovalTalents">
+		<div class="col-sm-6 col-md-4" data-ng-repeat="talent in forApprovalTalentRow">
+			<div class="thumbnail">
+				<a href="" data-ng-click="viewProfile(talent.user)">
+					<img src="/img/talents/mahha-1.jpeg" alt="..." data-ng-src="{{ talent.images[0].fileLocation }}" />
+				</a>
+				<div class="caption">
+					<a href="" data-ng-click="viewProfile(talent.user)"><h3>{{talent.firstName}} {{talent.lastName}}</h3></a>
+					<div><span class="glyphicon" data-ng-class="{ 'glyphicon-queen' : talent.gender == 'F', 'glyphicon-king' : talent.gender == 'M' }" aria-hidden="true"></span>&nbsp;&nbsp;<span data-ng-if="talent.gender == 'F'">Female</span><span data-ng-if="talent.gender == 'M'">Male</span></div>
+					<div><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;&nbsp;{{ talent.city }}</div>
+					<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Born on {{ talent.birthDate | date:'mediumDate' }}, {{ talent.birthDate | ageFilter }} yrs. old</div>
+					<div><span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;&nbsp;Joined on {{ talent.user.dateCreated | date:'mediumDate' }}</div>
+					<div><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;&nbsp;{{ talent.user.email }}</div>
+					<div><span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;&nbsp;{{ talent.contactNo }}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>

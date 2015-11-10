@@ -3,6 +3,7 @@ package org.geeksexception.project.talent.service;
 import java.util.List;
 
 import org.geeksexception.project.talent.enums.TalentClass;
+import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Talent;
 
 public interface TalentService {
@@ -30,5 +31,9 @@ public interface TalentService {
 	void denyTalent(Long id, String adminNote);
 	
 	void forApprovalTalent(Long id, String adminNote);
+	
+	void applyToEvent(Long id) throws TalentManagementServiceApiException;
+	
+	void withdrawApplicationFromEvent(Long id) throws TalentManagementServiceApiException;
 	
 }

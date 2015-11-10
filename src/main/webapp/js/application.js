@@ -95,9 +95,23 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 			})
 			.state('talents', {
 				url: '/talents', 
-				templateUrl: 'templates/admin/talents.html',
+				templateUrl: 'templates/approved-talents.html',
 				data: {
 					authorizedRoles: [roles.admin, roles.agency]
+				}
+			})
+			.state('for-approval-talents', {
+				url: '/talents/forApproval', 
+				templateUrl: 'templates/admin/forApproval-talents.html',
+				data: {
+					authorizedRoles: [roles.admin]
+				}
+			})
+			.state('denied-talents', {
+				url: '/talents/denied', 
+				templateUrl: 'templates/admin/denied-talents.html',
+				data: {
+					authorizedRoles: [roles.admin]
 				}
 			});
 		

@@ -40,6 +40,12 @@ services.factory('Auth', ['$resource',
   					action: 'updateTalent'
   				}
   			},
+  			updateAgency: { 
+  				method: 'POST', 
+  				params: { 
+  					action: 'updateAgency'
+  				}
+  			},
   			viewProfile: {
   				method: 'GET', 
   				params: { 
@@ -132,6 +138,18 @@ services.factory('Talent', ['$resource',
 	}
 ]);
 
+services.factory('TalentApplyEvent', ['$resource', 
+	function($resource) {
+		return $resource('/api/service/talent/apply/:id');
+	}
+]);
+
+services.factory('TalentWithdrawEvent', ['$resource', 
+  	function($resource) {
+  		return $resource('/api/service/talent/withdraw/:id');
+  	}
+]);
+
 services.factory('Agency', ['$resource', 
 	function($resource) {
 		return $resource('/api/service/agency/:action', {}, {
@@ -203,6 +221,24 @@ services.factory('Agency', ['$resource',
 			}
 		});
 	}
+]);
+
+services.factory('Event', ['$resource', 
+	function($resource) {
+		return $resource('/api/service/event/:id');
+	}
+]);
+
+services.factory('AgencyEvent', ['$resource', 
+	function($resource) {
+		return $resource('/api/service/event/agency/:id');
+	}
+]);
+
+services.factory('TalentEvent', ['$resource', 
+ 	function($resource) {
+ 		return $resource('/api/service/event/talent/:id');
+ 	}
 ]);
 
 services.factory('WorkExperience', ['$resource', 

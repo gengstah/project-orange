@@ -37,11 +37,27 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 	}
 ]);
 
-controllers.controller('HeaderController', ['$scope', '$rootScope', 'AUTH_EVENTS',
-	function($scope, $rootScope, events) {
+controllers.controller('HeaderController', ['$scope', '$rootScope', 'AUTH_EVENTS', 'Talent', 'Session', 'USER_ROLES',
+	function($scope, $rootScope, events, Talent, Session, roles) {
 		$scope.logout = function logout() {
 			$rootScope.$broadcast(events.logoutSuccess);
 		};
+		
+		if($scope.isAuthenticated()) {
+			Talent.countApprovedTalents(function(approvedTalentsCount) {
+				$scope.approvedTalentsCount = approvedTalentsCount
+			});
+			
+			if(Session.user.userRole == roles.admin) {
+				Talent.countForApprovalTalents(function(forApprovalTalentsCount) {
+					$scope.forApprovalTalentsCount = forApprovalTalentsCount;
+				});
+				
+				Talent.countDeniedTalents(function(deniedTalentsCount) {
+					$scope.deniedTalentsCount = deniedTalentsCount;
+				});
+			}
+		}
   	}
 ]);
 
@@ -479,7 +495,7 @@ controllers.controller('TalentProfileUpdateController', ['$scope', '$rootScope',
 			Auth.updateTalent(user, function(userResponse) {
 				$updateButton.button("reset");
 				$state.go("home");
-				delete $scope.user;
+				delete $scope.userToUpdate;
 				delete $scope.userUpdateErrors;
 			}, function(error) {
 				user.talent.exp = exp;
@@ -492,13 +508,37 @@ controllers.controller('TalentProfileUpdateController', ['$scope', '$rootScope',
 	}
 ]);
 
+controllers.controller('AgencyProfileUpdateController', ['$scope', '$rootScope', '$state', '$filter', 'Auth', 'WorkExperience',
+ 	function($scope, $rootScope, $state, $filter, Auth, WorkExperience) {
+ 		Auth.viewProfile(function(user) {
+ 			$scope.userToUpdate = user;
+ 		});
+ 		
+ 		$scope.updateAgencyProfile = function updateAgencyProfile(user) {
+ 			user.password = '        ';
+ 			var $updateButton = $("#updateButton").button("loading");
+ 			
+ 			Auth.updateAgency(user, function(userResponse) {
+ 				$updateButton.button("reset");
+ 				$state.go("home");
+ 				delete $scope.userToUpdate;
+ 				delete $scope.userUpdateErrors;
+ 			}, function(error) {
+ 				$updateButton.button("reset");
+ 				$scope.userUpdateErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+ 			});
+ 		};
+ 		
+ 	}
+]);
+
 controllers.controller('EventsController', ['$scope', '$rootScope', '$state',
 	function($scope, $rootScope, $state) {
 		
 	}
 ]);
 
-controllers.controller('TalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile', 'Session', 'USER_ROLES',
+controllers.controller('ApprovedTalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile', 'Session', 'USER_ROLES',
 	function($scope, $rootScope, $state, Talent, DATA, UserProfile, Session, roles) {
 		var columnCount = 4;
 		
@@ -512,11 +552,19 @@ controllers.controller('TalentController', ['$scope', '$rootScope', '$state', 'T
 			}
 			
 			$scope.approvedTalents = talentRows;
-			
-			Talent.countApprovedTalents(function(approvedTalentsCount) {
-				$scope.approvedTalentsCount = approvedTalentsCount
-			});
 		});
+		
+		$scope.viewProfile = function viewProfile(user) {
+			UserProfile.setUser(user);
+			$state.go("talentProfile");
+		};
+	
+	}
+]);
+
+controllers.controller('ForApprovalTalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile', 'Session', 'USER_ROLES',
+	function($scope, $rootScope, $state, Talent, DATA, UserProfile, Session, roles) {
+		var columnCount = 4;
 		
 		if(Session.user.userRole == roles.admin) {
 			Talent.forApproval({ page: 1, size: DATA.pageSize }, function(forApprovalTalents){
@@ -529,31 +577,6 @@ controllers.controller('TalentController', ['$scope', '$rootScope', '$state', 'T
 				}
 				
 				$scope.forApprovalTalents = talentRows;
-				
-				Talent.countForApprovalTalents(function(forApprovalTalentsCount) {
-					$scope.forApprovalTalentsCount = forApprovalTalentsCount;
-				});
-			});
-			
-			Talent.denied({ page: 1, size: DATA.pageSize }, function(deniedTalents){
-				var talentsPerRow = Math.ceil(deniedTalents.length / columnCount);
-				var talentRows = [];
-				
-				for(var talentIndex = 0;talentIndex < deniedTalents.length;talentIndex += talentsPerRow) {
-					var talentRow = deniedTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, deniedTalents.length));
-					talentRows.push(talentRow);
-				}
-				
-				$scope.deniedTalents = talentRows;
-				
-				Talent.countDeniedTalents(function(deniedTalentsCount) {
-					$scope.deniedTalentsCount = deniedTalentsCount;
-				});
-			});
-			
-			$('#talentTab a').click(function (e) {
-				e.preventDefault();
-				$(this).tab('show');
 			});
 		}
 		
@@ -563,6 +586,32 @@ controllers.controller('TalentController', ['$scope', '$rootScope', '$state', 'T
 		};
 	
 	}
+]);
+
+controllers.controller('DeniedTalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile', 'Session', 'USER_ROLES',
+   	function($scope, $rootScope, $state, Talent, DATA, UserProfile, Session, roles) {
+   		var columnCount = 4;
+   		
+   		if(Session.user.userRole == roles.admin) {
+   			Talent.denied({ page: 1, size: DATA.pageSize }, function(deniedTalents){
+   				var talentsPerRow = Math.ceil(deniedTalents.length / columnCount);
+   				var talentRows = [];
+   				
+   				for(var talentIndex = 0;talentIndex < deniedTalents.length;talentIndex += talentsPerRow) {
+   					var talentRow = deniedTalents.slice(talentIndex, Math.min(talentIndex + talentsPerRow, deniedTalents.length));
+   					talentRows.push(talentRow);
+   				}
+   				
+   				$scope.deniedTalents = talentRows;
+   			});
+   		}
+   		
+   		$scope.viewProfile = function viewProfile(user) {
+   			UserProfile.setUser(user);
+   			$state.go("talentProfile");
+   		};
+   	
+   	}
 ]);
 
 controllers.controller('PasswordController', ['$scope', 'Session', 'Auth', '$state',
