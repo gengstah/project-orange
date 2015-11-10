@@ -1,7 +1,16 @@
-<div class="row" data-ng-controller="EventsController">
-	<div class="jumbotron">
-		<h1>Oops!</h1>
-		<p>There is currently no events listed as of the moment as this web app is still <kbd>under construction</kbd>. If you want to be notified for future events, you may sign up by clicking the button below.</p>
-		<p><a class="btn btn-primary btn-lg" href="#!/register" role="button">Join Us</a></p>
+<div class="row" data-ng-controller="EventController">
+	
+	<p data-ng-if="events.length == 0">There is no event as of the moment</p>
+	
+	<div class="list-group">
+		<a href="" class="list-group-item active" data-ng-repeat="event in events" data-ng-click="viewEvent(event.id)">
+			<h4 class="list-group-item-heading" data-ng-bind="event.name">Event name</h4>
+			<p class="list-group-item-text" data-ng-bind="event.description">...</p>
+		</a>
 	</div>
+	
+	<div data-ng-if="isAuthorized(userRoles.agency)">
+		<a href="#!/event/create" class="btn btn-primary">Add event</a>
+	</div>
+	
 </div>

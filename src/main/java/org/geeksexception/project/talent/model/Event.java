@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,7 +19,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
+import org.geeksexception.project.talent.enums.EventStatus;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -29,6 +33,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Event implements Serializable {
 	
 	private static final long serialVersionUID = 3238561696427818834L;
+	
+	private static final String FOR_APPROVAL_NOTE = "Your event is still for approval. Please allow us to process your request within 24-48 hours. You can still update your event whenever you wish.";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.TABLE)
@@ -48,7 +54,8 @@ public class Event implements Serializable {
 	@Column(name = "RUN_DATE_TO", nullable = true)
 	private Date runDateTo;
 	
-	@Column(name = "TALENT_FEE", nullable = true)
+	@Column(name = "TALENT_FEE", nullable = false)
+	@NotNull(message = "Please indicate the talent fee for this event")
 	private BigDecimal talentFee;
 	
 	@ManyToOne
@@ -57,6 +64,13 @@ public class Event implements Serializable {
 	
 	@OneToMany(mappedBy = "event")
 	private List<TalentEvent> talentEvents;
+	
+	@Column(name = "EVENT_STATUS", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private EventStatus status;
+	
+	@Column(name = "ADMIN_NOTE", nullable = true)
+	private String adminNote;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_CREATED", nullable = false)
@@ -67,6 +81,8 @@ public class Event implements Serializable {
 	@PrePersist
 	public void prePersist() {
 		dateCreated = new Date();
+		status = EventStatus.FOR_APPROVAL;
+		adminNote = FOR_APPROVAL_NOTE;
 	}
 
 	public Long getId() {
@@ -131,6 +147,14 @@ public class Event implements Serializable {
 
 	public void setTalentEvents(List<TalentEvent> talentEvents) {
 		this.talentEvents = talentEvents;
+	}
+
+	public EventStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(EventStatus status) {
+		this.status = status;
 	}
 
 	public Date getDateCreated() {

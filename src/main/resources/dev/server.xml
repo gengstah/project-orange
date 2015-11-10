@@ -25,6 +25,8 @@
 		class="org.geeksexception.project.talent.api.WorkExperienceManager" />
 	<bean id="agencyManager"
 		class="org.geeksexception.project.talent.api.AgencyManager" />
+	<bean id="eventManager"
+		class="org.geeksexception.project.talent.api.EventManager" />
 
 	<!-- Providers -->
 	<bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider">
@@ -52,6 +54,7 @@
 			<ref bean="talentManager" />
 			<ref bean="workExperienceManager" />
 			<ref bean="agencyManager" />
+			<ref bean="eventManager" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean="corsFilter" />

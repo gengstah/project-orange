@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -50,6 +51,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/img/temp/**").permitAll()
 				.antMatchers("/api/service/user/**", "/img/talents/**").authenticated()
 				.antMatchers("/api/service/user/deleteSavedImage/**").hasRole("USER")
+				.antMatchers(HttpMethod.POST, "/api/service/event").hasRole("AGENCY")
+				.antMatchers("/api/service/event/agency/**").hasRole("AGENCY")
 				.antMatchers("/api/service/user/profile").hasAnyRole("AGENCY", "USER")
 				.antMatchers("/api/service/user/updateTalent").hasAnyRole("ADMIN", "USER")
 				.antMatchers(
@@ -57,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/api/service/user/updateAgency").hasAnyRole("ADMIN", "AGENCY")
 				.antMatchers(
 						"/api/service/talent/**",
+						"/api/service/event/**",
 						"/api/service/agency/**",
 						"/api/service/talent/forApproval**", 
 						"/api/service/talent/denied**", 

@@ -1,0 +1,76 @@
+<div class="row" data-ng-controller="AddEventController">
+	
+	<div class="col-md-1"></div>
+	
+	<div class="col-md-10">
+		<div class="page-header">
+			<h1>Create an Event <small>Hire the best talents</small></h1>
+		</div>
+		
+		<div class="alert alert-danger" role="alert" data-ng-show="addEventErrors">
+			<div data-ng-repeat="addEventErrors in addEventErrors track by $index"><span class="glyphicon glyphicon-remove"></span> {{ addEventError.message }}</div>
+		</div>
+		
+		<div class="alert alert-info" role="alert">Fields with <span class="glyphicon glyphicon-asterisk"></span> are required</div>
+		<form name="addEventForm" role="form" method="POST" data-ng-submit="addEvent(event)" novalidate="novalidate">
+		
+			<div class="page-header">
+				<h3>Event details <small>Let us know the details of your event</small></h3>
+			</div>
+			
+			<div class="row">
+				<div class="form-group has-feedback" 
+						data-ng-class="{ 'has-success' : addEventForm.eventName.$valid, 'has-error' : addEventForm.eventName.$invalid  }">
+					<label for="eventName">Event name</label>
+					<input type="text" class="form-control" id="eventName" name="eventName" placeholder="Event name" required="required" data-ng-model="event.name" />
+					<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="eventDescription">Event description</label>
+					<textarea id="eventDescription" name="eventDescription" class="form-control" rows="5" data-ng-model="event.description"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-md-6">
+					<div class="form-group">
+						<label for="runDateFromStandardFormat">Event run from</label>
+						<input type="text" class="form-control" id="runDateFromStandardFormat" name="runDateFromStandardFormat" placeholder="Run date from" data-ng-model="event.runDateFromStandardFormat" />
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-6">
+					<div class="form-group">
+						<label for="runDateToStandardFormat">Event run to</label>
+						<input type="text" class="form-control" id="runDateToStandardFormat" name="runDateToStandardFormat" placeholder="Run date to" data-ng-model="event.runDateToStandardFormat" />
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-xs-12 col-md-6">
+					<div class="form-group has-feedback"
+							data-ng-class="{ 'has-success' : addEventForm.talentFee.$valid, 'has-error' : addEventForm.talentFee.$invalid  }">
+						<label for="talentFee">Talent Fee</label>
+						<div class="input-group">
+							<span class="input-group-addon" id="bust">Php</span>
+							<input type="number" class="form-control" id="talentFee" name="talentFee" placeholder="Talent Fee" required="required" data-ng-model="event.talentFee" />
+							<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="text-center">
+				<a href="#!/events" class="btn btn-default">Cancel</a>
+				<button id="addEventButton" type="submit" class="btn btn-primary" data-loading-text="Adding event..." 
+					data-ng-disabled="addEventForm.$invalid">
+					<span class="glyphicon glyphicon-ok-sign"></span> Add event
+				</button>
+			</div>
+		</form>
+	</div>
+	
+	<div class="col-md-1"></div>
+	
+</div>

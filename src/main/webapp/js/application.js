@@ -27,7 +27,21 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 				url: '/events', 
 				templateUrl: 'templates/events.html',
 				data: {
-					authorizedRoles: [roles.all]
+					authorizedRoles: [roles.user, roles.agency, roles.admin]
+				}
+			})
+			.state('add-event', {
+				url: '/event/create', 
+				templateUrl: 'templates/add-event.html',
+				data: {
+					authorizedRoles: [roles.agency]
+				}
+			})
+			.state('update-event', {
+				url: '/event/update', 
+				templateUrl: 'templates/update-event.html',
+				data: {
+					authorizedRoles: [roles.agency]
 				}
 			})
 			.state('register', {

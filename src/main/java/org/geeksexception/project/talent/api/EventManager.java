@@ -13,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Event;
 import org.geeksexception.project.talent.service.EventService;
 import org.springframework.http.MediaType;
@@ -34,14 +35,14 @@ public class EventManager {
 		if(page == null) page = 1;
 		if(size == null) size = 20;
 		
-		return eventService.findAllEvents(page, size);
+		return eventService.findAllEvents(page - 1, size);
 		
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
-	public Event save(Event event) {
+	public Event save(Event event) throws TalentManagementServiceApiException {
 		
 		return eventService.save(event);
 		
@@ -69,7 +70,7 @@ public class EventManager {
 		if(page == null) page = 1;
 		if(size == null) size = 20;
 		
-		return eventService.findAllEventsOfAgency(id, page, size);
+		return eventService.findAllEventsOfAgency(id, page - 1, size);
 		
 	}
 	
@@ -85,7 +86,7 @@ public class EventManager {
 		if(page == null) page = 1;
 		if(size == null) size = 20;
 		
-		return eventService.findAllEventsOfTalent(id, page, size);
+		return eventService.findAllEventsOfTalent(id, page - 1, size);
 		
 	}
 	

@@ -532,9 +532,29 @@ controllers.controller('AgencyProfileUpdateController', ['$scope', '$rootScope',
  	}
 ]);
 
-controllers.controller('EventsController', ['$scope', '$rootScope', '$state',
-	function($scope, $rootScope, $state) {
+controllers.controller('EventController', ['$scope', '$rootScope', '$state', 'Session', 'USER_ROLES', 'Event', 'AgencyEvent', 'TalentEvent',
+	function($scope, $rootScope, $state, Session, roles, Event, AgencyEvent, TalentEvent) {
+		if($scope.isAuthorized(roles.admin)) {
+			Event.query(function(events) {
+				$scope.events = events;
+			});
+		}
 		
+		if($scope.isAuthorized(roles.agency)) {
+			AgencyEvent.query({ id: Session.user.agency.id }, function(events) {
+				$scope.events = events;
+			});
+		}
+		
+		if($scope.isAuthorized(roles.user)) {
+			TalentEvent.query({ id: Session.user.talent.id }, function(events) {
+				$scope.events = events;
+			});
+		}
+		
+		$scope.viewEvent = function viewEvent(id) {
+			
+		};
 	}
 ]);
 
@@ -612,6 +632,67 @@ controllers.controller('DeniedTalentController', ['$scope', '$rootScope', '$stat
    		};
    	
    	}
+]);
+
+controllers.controller('AddEventController', ['$scope', '$state', 'Event', 
+	function($scope, $state, Event) {
+
+		$scope.addEvent = function addEvent(event) {
+			var $addEventButton = $("#addEventButton").button("loading");
+			
+			event.runDateFrom = new Date(event.runDateFromStandardFormat);
+			event.runDateTo = new Date(event.runDateToStandardFormat);
+			
+			var runDateFromStandardFormat = event.runDateFromStandardFormat;
+			var runDateToStandardFormat = event.runDateToStandardFormat;
+			
+			delete event.runDateFromStandardFormat;
+			delete event.runDateToStandardFormat;
+			
+			Event.save(event, function(savedEvent) {
+				$state.go('events');
+				$addEventButton.button("reset");
+			}, function(error) {
+				event.runDateFromStandardFormat = runDateFromStandardFormat;
+				event.runDateToStandardFormat = runDateToStandardFormat;
+				$addEventButton.button("reset");
+				$scope.addEventErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+			});
+		};
+		
+		$("input#runDateFromStandardFormat").datepicker({
+			autoclose: true,
+			toggleActive: true
+		});
+		
+		$("input#runDateToStandardFormat").datepicker({
+			autoclose: true,
+			toggleActive: true
+		});
+		
+	}
+]);
+
+controllers.controller('UpdateEventController', ['$scope', '$state', 'Event',
+  	function($scope, $state, Event) {
+		
+		$scope.updateEvent = function updateEvent(event) {
+			Event.save(event, function(savedEvent) {
+				$state.go('events');
+			});
+		};
+		
+		$("input#runDateFromStandardFormat").datepicker({
+			autoclose: true,
+			toggleActive: true
+		});
+		
+		$("input#runDateToStandardFormat").datepicker({
+			autoclose: true,
+			toggleActive: true
+		});
+  		
+  	}
 ]);
 
 controllers.controller('PasswordController', ['$scope', 'Session', 'Auth', '$state',
