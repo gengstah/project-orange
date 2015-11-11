@@ -26,11 +26,11 @@ public interface TalentService {
 	
 	Talent save(Talent talent);
 	
-	void approveTalent(Long id, TalentClass talentClass);
+	void approveTalent(Long id, TalentClass talentClass) throws TalentManagementServiceApiException;
 	
-	void denyTalent(Long id, String adminNote);
+	void denyTalent(Long id, String adminNote) throws TalentManagementServiceApiException;
 	
-	void forApprovalTalent(Long id, String adminNote);
+	void forApprovalTalent(Long id, String adminNote) throws TalentManagementServiceApiException;
 	
 	void applyToEvent(Long id) throws TalentManagementServiceApiException;
 	

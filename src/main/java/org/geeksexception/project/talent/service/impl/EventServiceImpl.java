@@ -1,10 +1,12 @@
 package org.geeksexception.project.talent.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.geeksexception.project.talent.dao.EventRepository;
+import org.geeksexception.project.talent.enums.EventStatus;
 import org.geeksexception.project.talent.enums.UserRole;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Error;
@@ -59,6 +61,13 @@ public class EventServiceImpl implements EventService {
 		return eventRepository.findAllEvents(new PageRequest(page, size));
 		
 	}
+	
+	@Override
+	public List<Event> findAllApprovedEvents(Integer page, Integer size) {
+		
+		return eventRepository.findAllApprovedEvents(new PageRequest(page, size));
+		
+	}
 
 	@Override
 	public List<Event> findAllEventsOfAgency(Long id, Integer page, Integer size) {
@@ -71,6 +80,48 @@ public class EventServiceImpl implements EventService {
 	public List<Event> findAllEventsOfTalent(Long id, Integer page, Integer size) {
 		
 		return eventRepository.findAllEventsOfTalent(id, new PageRequest(page, size));
+		
+	}
+	
+	private void checkEvent(Event event) throws TalentManagementServiceApiException {
+		if(event == null)
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("eventId", "Event not found")));
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void approveEvent(Long id, BigDecimal actualTalentFee) throws TalentManagementServiceApiException {
+		
+		Event event = eventRepository.findOne(id);
+		checkEvent(event);
+		
+		event.setActualTalentFee(actualTalentFee);
+		event.setStatus(EventStatus.APPROVED);
+		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void denyEvent(Long id, String adminNote) throws TalentManagementServiceApiException {
+		
+		Event event = eventRepository.findOne(id);
+		checkEvent(event);
+		
+		event.setAdminNote(adminNote);
+		event.setStatus(EventStatus.DENIED);
+		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void forApprovalEvent(Long id, String adminNote) throws TalentManagementServiceApiException {
+		
+		Event event = eventRepository.findOne(id);
+		checkEvent(event);
+		
+		event.setAdminNote(adminNote);
+		event.setStatus(EventStatus.FOR_APPROVAL);
 		
 	}
 

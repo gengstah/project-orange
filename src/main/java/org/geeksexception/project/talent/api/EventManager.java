@@ -39,6 +39,21 @@ public class EventManager {
 		
 	}
 	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/approved")
+	public List<Event> findAllApprovedEvents(
+			@QueryParam("page") @Min(1) Integer page, 
+			@QueryParam("size") @Min(1) Integer size) {
+		
+		if(page == null) page = 1;
+		if(size == null) size = 20;
+		
+		return eventService.findAllApprovedEvents(page - 1, size);
+		
+	}
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)

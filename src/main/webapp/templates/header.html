@@ -5,7 +5,7 @@
 		<li role="presentation" data-ui-route="/talents" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthorized(userRoles.agency)"><a href="#!/talents">Talents <span class="badge">{{ approvedTalentsCount.0 }}</span></a></li>
 		
 		<li role="presentation" class="dropdown" data-ng-if="isAuthorized(userRoles.admin)">
-			<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Talents <span class="caret"></span></a>
+			<a class="dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">Talents <span class="caret"></span></a>
 			<ul class="dropdown-menu">
 				<li role="presentation" data-ui-route="/talents" data-ng-class="{active: $uiRoute}"><a href="#!/talents">Approved <span class="badge">{{ approvedTalentsCount.0 }}</span></a></li>
 				<li role="presentation" data-ui-route="/talents/forApproval" data-ng-class="{active: $uiRoute}"><a href="#!/talents/forApproval">For Approval <span class="badge">{{ forApprovalTalentsCount.0 }}</span></a></li>
@@ -14,12 +14,12 @@
 		</li>
 		
 		<li role="presentation" class="dropdown" data-ng-if="isAuthenticated()">
-			<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span data-ng-bind="user.email">Geng</span> <span class="caret"></span></a>
+			<a class="dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false"><span data-ng-bind="user.email">Geng</span> <span class="caret"></span></a>
 			<ul class="dropdown-menu">
-				<li role="presentation" data-ui-route="/talent/profile" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthorized(userRoles.user)"><a href="#!/talent/profile">Profile</a></li>
-				<li role="presentation" data-ui-route="/agency/profile" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthorized(userRoles.agency)"><a href="#!/agency/profile">Profile</a></li>
-				<li role="presentation" data-ui-route="/changePassword" data-ng-class="{active: $uiRoute}"><a href="#!/changePassword">Change password</a></li>
-				<li role="presentation"><a href="" data-ng-click="logout()">Logout</a></li>
+				<li role="presentation" data-ui-route="/talent/profile" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthorized(userRoles.user)"><a href="#!/talent/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+				<li role="presentation" data-ui-route="/agency/profile" data-ng-class="{active: $uiRoute}" data-ng-if="isAuthorized(userRoles.agency)"><a href="#!/agency/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+				<li role="presentation" data-ui-route="/changePassword" data-ng-class="{active: $uiRoute}"><a href="#!/changePassword"><span class="glyphicon glyphicon-lock"></span> Change password</a></li>
+				<li role="presentation"><a href="" data-ng-click="logout()"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 			</ul>
 		</li>
 	</ul>

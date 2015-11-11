@@ -12,6 +12,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	@Query("SELECT e FROM Event e ORDER BY e.dateCreated DESC")
 	List<Event> findAllEvents(Pageable pageable);
 	
+	@Query("SELECT e FROM Event e WHERE e.status = 'APPROVED' ORDER BY e.dateCreated DESC")
+	List<Event> findAllApprovedEvents(Pageable pageable);
+	
 	@Query("SELECT e FROM Event e WHERE e.agency.id = ?1 ORDER BY e.dateCreated DESC")
 	List<Event> findAllEventsOfAgency(Long id, Pageable pageable);
 	

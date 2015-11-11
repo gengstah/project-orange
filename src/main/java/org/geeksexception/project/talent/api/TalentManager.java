@@ -84,7 +84,7 @@ public class TalentManager {
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/approve")
 	public void approve(@NotNull(message = "id must not be null") @FormParam("id") Long id, 
-			@NotEmpty(message = "talent class must not be empty") @FormParam("talentClass") String clazz) {
+			@NotEmpty(message = "talent class must not be empty") @FormParam("talentClass") String clazz) throws TalentManagementServiceApiException {
 		
 		TalentClass talentClass = TalentClass.valueOf(clazz);
 		
@@ -97,7 +97,7 @@ public class TalentManager {
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/deny")
 	public void deny(@NotNull(message = "id must not be null") @FormParam("id") Long id, 
-			@NotEmpty(message = "admin note must not be empty") @FormParam("adminNote") String adminNote) {
+			@NotEmpty(message = "admin note must not be empty") @FormParam("adminNote") String adminNote) throws TalentManagementServiceApiException {
 		
 		talentService.denyTalent(id, adminNote);
 		
@@ -108,7 +108,7 @@ public class TalentManager {
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/setForApproval")
 	public void forApproval(@NotNull(message = "id must not be null") @FormParam("id") Long id, 
-			@NotEmpty(message = "admin note must not be empty") @FormParam("adminNote") String adminNote) {
+			@NotEmpty(message = "admin note must not be empty") @FormParam("adminNote") String adminNote) throws TalentManagementServiceApiException {
 		
 		talentService.forApprovalTalent(id, adminNote);
 		

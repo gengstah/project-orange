@@ -107,21 +107,31 @@ public class TalentServiceImpl implements TalentService {
 		return user.getTalent().equals(image.getTalent());
 	}
 
+	private void checkTalent(Talent talent) throws TalentManagementServiceApiException {
+		if(talent == null)
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("talentId", "Talent not found")));
+	}
+	
 	@Override
 	@Transactional(readOnly = false)
-	public void approveTalent(Long id, TalentClass talentClass) {
+	public void approveTalent(Long id, TalentClass talentClass) throws TalentManagementServiceApiException {
 		
 		Talent talent = talentRepository.findOne(id);
+		checkTalent(talent);
+		
 		talent.setStatus(TalentStatus.APPROVED);
 		talent.setTalentClass(talentClass);
 		
 	}
-
+	
 	@Override
 	@Transactional(readOnly = false)
-	public void denyTalent(Long id, String adminNote) {
+	public void denyTalent(Long id, String adminNote) throws TalentManagementServiceApiException {
 		
 		Talent talent = talentRepository.findOne(id);
+		checkTalent(talent);
+		
 		talent.setStatus(TalentStatus.DENIED);
 		talent.setAdminNote(adminNote);
 		
@@ -129,9 +139,11 @@ public class TalentServiceImpl implements TalentService {
 
 	@Override
 	@Transactional(readOnly = false)
-	public void forApprovalTalent(Long id, String adminNote) {
+	public void forApprovalTalent(Long id, String adminNote) throws TalentManagementServiceApiException {
 		
 		Talent talent = talentRepository.findOne(id);
+		checkTalent(talent);
+		
 		talent.setStatus(TalentStatus.FOR_APPROVAL);
 		talent.setAdminNote(adminNote);
 		

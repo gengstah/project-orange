@@ -58,6 +58,9 @@ public class Event implements Serializable {
 	@NotNull(message = "Please indicate the talent fee for this event")
 	private BigDecimal talentFee;
 	
+	@Column(name = "ACTUAL_TALENT_FEE", nullable = true)
+	private BigDecimal actualTalentFee;
+	
 	@ManyToOne
 	@JoinColumn(name="AGENCY_ID")
 	private Agency agency;
@@ -82,7 +85,7 @@ public class Event implements Serializable {
 	public void prePersist() {
 		dateCreated = new Date();
 		status = EventStatus.FOR_APPROVAL;
-		adminNote = FOR_APPROVAL_NOTE;
+		setAdminNote(FOR_APPROVAL_NOTE);
 	}
 
 	public Long getId() {
@@ -133,6 +136,14 @@ public class Event implements Serializable {
 		this.talentFee = talentFee;
 	}
 
+	public BigDecimal getActualTalentFee() {
+		return actualTalentFee;
+	}
+
+	public void setActualTalentFee(BigDecimal actualTalentFee) {
+		this.actualTalentFee = actualTalentFee;
+	}
+
 	public Agency getAgency() {
 		return agency;
 	}
@@ -155,6 +166,14 @@ public class Event implements Serializable {
 
 	public void setStatus(EventStatus status) {
 		this.status = status;
+	}
+
+	public String getAdminNote() {
+		return adminNote;
+	}
+
+	public void setAdminNote(String adminNote) {
+		this.adminNote = adminNote;
 	}
 
 	public Date getDateCreated() {

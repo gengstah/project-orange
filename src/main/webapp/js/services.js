@@ -229,6 +229,12 @@ services.factory('Event', ['$resource',
 	}
 ]);
 
+services.factory('ApprovedEvent', ['$resource', 
+ 	function($resource) {
+ 		return $resource('/api/service/event/approved');
+ 	}
+]);
+
 services.factory('AgencyEvent', ['$resource', 
 	function($resource) {
 		return $resource('/api/service/event/agency/:id');

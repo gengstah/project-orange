@@ -4,8 +4,8 @@
 
 var controllers = angular.module('TalentManagementControllers', []);
 
-controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES', 'AuthService', 'AUTH_EVENTS', 'Session', 'Auth',
-	function($scope, $state, roles, AuthService, events, Session, Auth) {
+controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES', 'AuthService', 'AUTH_EVENTS', 'Session', 'Auth', 'Talent',
+	function($scope, $state, roles, AuthService, events, Session, Auth, Talent) {
 		$scope.user = Session.user;
 		$scope.userRoles = roles;
 		$scope.isAuthenticated = AuthService.isAuthenticated;
@@ -22,7 +22,25 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 		$scope.$on(events.loginSuccess, function() {
 			$scope.setCurrentUser(Session.user);
 			$state.go('home');
+			
+			$scope.countTalents();
 		});
+		
+		$scope.countTalents = function countTalents() {
+			Talent.countApprovedTalents(function(approvedTalentsCount) {
+				$scope.approvedTalentsCount = approvedTalentsCount
+			});
+			
+			if(Session.user.userRole == roles.admin) {
+				Talent.countForApprovalTalents(function(forApprovalTalentsCount) {
+					$scope.forApprovalTalentsCount = forApprovalTalentsCount;
+				});
+				
+				Talent.countDeniedTalents(function(deniedTalentsCount) {
+					$scope.deniedTalentsCount = deniedTalentsCount;
+				});
+			}
+		};
 
 		$scope.$on(events.loginFailed, function() {
 			
@@ -37,27 +55,11 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 	}
 ]);
 
-controllers.controller('HeaderController', ['$scope', '$rootScope', 'AUTH_EVENTS', 'Talent', 'Session', 'USER_ROLES',
+controllers.controller('HeaderController', ['$scope', '$rootScope', 'AUTH_EVENTS',
 	function($scope, $rootScope, events, Talent, Session, roles) {
 		$scope.logout = function logout() {
 			$rootScope.$broadcast(events.logoutSuccess);
 		};
-		
-		if($scope.isAuthenticated()) {
-			Talent.countApprovedTalents(function(approvedTalentsCount) {
-				$scope.approvedTalentsCount = approvedTalentsCount
-			});
-			
-			if(Session.user.userRole == roles.admin) {
-				Talent.countForApprovalTalents(function(forApprovalTalentsCount) {
-					$scope.forApprovalTalentsCount = forApprovalTalentsCount;
-				});
-				
-				Talent.countDeniedTalents(function(deniedTalentsCount) {
-					$scope.deniedTalentsCount = deniedTalentsCount;
-				});
-			}
-		}
   	}
 ]);
 
@@ -284,6 +286,7 @@ controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$sta
 		$scope.approve = function approve(id, clazz) {
 			Talent.approve($.param({id: id, talentClass: clazz}), function() {
 				$scope.successMessageApprove = "Updated";
+				$scope.countTalents();
 				
 				delete $scope.successMessageDeny
 				delete $scope.errorMessageApprove;
@@ -300,6 +303,7 @@ controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$sta
 		$scope.deny = function deny(id, note) {
 			Talent.deny($.param({id: id, adminNote: note}), function() {
 				$scope.successMessageDeny = "Updated";
+				$scope.countTalents();
 				
 				delete $scope.successMessageApprove;
 				delete $scope.errorMessageApprove;
@@ -316,6 +320,7 @@ controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$sta
 		$scope.setForApproval = function setForApproval(id, note) {
 			Talent.setForApproval($.param({id: id, adminNote: note}), function() {
 				$scope.successMessageDeny = "Updated";
+				$scope.countTalents();
 				
 				delete $scope.successMessageApprove;
 				delete $scope.errorMessageApprove;
@@ -532,8 +537,8 @@ controllers.controller('AgencyProfileUpdateController', ['$scope', '$rootScope',
  	}
 ]);
 
-controllers.controller('EventController', ['$scope', '$rootScope', '$state', 'Session', 'USER_ROLES', 'Event', 'AgencyEvent', 'TalentEvent',
-	function($scope, $rootScope, $state, Session, roles, Event, AgencyEvent, TalentEvent) {
+controllers.controller('EventController', ['$scope', '$rootScope', '$state', 'Session', 'USER_ROLES', 'Event', 'AgencyEvent', 'ApprovedEvent',
+	function($scope, $rootScope, $state, Session, roles, Event, AgencyEvent, ApprovedEvent) {
 		if($scope.isAuthorized(roles.admin)) {
 			Event.query(function(events) {
 				$scope.events = events;
@@ -547,13 +552,13 @@ controllers.controller('EventController', ['$scope', '$rootScope', '$state', 'Se
 		}
 		
 		if($scope.isAuthorized(roles.user)) {
-			TalentEvent.query({ id: Session.user.talent.id }, function(events) {
+			ApprovedEvent.query(function(events) {
 				$scope.events = events;
 			});
 		}
 		
 		$scope.viewEvent = function viewEvent(id) {
-			
+			console.log("clicked");
 		};
 	}
 ]);
