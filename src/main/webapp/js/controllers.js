@@ -804,13 +804,33 @@ controllers.controller('EventPageController', ['$scope', '$rootScope', '$state',
 
 controllers.controller('ApprovedTalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile', 'Session', 'USER_ROLES',
 	function($scope, $rootScope, $state, Talent, DATA, UserProfile, Session, roles) {
-		Talent.approved({ page: 1, size: DATA.pageSize }, function(approvedTalents) {
+		Talent.approved({}, function(approvedTalents) {
 			$scope.approvedTalents = approvedTalents;
 		});
 		
 		$scope.viewProfile = function viewProfile(user) {
 			UserProfile.setUser(user);
 			$state.go("talentProfile");
+		};
+		
+		$scope.talentCriteria = {};
+		
+		$scope.searchTalent = function searchTalent(talentCriteria) {
+			
+			talentCriteria.talentClasses = [];
+			if(talentCriteria.talentClassAA) talentCriteria.talentClasses.push("AA");
+			if(talentCriteria.talentClassA) talentCriteria.talentClasses.push("A");
+			if(talentCriteria.talentClassB) talentCriteria.talentClasses.push("B");
+			if(talentCriteria.talentClassC) talentCriteria.talentClasses.push("C");
+			
+			Talent.approved(talentCriteria, function(approvedTalents) {
+				$scope.approvedTalents = approvedTalents;
+			});
+			
+		};
+		
+		$scope.reset = function reset() {
+			$scope.talentCriteria = {};
 		};
 	
 	}

@@ -1,6 +1,6 @@
 <div data-ng-controller="DeniedTalentController">
 	
-	<p data-ng-if="deniedTalents.length == 0">There is no denied talent as of the moment</p>
+	<p data-ng-if="deniedTalents.length == 0">There is no talent with the current search filter</p>
 	<div class="col-sm-6 col-md-4" data-ng-repeat="talent in deniedTalents">
 		<div class="thumbnail">
 			<a href="" data-ng-click="viewProfile(talent.user)">

@@ -13,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.geeksexception.project.talent.dao.specification.criteria.TalentCriteria;
 import org.geeksexception.project.talent.enums.TalentClass;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Talent;
@@ -57,24 +58,19 @@ public class TalentManager {
 		
 	}
 	
-	@GET
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
 	@Path("/approved")
-	public List<Talent> findApprovedTalents(
-			@QueryParam("talentClass") String clazz, 
+	public List<Talent> searchApprovedTalents(
+			TalentCriteria talentCriteria, 
 			@QueryParam("page") @Min(1) Integer page, 
 			@QueryParam("size") @Min(1) Integer size) {
 		
 		if(page == null) page = 1;
 		if(size == null) size = 20;
 		
-		if(clazz != null && !clazz.trim().equals("")) {
-			TalentClass talentClass = TalentClass.valueOf(clazz);
-			return talentService.findApprovedTalentsByClass(talentClass, page, size);
-		} else {
-			return talentService.findApprovedTalents(page - 1, size);
-		}
+		return talentService.searchApprovedTalents(talentCriteria, page - 1, size);
 		
 	}
 	

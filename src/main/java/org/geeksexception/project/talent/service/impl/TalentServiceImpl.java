@@ -28,6 +28,8 @@ import org.geeksexception.project.talent.service.ImageService;
 import org.geeksexception.project.talent.service.TalentService;
 import org.geeksexception.project.talent.service.UserService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,24 +77,43 @@ public class TalentServiceImpl implements TalentService {
 		
 	}
 	
+	private void fetchImages(List<Talent> talents) {
+		for(Talent talent: talents) {
+			for(Image image : talent.getImages()) {
+				image.getId();
+			}
+		}
+	}
+	
 	@Override
 	public List<Talent> searchApprovedTalents(TalentCriteria talentCriteria, Integer page, Integer size) {
 		
-		return talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.APPROVED), new PageRequest(page, size)).getContent();
+		if(talentCriteria == null) talentCriteria = new TalentCriteria();
+		List<Talent> talents = talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.APPROVED), new PageRequest(page, size, new Sort(Direction.DESC, "user.dateCreated"))).getContent();
+		fetchImages(talents);
 		
+		return talents;
 	}
 	
 	@Override
 	public List<Talent> searchForApprovalTalents(TalentCriteria talentCriteria, Integer page, Integer size) {
 		
-		return talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.FOR_APPROVAL), new PageRequest(page, size)).getContent();
+		if(talentCriteria == null) talentCriteria = new TalentCriteria();
+		List<Talent> talents = talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.FOR_APPROVAL), new PageRequest(page, size, new Sort(Direction.DESC, "user.dateCreated"))).getContent();
+		fetchImages(talents);
+		
+		return talents;
 		
 	}
-
+	
 	@Override
 	public List<Talent> searchDeniedTalents(TalentCriteria talentCriteria, Integer page, Integer size) {
 		
-		return talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.DENIED), new PageRequest(page, size)).getContent();
+		if(talentCriteria == null) talentCriteria = new TalentCriteria();
+		List<Talent> talents = talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.DENIED), new PageRequest(page, size, new Sort(Direction.DESC, "user.dateCreated"))).getContent();
+		fetchImages(talents);
+		
+		return talents;
 		
 	}
 

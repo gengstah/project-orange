@@ -1,6 +1,6 @@
 <div data-ng-controller="ForApprovalTalentController">
 	
-	<p data-ng-if="forApprovalTalents.length == 0">There is no talent for approval as of the moment</p>
+	<p data-ng-if="forApprovalTalents.length == 0">There is no talent with the current search filter</p>
 	<div class="col-sm-6 col-md-4" data-ng-repeat="talent in forApprovalTalents">
 		<div class="thumbnail">
 			<a href="" data-ng-click="viewProfile(talent.user)">

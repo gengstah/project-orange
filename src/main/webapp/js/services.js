@@ -69,9 +69,11 @@ services.factory('Talent', ['$resource',
 	function($resource) {
 		return $resource('/api/service/talent/:action', {}, {
 			approved: { 
-				method: 'GET', 
+				method: 'POST', 
 				params: { 
-					action: 'approved'
+					action: 'approved',
+					page: 1,
+					size: 20
 				},
 				isArray: true
 			},
