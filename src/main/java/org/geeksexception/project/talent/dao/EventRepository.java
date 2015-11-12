@@ -6,9 +6,10 @@ import org.geeksexception.project.talent.enums.EventStatus;
 import org.geeksexception.project.talent.model.Event;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
 	
 	@Query("SELECT e FROM Event e ORDER BY e.dateCreated DESC")
 	List<Event> findAllEvents(Pageable pageable);

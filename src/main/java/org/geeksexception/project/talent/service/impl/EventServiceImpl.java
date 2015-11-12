@@ -1,11 +1,14 @@
 package org.geeksexception.project.talent.service.impl;
 
+import static org.geeksexception.project.talent.dao.specification.EventSpecification.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.geeksexception.project.talent.dao.EventRepository;
+import org.geeksexception.project.talent.dao.specification.criteria.EventCriteria;
 import org.geeksexception.project.talent.enums.EventStatus;
 import org.geeksexception.project.talent.enums.UserRole;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
@@ -16,6 +19,8 @@ import org.geeksexception.project.talent.model.User;
 import org.geeksexception.project.talent.service.EventService;
 import org.geeksexception.project.talent.service.UserService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -178,6 +183,45 @@ public class EventServiceImpl implements EventService {
 	public List<Event> findApprovedEventsOfAgencyAppliedByTalent(Long agencyId, Long talentId) {
 		
 		return eventRepository.findApprovedEventsOfAgencyAppliedByTalent(agencyId, talentId);
+		
+	}
+
+	@Override
+	public List<Event> searchApprovedEvents(EventCriteria eventCriteria, Integer page, Integer size) {
+		
+		if(eventCriteria == null) eventCriteria = new EventCriteria();
+		List<Event> events = eventRepository.findAll(eventsMatchingSearchCriteria(eventCriteria, EventStatus.APPROVED), new PageRequest(page, size, new Sort(Direction.DESC, "dateCreated"))).getContent();
+		
+		return events;
+	}
+
+	@Override
+	public List<Event> searchForApprovalEvents(EventCriteria eventCriteria, Integer page, Integer size) {
+		
+		if(eventCriteria == null) eventCriteria = new EventCriteria();
+		List<Event> events = eventRepository.findAll(eventsMatchingSearchCriteria(eventCriteria, EventStatus.FOR_APPROVAL), new PageRequest(page, size, new Sort(Direction.DESC, "dateCreated"))).getContent();
+		
+		return events;
+		
+	}
+
+	@Override
+	public List<Event> searchDeniedEvents(EventCriteria eventCriteria, Integer page, Integer size) {
+		
+		if(eventCriteria == null) eventCriteria = new EventCriteria();
+		List<Event> events = eventRepository.findAll(eventsMatchingSearchCriteria(eventCriteria, EventStatus.DENIED), new PageRequest(page, size, new Sort(Direction.DESC, "dateCreated"))).getContent();
+		
+		return events;
+		
+	}
+
+	@Override
+	public List<Event> searchClosedEvents(EventCriteria eventCriteria, Integer page, Integer size) {
+		
+		if(eventCriteria == null) eventCriteria = new EventCriteria();
+		List<Event> events = eventRepository.findAll(eventsMatchingSearchCriteria(eventCriteria, EventStatus.CLOSED), new PageRequest(page, size, new Sort(Direction.DESC, "dateCreated"))).getContent();
+		
+		return events;
 		
 	}
 
