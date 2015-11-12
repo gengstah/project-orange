@@ -14,6 +14,7 @@ import static org.apache.commons.lang.StringUtils.*;
 
 import org.geeksexception.project.talent.dao.specification.criteria.EventCriteria;
 import org.geeksexception.project.talent.enums.EventStatus;
+import org.geeksexception.project.talent.model.Agency;
 import org.geeksexception.project.talent.model.Event;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -50,6 +51,10 @@ public class EventSpecification {
 				
 				if(eventCriteria.getDateCreatedTo() != null) {
 					criteria.add(cb.lessThanOrEqualTo(root.<Date>get("dateCreated"), eventCriteria.getDateCreatedTo()));
+				}
+				
+				if(eventCriteria.getAgencyId() != null) {
+					criteria.add(cb.equal(root.<Agency>get("agency").<Long>get("id"), eventCriteria.getAgencyId()));
 				}
 				
 				criteria.add(cb.equal(root.<EventStatus>get("status"), eventStatus));

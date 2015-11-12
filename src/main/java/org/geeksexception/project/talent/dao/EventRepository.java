@@ -26,12 +26,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
 	@Query("SELECT e FROM Event e JOIN e.talentEvents te WHERE te.talent.id = ?1 ORDER BY e.dateCreated DESC")
 	List<Event> findAllEventsOfTalent(Long id, Pageable pageable);
 	
-	@Query("SELECT COUNT(e) FROM Event e WHERE e.status = ?1")
-	Integer countEventsByStatus(EventStatus eventStatus);
-	
-	@Query("SELECT COUNT(e) FROM Event e WHERE e.status = ?1 AND e.agency.id = ?2")
-	Integer countEventsByStatusAndAgency(EventStatus eventStatus, Long agencyId);
-	
 	@Query("SELECT e FROM Event e WHERE e.status = 'APPROVED' and e.agency.id = ?1 AND e NOT IN (SELECT ev FROM Event ev JOIN ev.talentEvents te WHERE ev.status = 'APPROVED' AND te.event.agency.id = ?1 AND te.talent.id = ?2)")
 	List<Event> findApprovedEventsOfAgencyNotAppliedByTalent(Long agencyId, Long talentId);
 	

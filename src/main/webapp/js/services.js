@@ -259,7 +259,44 @@ services.factory('Agency', ['$resource',
 
 services.factory('Event', ['$resource', 
 	function($resource) {
-		return $resource('/api/service/event/:id');
+		return $resource('/api/service/event/:action', {}, {
+			approved: { 
+				method: 'POST', 
+				params: { 
+					action: 'approved',
+					page: 1,
+					size: 20
+				},
+				isArray: true
+			},
+			forApproval: { 
+				method: 'POST', 
+				params: { 
+					action: 'forApproval',
+					page: 1,
+					size: 20
+				},
+				isArray: true
+			},
+			denied: { 
+				method: 'POST', 
+				params: { 
+					action: 'denied',
+					page: 1,
+					size: 20
+				},
+				isArray: true
+			},
+			closed: { 
+				method: 'POST', 
+				params: { 
+					action: 'closed',
+					page: 1,
+					size: 20
+				},
+				isArray: true
+			}
+		});
 	}
 ]);
 
@@ -295,20 +332,69 @@ services.factory('EventCount', ['$resource',
 				params: { 
 					countType: 'countApprovedEventsByAgency'
 				}
+   			},
+   			countForApprovalEventsByAgency : {
+   				method: 'GET',
+				params: { 
+					countType: 'countForApprovalEventsByAgency'
+				}
+   			},
+   			countDeniedEventsByAgency : {
+   				method: 'GET',
+				params: { 
+					countType: 'countDeniedEventsByAgency'
+				}
+   			},
+   			countClosedEventsByAgency : {
+   				method: 'GET',
+				params: { 
+					countType: 'countClosedEventsByAgency'
+				}
    			}
    		});
    	}
 ]);
 
-services.factory('ApprovedEvent', ['$resource', 
- 	function($resource) {
- 		return $resource('/api/service/event/approved');
- 	}
-]);
-
 services.factory('AgencyEvent', ['$resource', 
 	function($resource) {
-		return $resource('/api/service/event/agency/:id');
+		return $resource('/api/service/event/agency/:action', {}, {
+			approved: { 
+				method: 'POST', 
+				params: { 
+					action: 'approved',
+					page: 1,
+					size: 20
+				},
+				isArray: true
+			},
+			forApproval: { 
+				method: 'POST', 
+				params: { 
+					action: 'forApproval',
+					page: 1,
+					size: 20
+				},
+				isArray: true
+			},
+			denied: { 
+				method: 'POST', 
+				params: { 
+					action: 'denied',
+					page: 1,
+					size: 20
+				},
+				isArray: true
+			},
+			closed: { 
+				method: 'POST', 
+				params: { 
+					action: 'closed',
+					page: 1,
+					size: 20
+				},
+				isArray: true
+			}
+		});
 	}
 ]);
 
@@ -330,12 +416,6 @@ services.factory('ApprovedEventsOfAgencyWithTalentApplication', ['$resource',
 				isArray: true
  			}
  		});
- 	}
-]);
-
-services.factory('ApprovedAgencyEvent', ['$resource', 
- 	function($resource) {
- 		return $resource('/api/service/event/agency/approved/:id');
  	}
 ]);
 

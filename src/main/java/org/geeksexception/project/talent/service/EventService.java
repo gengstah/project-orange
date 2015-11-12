@@ -37,15 +37,21 @@ public interface EventService {
 	
 	void forApprovalEvent(Long id, String adminNote) throws TalentManagementServiceApiException;
 	
-	Integer countApprovedEvents();
+	Long countApprovedEvents();
 	
-	Integer countForApprovalEvents();
+	Long countForApprovalEvents();
 	
-	Integer countDeniedEvents();
+	Long countDeniedEvents();
 	
-	Integer countClosedEvents();
+	Long countClosedEvents();
 	
-	Integer countApprovedEventsByAgency(Long agencyId);
+	Long countApprovedEventsByAgency(Long agencyId);
+	
+	Long countForApprovalEventsByAgency(Long agencyId);
+	
+	Long countDeniedEventsByAgency(Long agencyId);
+	
+	Long countClosedEventsByAgency(Long agencyId);
 	
 	List<Event> findApprovedEventsOfAgencyNotAppliedByTalent(Long agencyId, Long talentId);
 	

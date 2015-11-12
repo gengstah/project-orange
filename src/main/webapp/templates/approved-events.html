@@ -1,8 +1,66 @@
-<div class="row" data-ng-controller="EventController">
+<div class="row" data-ng-controller="ApprovedEventController">
 	
-	<p data-ng-if="events.length == 0">There is no event as of the moment</p>
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#searchCriteria" aria-expanded="false" aria-controls="searchCriteria">
+				Search Filters
+			</button>
+		</div>
+	</div>
+	<div class="collapse" id="searchCriteria">
+		<form name="eventSearchForm" role="form" method="POST" data-ng-submit="searchEvent(eventCriteria)" novalidate="novalidate">
+			<div class="row">
+				<div class="col-xs-6 col-md-6">
+					<div class="form-group">
+						<input type="text" class="form-control" id="name" name="name" placeholder="Name" data-ng-model="eventCriteria.name" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-6">
+					<div class="form-group">
+						<input type="text" class="form-control" id="runDate" name="runDate" placeholder="Run Date" data-ng-model="eventCriteria.runDate" />
+					</div>
+				</div>
+				
+				<div class="col-xs-6 col-md-3">
+					<div class="form-group">
+						<input type="number" class="form-control" id="dateCreatedFrom" name="dateCreatedFrom" placeholder="Date Created From" data-ng-model="eventCriteria.dateCreatedFrom" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="form-group"> 
+						<input type="number" class="form-control" id="dateCreatedTo" name="dateCreatedTo" placeholder="Date Created To" data-ng-model="eventCriteria.dateCreatedTo" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="form-group">
+						<input type="number" class="form-control" id="talentFeeFrom" name="talentFeeFrom" placeholder="Talent Fee From" data-ng-model="eventCriteria.talentFeeFrom" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="form-group"> 
+						<input type="number" class="form-control" id="talentFeeTo" name="talentFeeTo" placeholder="Talent Fee To" data-ng-model="eventCriteria.talentFeeTo" />
+					</div>
+				</div>
+				
+				<div class="col-xs-6 col-md-6">
+					
+				</div>
+				<div class="col-xs-6 col-md-6">
+					<button id="searchButton" type="submit" class="btn btn-primary" data-loading-text="Searching...">
+						<span class="glyphicon glyphicon-ok-sign"></span> Search
+					</button>
+					<button id="resetButton" type="button" class="btn btn-default" data-ng-click="reset()">
+						Reset
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<hr />
 	
-	<div class="media" data-ng-repeat="event in events">
+	<p data-ng-if="events.length == 0">There is no event with the current search filter</p>
+	
+	<div class="media" data-ng-repeat="event in approvedEvents">
 		<div class="media-left media-top">
 			<a href="" data-ng-click="viewEvent(event)">
 				<img class="media-object" src="/img/event.jpg">

@@ -21,7 +21,11 @@ public class EventCriteria {
 	
 	private Date dateCreatedTo;
 	
+	private Long agencyId;
+	
 	public EventCriteria() { }
+	
+	public EventCriteria(Long agencyId) { this.agencyId = agencyId; }
 
 	public String getName() {
 		return name;
@@ -75,6 +79,15 @@ public class EventCriteria {
 	@JsonProperty
 	public void setDateCreatedTo(Date dateCreatedTo) {
 		this.dateCreatedTo = dateCreatedTo;
+	}
+
+	public Long getAgencyId() {
+		return agencyId;
+	}
+	
+	@JsonProperty
+	public void setAgencyId(Long agencyId) {
+		this.agencyId = agencyId;
 	}
 	
 }

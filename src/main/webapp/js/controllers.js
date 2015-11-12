@@ -68,7 +68,19 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 			
 			if(Session.user.userRole == roles.agency) {
 				EventCount.countApprovedEventsByAgency({ id: Session.user.agency.id }, function(approvedAgencyEventsCount) {
-					$scope.approvedAgencyEventsCount = approvedAgencyEventsCount;
+					$scope.approvedEventsCount = approvedAgencyEventsCount;
+				});
+				
+				EventCount.countApprovedEventsByAgency({ id: Session.user.agency.id }, function(forApprovalAgencyEventsCount) {
+					$scope.forApprovalEventsCount = forApprovalAgencyEventsCount;
+				});
+				
+				EventCount.countApprovedEventsByAgency({ id: Session.user.agency.id }, function(deniedAgencyEventsCount) {
+					$scope.deniedEventsCount = deniedAgencyEventsCount;
+				});
+				
+				EventCount.countApprovedEventsByAgency({ id: Session.user.agency.id }, function(closedAgencyEventsCount) {
+					$scope.closedEventsCount = closedAgencyEventsCount;
 				});
 			}
 			
@@ -644,36 +656,60 @@ controllers.controller('AgencyProfileUpdateController', ['$scope', '$rootScope',
  	}
 ]);
 
-controllers.controller('EventController', ['$scope', '$rootScope', '$state', 'Session', 'USER_ROLES', 'Event', 'AgencyEvent', 'ApprovedEvent', 'EventDetail',
+controllers.controller('ApprovedEventController', ['$scope', '$rootScope', '$state', 'Session', 'USER_ROLES', 'Event', 'AgencyEvent', 'ApprovedEvent', 'EventDetail',
 	function($scope, $rootScope, $state, Session, roles, Event, AgencyEvent, ApprovedEvent, EventDetail) {
 		
+		$scope.eventCriteria = {};
+	
 		if($scope.isAuthorized(roles.admin)) {
-			Event.query(function(events) {
-				events = processIdentities(events);
+			Event.approved(eventCriteria, function(approvedEvents) {
+				approvedEvents = processIdentities(approvedEvents);
 				
-				$scope.events = events;
+				$scope.approvedEvents = approvedEvents;
 			});
 		}
 		
 		if($scope.isAuthorized(roles.agency)) {
-			AgencyEvent.query({ id: Session.user.agency.id }, function(events) {
-				events = processIdentities(events);
+			AgencyEvent.approved(eventCriteria, function(approvedEvents) {
+				approvedEvents = processIdentities(approvedEvents);
 				
-				$scope.events = events;
+				$scope.approvedEvents = approvedEvents;
+			});
+			
+			AgencyEvent.forApproval(eventCriteria, function(forApprovalEvents) {
+				forApprovalEvents = processIdentities(forApprovalEvents);
+				
+				$scope.forApprovalEvents = forApprovalEvents;
+			});
+			
+			AgencyEvent.denied(eventCriteria, function(deniedEvents) {
+				deniedEvents = processIdentities(deniedEvents);
+				
+				$scope.deniedEvents = deniedEvents;
+			});
+			
+			AgencyEvent.approved(eventCriteria, function(closedEvents) {
+				closedEvents = processIdentities(closedEvents);
+				
+				$scope.closedEvents = closedEvents;
 			});
 		}
 		
 		if($scope.isAuthorized(roles.user)) {
-			ApprovedEvent.query(function(events) {
-				events = processIdentities(events);
+			Event.approved(eventCriteria, function(approvedEvents) {
+				approvedEvents = processIdentities(approvedEvents);
 				
-				$scope.events = events;
+				$scope.approvedEvents = approvedEvents;
 			});
 		}
 		
 		$scope.viewEvent = function viewEvent(event) {
 			EventDetail.create(event);
 			$state.go('event-page');
+		};
+		
+		$scope.reset = function reset() {
+			$scope.eventCriteria = {};
 		};
 		
 		function processIdentities(events) {

@@ -138,37 +138,58 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Integer countApprovedEvents() {
+	public Long countApprovedEvents() {
 		
-		return eventRepository.countEventsByStatus(EventStatus.APPROVED);
-		
-	}
-
-	@Override
-	public Integer countForApprovalEvents() {
-		
-		return eventRepository.countEventsByStatus(EventStatus.FOR_APPROVAL);
+		return eventRepository.count(eventsMatchingSearchCriteria(new EventCriteria(), EventStatus.APPROVED));
 		
 	}
 
 	@Override
-	public Integer countDeniedEvents() {
+	public Long countForApprovalEvents() {
 		
-		return eventRepository.countEventsByStatus(EventStatus.DENIED);
-		
-	}
-
-	@Override
-	public Integer countClosedEvents() {
-		
-		return eventRepository.countEventsByStatus(EventStatus.CLOSED);
+		return eventRepository.count(eventsMatchingSearchCriteria(new EventCriteria(), EventStatus.FOR_APPROVAL));
 		
 	}
 
 	@Override
-	public Integer countApprovedEventsByAgency(Long agencyId) {
+	public Long countDeniedEvents() {
 		
-		return eventRepository.countEventsByStatusAndAgency(EventStatus.APPROVED, agencyId);
+		return eventRepository.count(eventsMatchingSearchCriteria(new EventCriteria(), EventStatus.DENIED));
+		
+	}
+
+	@Override
+	public Long countClosedEvents() {
+		
+		return eventRepository.count(eventsMatchingSearchCriteria(new EventCriteria(), EventStatus.CLOSED));
+		
+	}
+
+	@Override
+	public Long countApprovedEventsByAgency(Long agencyId) {
+		
+		return eventRepository.count(eventsMatchingSearchCriteria(new EventCriteria(agencyId), EventStatus.APPROVED));
+		
+	}
+	
+	@Override
+	public Long countForApprovalEventsByAgency(Long agencyId) {
+
+		return eventRepository.count(eventsMatchingSearchCriteria(new EventCriteria(agencyId), EventStatus.FOR_APPROVAL));
+		
+	}
+
+	@Override
+	public Long countDeniedEventsByAgency(Long agencyId) {
+		
+		return eventRepository.count(eventsMatchingSearchCriteria(new EventCriteria(agencyId), EventStatus.DENIED));
+		
+	}
+
+	@Override
+	public Long countClosedEventsByAgency(Long agencyId) {
+		
+		return eventRepository.count(eventsMatchingSearchCriteria(new EventCriteria(agencyId), EventStatus.CLOSED));
 		
 	}
 
