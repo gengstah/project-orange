@@ -49,8 +49,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/api/service/user/deleteImage/**", 
 						"/img/**", 
 						"/img/temp/**").permitAll()
-				.antMatchers("/api/service/user/**", "/img/talents/**").authenticated()
-				.antMatchers("/api/service/user/deleteSavedImage/**").hasRole("USER")
+				.antMatchers("/api/service/user/**", 
+						"/img/talents/**", 
+						"/api/service/event/approved", 
+						"/api/service/event/talentEvent/event/**", 
+						"/api/service/event/talentEvent/talent/**").authenticated()
+				.antMatchers("/api/service/user/deleteSavedImage/**", 
+						"/api/service/talent/apply", 
+						"/api/service/talent/withdraw").hasRole("USER")
 				.antMatchers(HttpMethod.POST, "/api/service/event").hasRole("AGENCY")
 				.antMatchers("/api/service/event/agency/**").hasRole("AGENCY")
 				.antMatchers("/api/service/user/profile").hasAnyRole("AGENCY", "USER")

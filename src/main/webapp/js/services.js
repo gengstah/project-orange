@@ -140,13 +140,27 @@ services.factory('Talent', ['$resource',
 
 services.factory('TalentApplyEvent', ['$resource', 
 	function($resource) {
-		return $resource('/api/service/talent/apply/:id');
+		return $resource('/api/service/talent/apply/:id', {}, {
+			apply: {
+				method: 'POST',
+				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+			}
+		});
 	}
 ]);
 
 services.factory('TalentWithdrawEvent', ['$resource', 
   	function($resource) {
-  		return $resource('/api/service/talent/withdraw/:id');
+  		return $resource('/api/service/talent/withdraw/:id', {}, {
+  			withdraw: {
+				method: 'POST',
+				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+			}
+  		});
   	}
 ]);
 
@@ -247,6 +261,61 @@ services.factory('TalentEvent', ['$resource',
  	}
 ]);
 
+services.factory('TalentEventQuery', ['$resource', 
+  	function($resource) {
+  		return $resource('/api/service/event/talentEvent/:type/:id', {}, {
+  			event: {
+  				method: 'GET',
+  				params: { 
+  					type: 'event'
+				},
+				isArray: true
+  			},
+  			talent: {
+  				method: 'GET',
+  				params: { 
+  					type: 'talent'
+				},
+				isArray: true
+  			}
+  		});
+  	}
+]);
+
+services.factory('EventAction', ['$resource', 
+	function($resource) {
+		return $resource('/api/service/event/:action', {}, {
+			approve: { 
+				method: 'POST', 
+				params: { 
+					action: 'approve'
+				}, 
+  				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+			},
+			deny: {
+				method: 'POST', 
+				params: { 
+					action: 'deny'
+				}, 
+  				headers : { 
+  					'Content-Type': 'application/x-www-form-urlencoded' 
+  				}
+			},
+			setForApproval: {
+				method: 'POST',
+				params: { 
+					action: 'setForApproval'
+				},
+				headers : { 
+					'Content-Type': 'application/x-www-form-urlencoded' 
+				}
+			}
+		});
+	}
+]);
+
 services.factory('WorkExperience', ['$resource', 
 	function($resource) {
 		return $resource('/api/service/exp');
@@ -280,6 +349,20 @@ services.service('Session',
 
 		this.destroy = function() {
 			this.user = null;
+		};
+
+		return this;
+	}
+);
+
+services.service('EventDetail',
+	function() {
+		this.create = function(event) {
+			this.event = event;
+		};
+
+		this.destroy = function() {
+			this.event = null;
 		};
 
 		return this;

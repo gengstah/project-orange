@@ -48,9 +48,11 @@ public class Event implements Serializable {
 	@Column(name = "DESCRIPTION", nullable = true, length = 1000)
 	private String description;
 	
+	@Temporal(TemporalType.DATE)
 	@Column(name = "RUN_DATE_FROM", nullable = true)
 	private Date runDateFrom;
 	
+	@Temporal(TemporalType.DATE)
 	@Column(name = "RUN_DATE_TO", nullable = true)
 	private Date runDateTo;
 	

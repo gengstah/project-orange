@@ -1,5 +1,103 @@
 <div class="row" data-ng-controller="EventPageController">
 	
+	<div class="col-md-1"></div>
 	
+	<div class="col-md-10">
+		<div class="row" data-ng-if="isAuthorized(userRoles.agency) && event.status == 'FOR_APPROVAL'">
+			<div class="alert alert-info" role="alert">{{ event.adminNote }}</div>
+		</div>
+		<div class="row" data-ng-if="isAuthorized(userRoles.agency) && event.status == 'DENIED'">
+			<div class="alert alert-danger" role="alert">{{ event.adminNote }}</div>
+		</div>
+		<div class="row">
+			<div class="page-header">
+				<h1>{{ event.name }} <small>{{ event.dateCreated | date: 'medium' }}</small></h1>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-xs-6 col-md-6">
+				Run date: 
+				<span data-ng-if="event.runDateFrom == null || event.runDateTo == null">TBD</span>
+				<span data-ng-if="event.runDateFrom != null && event.runDateTo != null">{{ event.runDateFrom | date: 'mediumDate' }} to {{ event.runDateTo | date: 'mediumDate' }}</span>
+			</div>
+			<div class="col-xs-6 col-md-6">
+				<span data-ng-if="isAuthorized(userRoles.agency)">Talent Fee: <span class="text-success"><strong>Php {{ event.talentFee | number }}</strong></span></span>
+				<span data-ng-if="isAuthorized(userRoles.user)">Talent Fee: <span class="text-success"><strong>Php {{ event.actualTalentFee | number }}</strong></span></span>
+				<span data-ng-if="isAuthorized(userRoles.admin)">Talent Fee: <span class="text-success"><strong>Php {{ event.talentFee | number }} / {{ event.actualTalentFee | number }}</strong></span></span>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-xs-12 col-md-12">
+				<blockquote>
+					<p style="white-space: pre;" data-ng-bind="event.description"></p>
+					<footer>
+						Posted by {{ event.agency.firstName }} {{ event.agency.lastName }} of 
+						<cite title="{{ event.agency.agencyName }}">
+							{{ event.agency.agencyName }}
+						</cite>
+					</footer>
+				</blockquote>
+			</div>
+		</div>
+		
+		<hr />
+		
+		<div class="row">
+			<div class="page-header">
+				<h3>Talents <small>those who are interested in this event</small></h3>
+			</div>
+		</div>
+		
+		<div class="row">
+			<img src="/img/talents/mahha-1.jpeg" alt="..." class="img-circle" data-ng-src="{{ talentEvent.talent.images[0].thumbnailFileLocation }}" data-ng-repeat="talentEvent in talentEvents">
+		</div>
+		
+		<hr />
+		
+		<div class="row" data-ng-if="event.agency.user.email == user.email">
+			<div class="col-xs-12 col-sm-6 col-md-6">
+				<a href="#!/event/update" class="btn btn-default">Edit event</a>
+			</div>
+		</div>
+		
+		<div class="row" data-ng-if="isAuthorized(userRoles.admin)">
+			<div class="col-xs-12 col-sm-6 col-md-6">
+				<div class="alert alert-danger" role="alert" data-ng-if="errorMessageApprove"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageApprove }}</div>
+				<div class="alert alert-success" role="alert" data-ng-if="successMessageApprove"><span class="glyphicon glyphicon-ok"></span> {{ successMessageApprove }}</div>
+				<div class="form-group has-feedback">
+					<label for="actualTalentFee">Talent Fee</label><br />
+					<div class="input-group">
+						<span class="input-group-addon" id="bust">Php</span>
+						<input type="number" class="form-control" id="actualTalentFee" name="actualTalentFee" placeholder="Talent Fee" data-ng-model="actualTalentFee" />
+						<span class="glyphicon glyphicon-asterisk form-control-feedback"></span>
+					</div>
+				</div>
+				<button class="btn btn-primary" data-ng-click="approve(event.id, actualTalentFee)" data-ng-disabled="actualTalentFee == null || actualTalentFee == ''">Approve</button>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-6">
+				<div class="alert alert-danger" role="alert" data-ng-if="errorMessageDeny"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageDeny }}</div>
+				<div class="alert alert-success" role="alert" data-ng-if="successMessageDeny"><span class="glyphicon glyphicon-ok"></span> {{ successMessageDeny }}</div>
+				<div class="form-group">
+					<label for="note">Note</label>
+					<input type="text" class="form-control" id="note" name="note" placeholder="Note" required="required" data-ng-model="note" />
+				</div>
+				<button class="btn btn-default" data-ng-click="deny(event.id, note)" data-ng-disabled="note == null || note == ''">Deny</button> <button class="btn btn-default" data-ng-click="setForApproval(event.id, note)" data-ng-disabled="note == null || note == ''">Add note</button>
+			</div>
+		</div>
+		
+		<div class="row" data-ng-if="isAuthorized(userRoles.user)">
+			<div class="col-xs-12 col-sm-6 col-md-6">
+				<div class="alert alert-danger" role="alert" data-ng-if="errorMessageApply"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageApply }}</div>
+				<div class="alert alert-success" role="alert" data-ng-if="successMessageApply"><span class="glyphicon glyphicon-ok"></span> {{ successMessageApply }}</div>
+				
+				<button class="btn btn-primary" data-ng-click="apply(event.id)" data-ng-if="!applied">Apply</button>
+				<button class="btn btn-primary" data-ng-click="withdraw(event.id)" data-ng-if="applied">Withdraw</button>
+			</div>
+		</div>
+	</div>
+	
+	<div class="col-md-1"></div>
 	
 </div>

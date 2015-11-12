@@ -10,7 +10,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
@@ -145,20 +144,20 @@ public class TalentManager {
 	}
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
-	@Path("/apply/{eventId}")
-	public void applyToEvent(@NotNull(message = "event id must not be null") @PathParam("eventId") Long eventId) throws TalentManagementServiceApiException {
+	@Path("/apply")
+	public void applyToEvent(@NotNull(message = "event id must not be null") @FormParam("eventId") Long eventId) throws TalentManagementServiceApiException {
 		
 		talentService.applyToEvent(eventId);
 		
 	}
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)
-	@Path("/withdraw/{eventId}")
-	public void withdrawApplicationFromEvent(@NotNull(message = "event id must not be null") @PathParam("eventId") Long eventId) throws TalentManagementServiceApiException {
+	@Path("/withdraw")
+	public void withdrawApplicationFromEvent(@NotNull(message = "event id must not be null") @FormParam("eventId") Long eventId) throws TalentManagementServiceApiException {
 		
 		talentService.withdrawApplicationFromEvent(eventId);
 		

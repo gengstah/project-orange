@@ -27,9 +27,11 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 		});
 		
 		$scope.countTalents = function countTalents() {
-			Talent.countApprovedTalents(function(approvedTalentsCount) {
-				$scope.approvedTalentsCount = approvedTalentsCount
-			});
+			if(Session.user.userRole == roles.admin || Session.user.userRole == roles.agency) {
+				Talent.countApprovedTalents(function(approvedTalentsCount) {
+					$scope.approvedTalentsCount = approvedTalentsCount
+				});
+			}
 			
 			if(Session.user.userRole == roles.admin) {
 				Talent.countForApprovalTalents(function(forApprovalTalentsCount) {
@@ -499,7 +501,7 @@ controllers.controller('TalentProfileUpdateController', ['$scope', '$rootScope',
 			delete user.talent.birthDateStandardFormat;
 			Auth.updateTalent(user, function(userResponse) {
 				$updateButton.button("reset");
-				$state.go("home");
+				$state.go("talentProfile");
 				delete $scope.userToUpdate;
 				delete $scope.userUpdateErrors;
 			}, function(error) {
@@ -525,7 +527,7 @@ controllers.controller('AgencyProfileUpdateController', ['$scope', '$rootScope',
  			
  			Auth.updateAgency(user, function(userResponse) {
  				$updateButton.button("reset");
- 				$state.go("home");
+ 				$state.go("agencyProfile");
  				delete $scope.userToUpdate;
  				delete $scope.userUpdateErrors;
  			}, function(error) {
@@ -537,30 +539,149 @@ controllers.controller('AgencyProfileUpdateController', ['$scope', '$rootScope',
  	}
 ]);
 
-controllers.controller('EventController', ['$scope', '$rootScope', '$state', 'Session', 'USER_ROLES', 'Event', 'AgencyEvent', 'ApprovedEvent',
-	function($scope, $rootScope, $state, Session, roles, Event, AgencyEvent, ApprovedEvent) {
+controllers.controller('EventController', ['$scope', '$rootScope', '$state', 'Session', 'USER_ROLES', 'Event', 'AgencyEvent', 'ApprovedEvent', 'EventDetail',
+	function($scope, $rootScope, $state, Session, roles, Event, AgencyEvent, ApprovedEvent, EventDetail) {
+		
 		if($scope.isAuthorized(roles.admin)) {
 			Event.query(function(events) {
+				events = processIdentities(events);
+				
 				$scope.events = events;
 			});
 		}
 		
 		if($scope.isAuthorized(roles.agency)) {
 			AgencyEvent.query({ id: Session.user.agency.id }, function(events) {
+				events = processIdentities(events);
+				
 				$scope.events = events;
 			});
 		}
 		
 		if($scope.isAuthorized(roles.user)) {
 			ApprovedEvent.query(function(events) {
+				events = processIdentities(events);
+				
 				$scope.events = events;
 			});
 		}
 		
-		$scope.viewEvent = function viewEvent(id) {
-			console.log("clicked");
+		$scope.viewEvent = function viewEvent(event) {
+			EventDetail.create(event);
+			$state.go('event-page');
 		};
+		
+		function processIdentities(events) {
+			var agencies = [];
+			
+			for(var eventIndex = 0;eventIndex < events.length;eventIndex++) {
+				var event = events[eventIndex];
+				var id = event.agency["@identity"];
+				if(typeof event.agency === 'object') {
+					agencies.push({id: id, value: event.agency});
+				} else {
+					var index = -1;
+					for(var agencyIndex in agencies) {
+						if(agencies[agencyIndex].id == event.agency) {
+							index = agencyIndex;
+							break;
+						}
+					}
+					event.agency = agencies[index].value;
+				}
+			}
+			
+			return events;
+		}
 	}
+]);
+
+controllers.controller('EventPageController', ['$scope', '$rootScope', '$state', 'EventDetail', 'EventAction', 'TalentApplyEvent', 'TalentWithdrawEvent', 'TalentEventQuery',
+   	function($scope, $rootScope, $state, EventDetail, EventAction, TalentApplyEvent, TalentWithdrawEvent, TalentEventQuery) {
+		TalentEventQuery.event({ id: EventDetail.event.id }, function(talentEvents) {
+			$scope.event = EventDetail.event;
+			$scope.talentEvents = talentEvents;
+			
+			$scope.applied = false;
+			
+			for(var talentEventIndex = 0;talentEventIndex < talentEvents.length;talentEventIndex++) {
+				var talentEvent = talentEvents[talentEventIndex];
+				if(talentEvent.talent.user.email == $scope.user.email) {
+					$scope.applied = true;
+					break;
+				}
+			}
+		});
+   		
+   		$scope.apply = function apply(eventId) {
+   			TalentApplyEvent.apply($.param({ eventId: eventId }), function() {
+   				$scope.applied = true;
+   			}, function(error) {
+   				$scope.errorMessageApply = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				
+				delete $scope.successMessageApply;
+   			});
+   		};
+   		
+   		$scope.withdraw = function withdraw(eventId) {
+   			TalentWithdrawEvent.withdraw($.param({ eventId: eventId }), function() {
+   				$scope.applied = false;
+   			}, function(error) {
+   				$scope.errorMessageApply = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				
+				delete $scope.successMessageApply;
+   			});
+   		};
+   		
+   		$scope.approve = function approve(id, actualTalentFee) {
+   			EventAction.approve($.param({id: id, actualTalentFee: actualTalentFee}), function() {
+				$scope.successMessageApprove = "Updated";
+				$scope.event.actualTalentFee = actualTalentFee;
+				
+				delete $scope.successMessageDeny
+				delete $scope.errorMessageApprove;
+				delete $scope.errorMessageDeny;
+			}, function(error) {
+				$scope.errorMessageApprove = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				
+				delete $scope.successMessageDeny;
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageDeny;
+			});
+		};
+		
+		$scope.deny = function deny(id, note) {
+			EventAction.deny($.param({id: id, adminNote: note}), function() {
+				$scope.successMessageDeny = "Updated";
+				
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageApprove;
+				delete $scope.errorMessageDeny;
+			}, function(error) {
+				$scope.errorMessageDeny = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageApprove;
+				delete $scope.successMessageDeny;
+			});
+		};
+		
+		$scope.setForApproval = function setForApproval(id, note) {
+			EventAction.setForApproval($.param({id: id, adminNote: note}), function() {
+				$scope.successMessageDeny = "Updated";
+				
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageApprove;
+				delete $scope.errorMessageDeny;
+			}, function(error) {
+				$scope.errorMessageDeny = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				
+				delete $scope.successMessageApprove;
+				delete $scope.errorMessageApprove;
+				delete $scope.successMessageDeny;
+			});
+		};
+   	}
 ]);
 
 controllers.controller('ApprovedTalentController', ['$scope', '$rootScope', '$state', 'Talent', 'DATA', 'UserProfile', 'Session', 'USER_ROLES',
@@ -678,12 +799,31 @@ controllers.controller('AddEventController', ['$scope', '$state', 'Event',
 	}
 ]);
 
-controllers.controller('UpdateEventController', ['$scope', '$state', 'Event',
-  	function($scope, $state, Event) {
+controllers.controller('UpdateEventController', ['$scope', '$state', 'Event', 'EventDetail',
+  	function($scope, $state, Event, EventDetail) {
 		
+		$scope.event = EventDetail.event;
+	
 		$scope.updateEvent = function updateEvent(event) {
+			var $updateEventButton = $("#updateEventButton").button("loading");
+			
+			event.runDateFrom = new Date(event.runDateFromStandardFormat);
+			event.runDateTo = new Date(event.runDateToStandardFormat);
+			
+			var runDateFromStandardFormat = event.runDateFromStandardFormat;
+			var runDateToStandardFormat = event.runDateToStandardFormat;
+			
+			delete event.runDateFromStandardFormat;
+			delete event.runDateToStandardFormat;
+			
 			Event.save(event, function(savedEvent) {
 				$state.go('events');
+				$updateEventButton.button("reset");
+			}, function(error) {
+				event.runDateFromStandardFormat = runDateFromStandardFormat;
+				event.runDateToStandardFormat = runDateToStandardFormat;
+				$updateEventButton.button("reset");
+				$scope.updateEventErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
 			});
 		};
 		
@@ -692,10 +832,24 @@ controllers.controller('UpdateEventController', ['$scope', '$state', 'Event',
 			toggleActive: true
 		});
 		
+		if($scope.event.runDateFrom) {
+			var dateParts = $scope.event.runDateFrom.split("-");
+			var dateFormat = dateParts[1] + "/" + dateParts[2] + "/" + dateParts[0];
+			$("input#runDateFromStandardFormat").datepicker('setDate', new Date(dateFormat));
+			$scope.event.runDateFromStandardFormat = dateFormat;
+		}
+		
 		$("input#runDateToStandardFormat").datepicker({
 			autoclose: true,
 			toggleActive: true
 		});
+		
+		if($scope.event.runDateTo) {
+			var dateParts = $scope.event.runDateTo.split("-");
+			var dateFormat = dateParts[1] + "/" + dateParts[2] + "/" + dateParts[0];
+			$("input#runDateToStandardFormat").datepicker('setDate', new Date(dateFormat));
+			$scope.event.runDateToStandardFormat = dateFormat;
+		}
   		
   	}
 ]);

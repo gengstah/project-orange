@@ -1,6 +1,7 @@
 package org.geeksexception.project.talent.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -11,6 +12,7 @@ import org.geeksexception.project.talent.exception.TalentManagementServiceApiExc
 import org.geeksexception.project.talent.model.Error;
 import org.geeksexception.project.talent.model.Errors;
 import org.geeksexception.project.talent.model.Event;
+import org.geeksexception.project.talent.model.Image;
 import org.geeksexception.project.talent.model.Talent;
 import org.geeksexception.project.talent.model.TalentEvent;
 import org.geeksexception.project.talent.service.TalentEventService;
@@ -64,6 +66,42 @@ public class TalentEventServiceImpl implements TalentEventService {
 	private void instantiateTalentEventsIfNull(Talent talent, Event event) {
 		if(talent.getTalentEvents() == null) talent.setTalentEvents(new ArrayList<TalentEvent>());
 		if(event.getTalentEvents() == null) event.setTalentEvents(new ArrayList<TalentEvent>());
+	}
+
+	@Override
+	public TalentEvent findTalentEventByTalentAndEvent(Long talentId, Long eventId) {
+		
+		return talentEventRepository.findTalentEventByTalentAndEvent(talentId, eventId);
+		
+	}
+
+	@Override
+	public List<TalentEvent> findAllTalentEventByEventId(Long eventId) {
+		
+		List<TalentEvent> talentEvents = talentEventRepository.findAllTalentEventByEventId(eventId);
+		initializeTalentEventLazyCollections(talentEvents);
+		
+		return talentEvents;
+		
+	}
+
+	@Override
+	public List<TalentEvent> findAllTalentEventByTalentId(Long talentId) {
+		
+		List<TalentEvent> talentEvents = talentEventRepository.findAllTalentEventByTalentId(talentId);
+		initializeTalentEventLazyCollections(talentEvents);
+		
+		
+		return talentEvents;
+		
+	}
+	
+	private void initializeTalentEventLazyCollections(List<TalentEvent> talentEvents) {
+		for(TalentEvent talentEvent : talentEvents) {
+			for(Image image : talentEvent.getTalent().getImages()) {
+				image.getId();
+			}
+		}
 	}
 
 }

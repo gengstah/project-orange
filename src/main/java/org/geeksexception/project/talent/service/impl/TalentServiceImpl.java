@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.geeksexception.project.talent.dao.EventRepository;
 import org.geeksexception.project.talent.dao.TalentEventRepository;
 import org.geeksexception.project.talent.dao.TalentRepository;
+import org.geeksexception.project.talent.enums.EventStatus;
 import org.geeksexception.project.talent.enums.TalentClass;
 import org.geeksexception.project.talent.enums.TalentStatus;
 import org.geeksexception.project.talent.enums.UserRole;
@@ -224,7 +225,11 @@ public class TalentServiceImpl implements TalentService {
 	private void checkIfEventExists(Event event) throws TalentManagementServiceApiException {
 		if(event == null)
 			throw new TalentManagementServiceApiException("Error!", 
-					new Errors().addError(new Error("eventId", "Event does not exist")));
+					new Errors().addError(new Error("event", "Event does not exist")));
+		
+		if(event.getStatus() != EventStatus.APPROVED)
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("event", "Event is not approved")));
 	}
 	
 	private void checkIfTalentAppliedToEvent(TalentEvent talentEvent) throws TalentManagementServiceApiException {

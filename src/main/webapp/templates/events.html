@@ -4,7 +4,7 @@
 	
 	<div class="media" data-ng-repeat="event in events">
 		<div class="media-left media-top">
-			<a href="" data-ng-click="viewEvent(event.id)">
+			<a href="" data-ng-click="viewEvent(event)">
 				<img class="media-object" src="/img/event.jpg">
 			</a>
 		</div>
@@ -14,14 +14,29 @@
 			<div class="col-xs-12 col-md-10">
 				<small>{{ event.dateCreated | date: 'medium' }}</small>
 			</div>
-			<div class="col-xs-12 col-md-2"><p class="text-success">Php {{ event.talentFee | number }}</p></div>
-			<div class="col-xs-12 col-md-12" data-ng-bind="event.description"></div>
+			<div class="col-xs-12 col-md-2">
+				<span class="text-success" data-ng-if="isAuthorized(userRoles.agency)"><strong>Php {{ event.talentFee | number }}</strong></span>
+				<span class="text-success" data-ng-if="isAuthorized(userRoles.user)"><strong>Php {{ event.actualTalentFee | number }}</strong></span>
+				<span class="text-success" data-ng-if="isAuthorized(userRoles.admin)"><strong>Php {{ event.talentFee | number }} / {{ event.actualTalentFee | number }}</strong></span>
+			</div>
 			<div class="col-xs-12 col-md-12">
-				<button type="button" class="btn btn-primary">
+				<blockquote>
+					<p style="white-space: pre;" data-ng-bind="event.description | limitTo:100"></p>
+					<footer>
+						Posted by {{ event.agency.firstName }} {{ event.agency.lastName }} of 
+						<cite title="{{ event.agency.agencyName }}">
+							{{ event.agency.agencyName }}
+						</cite>
+					</footer>
+				</blockquote>
+			</div>
+			<div class="col-xs-12 col-md-12">
+				<button type="button" class="btn btn-primary" data-ng-click="viewEvent(event)">
 					<span class="glyphicon glyphicon-zoom-in"></span> View event
 				</button>
 			</div>
 		</div>
+		<hr />
 	</div>
 	
 	<div data-ng-if="isAuthorized(userRoles.agency)">

@@ -44,6 +44,13 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.agency]
 				}
 			})
+			.state('event-page', {
+				url: '/event', 
+				templateUrl: 'templates/event-page.html',
+				data: {
+					authorizedRoles: [roles.user, roles.agency, roles.admin]
+				}
+			})
 			.state('register', {
 				url: '/register', 
 				templateUrl: 'templates/registration.html',

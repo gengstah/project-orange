@@ -43,7 +43,6 @@ public class TalentEvent implements Serializable {
 	private Date dateCreated;
 	
 	@Column(name = "SUCCESSFUL")
-	@NotNull(message = "Successful field must not be null")
 	private Boolean successful;
 	
 	@Column(name = "RATING")
