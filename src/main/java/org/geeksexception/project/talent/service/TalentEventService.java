@@ -9,6 +9,8 @@ public interface TalentEventService {
 	
 	void addTalentToEvent(Long talentId, Long eventId) throws TalentManagementServiceApiException;
 	
+	void removeTalentFromEvent(Long talentId, Long eventId) throws TalentManagementServiceApiException;
+	
 	TalentEvent findTalentEventByTalentAndEvent(Long talentId, Long eventId);
 	
 	List<TalentEvent> findAllTalentEventByEventId(Long eventId);

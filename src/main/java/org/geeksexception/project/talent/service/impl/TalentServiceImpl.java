@@ -1,5 +1,7 @@
 package org.geeksexception.project.talent.service.impl;
 
+import static org.geeksexception.project.talent.dao.specification.TalentSpecification.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ import javax.inject.Inject;
 import org.geeksexception.project.talent.dao.EventRepository;
 import org.geeksexception.project.talent.dao.TalentEventRepository;
 import org.geeksexception.project.talent.dao.TalentRepository;
+import org.geeksexception.project.talent.dao.specification.criteria.TalentCriteria;
 import org.geeksexception.project.talent.enums.EventStatus;
 import org.geeksexception.project.talent.enums.TalentClass;
 import org.geeksexception.project.talent.enums.TalentStatus;
@@ -69,6 +72,27 @@ public class TalentServiceImpl implements TalentService {
 	public List<Talent> findApprovedTalentsByClass(TalentClass talentClass, Integer page, Integer size) {
 		
 		return talentRepository.findApprovedTalentsByClass(talentClass, new PageRequest(page, size));
+		
+	}
+	
+	@Override
+	public List<Talent> searchApprovedTalents(TalentCriteria talentCriteria, Integer page, Integer size) {
+		
+		return talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.APPROVED), new PageRequest(page, size)).getContent();
+		
+	}
+	
+	@Override
+	public List<Talent> searchForApprovalTalents(TalentCriteria talentCriteria, Integer page, Integer size) {
+		
+		return talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.FOR_APPROVAL), new PageRequest(page, size)).getContent();
+		
+	}
+
+	@Override
+	public List<Talent> searchDeniedTalents(TalentCriteria talentCriteria, Integer page, Integer size) {
+		
+		return talentRepository.findAll(talentsMatchingSearchCriteria(talentCriteria, TalentStatus.DENIED), new PageRequest(page, size)).getContent();
 		
 	}
 

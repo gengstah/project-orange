@@ -76,7 +76,7 @@
 		
 		<hr />
 		
-		<div class="row" data-ng-if="event.agency.user.email == user.email">
+		<div class="row" data-ng-if="event.agency.user.email == user.email && event.status == 'APPROVED'">
 			<div class="col-xs-12 col-sm-6 col-md-6">
 				<a href="#!/event/update" class="btn btn-default">Edit event</a>
 			</div>
@@ -107,7 +107,7 @@
 			</div>
 		</div>
 		
-		<div class="row" data-ng-if="isAuthorized(userRoles.user)">
+		<div class="row" data-ng-if="isAuthorized(userRoles.user) && event.status == 'APPROVED'">
 			<div class="col-xs-12 col-sm-6 col-md-6">
 				<div class="alert alert-danger" role="alert" data-ng-if="errorMessageApply"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageApply }}</div>
 				<div class="alert alert-success" role="alert" data-ng-if="successMessageApply"><span class="glyphicon glyphicon-ok"></span> {{ successMessageApply }}</div>

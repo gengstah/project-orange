@@ -2,6 +2,7 @@ package org.geeksexception.project.talent.service;
 
 import java.util.List;
 
+import org.geeksexception.project.talent.dao.specification.criteria.TalentCriteria;
 import org.geeksexception.project.talent.enums.TalentClass;
 import org.geeksexception.project.talent.exception.TalentManagementServiceApiException;
 import org.geeksexception.project.talent.model.Talent;
@@ -21,6 +22,12 @@ public interface TalentService {
 	Integer countDeniedTalents();
 	
 	List<Talent> findApprovedTalentsByClass(TalentClass talentClass, Integer page, Integer size);
+	
+	List<Talent> searchApprovedTalents(TalentCriteria talentCriteria, Integer page, Integer size);
+	
+	List<Talent> searchForApprovalTalents(TalentCriteria talentCriteria, Integer page, Integer size);
+	
+	List<Talent> searchDeniedTalents(TalentCriteria talentCriteria, Integer page, Integer size);
 	
 	void deleteSavedImage(String fileName, String rootLocation);
 	

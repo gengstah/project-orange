@@ -59,13 +59,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/api/service/talent/withdraw").hasRole("USER")
 				.antMatchers(HttpMethod.POST, "/api/service/event").hasRole("AGENCY")
 				.antMatchers("/api/service/event/agency/**").hasRole("AGENCY")
-				.antMatchers("/api/service/user/profile", "/api/service/agency/addTalentToEvent").hasAnyRole("AGENCY", "USER")
+				.antMatchers("/api/service/user/profile").hasAnyRole("AGENCY", "USER")
 				.antMatchers("/api/service/user/updateTalent", 
 						"/api/service/event/talent/**", "/api/service/event/countApprovedEvents").hasAnyRole("ADMIN", "USER")
 				.antMatchers(
 						"/api/service/talent/approved**", 
 						"/api/service/user/updateAgency",
-						"/api/service/talent/count**").hasAnyRole("ADMIN", "AGENCY")
+						"/api/service/talent/count**",
+						"/api/service/event/countApprovedEventsByAgency/**",
+						"/api/service/event/findApprovedEventsOfAgencyNotAppliedByTalent/**/**",
+						"/api/service/event/findApprovedEventsOfAgencyAppliedByTalent/**/**", 
+						"/api/service/agency/addTalentToEvent",
+						"/api/service/agency/removeTalentFromEvent").hasAnyRole("ADMIN", "AGENCY")
 				.antMatchers(
 						"/api/service/talent/**",
 						"/api/service/event/**",

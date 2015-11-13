@@ -36,4 +36,10 @@ public interface EventService {
 	
 	Integer countClosedEvents();
 	
+	Integer countApprovedEventsByAgency(Long agencyId);
+	
+	List<Event> findApprovedEventsOfAgencyNotAppliedByTalent(Long agencyId, Long talentId);
+	
+	List<Event> findApprovedEventsOfAgencyAppliedByTalent(Long agencyId, Long talentId);
+	
 }

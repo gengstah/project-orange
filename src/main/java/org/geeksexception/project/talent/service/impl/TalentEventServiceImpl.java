@@ -52,6 +52,26 @@ public class TalentEventServiceImpl implements TalentEventService {
 
 	}
 	
+	@Override
+	@Transactional(readOnly = false)
+	public void removeTalentFromEvent(Long talentId, Long eventId) throws TalentManagementServiceApiException {
+		
+		Talent talent = talentRepository.findOne(talentId);
+		checkTalent(talent);
+		
+		Event event = eventRepository.findOne(eventId);
+		checkEvent(event);
+		
+		TalentEvent talentEvent = talentEventRepository.findTalentEventByTalentAndEvent(talent.getId(), event.getId());
+		checkIfTalentAppliedToEvent(talentEvent);
+		
+		talent.getTalentEvents().remove(talentEvent);
+		event.getTalentEvents().remove(talentEvent);
+		
+		talentEventRepository.delete(talentEvent);
+		
+	}
+	
 	private void checkTalent(Talent talent) throws TalentManagementServiceApiException {
 		if(talent == null)
 			throw new TalentManagementServiceApiException("Error!", 
@@ -67,6 +87,12 @@ public class TalentEventServiceImpl implements TalentEventService {
 	private void instantiateTalentEventsIfNull(Talent talent, Event event) {
 		if(talent.getTalentEvents() == null) talent.setTalentEvents(new ArrayList<TalentEvent>());
 		if(event.getTalentEvents() == null) event.setTalentEvents(new ArrayList<TalentEvent>());
+	}
+	
+	private void checkIfTalentAppliedToEvent(TalentEvent talentEvent) throws TalentManagementServiceApiException {
+		if(talentEvent == null)
+			throw new TalentManagementServiceApiException("Error!", 
+					new Errors().addError(new Error("eventId", "The talent did not applied to that event")));
 	}
 
 	@Override

@@ -140,15 +140,29 @@
 				</div>
 				
 				<div data-ng-if="isAuthorized(userRoles.agency)">
-					<div class="alert alert-danger" role="alert" data-ng-if="errorMessageAddTalent"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageAddTalent }}</div>
-					<div class="alert alert-success" role="alert" data-ng-if="successMessageAddTalent"><span class="glyphicon glyphicon-ok"></span> {{ successMessageAddTalent }}</div>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Add talent <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li data-ng-repeat="event in events" data-ng-click="addTalentToEvent(userToView.talent.id, event.id)"><a href="">{{ event.name }}</a></li>
-						</ul>
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="alert alert-danger" role="alert" data-ng-if="errorMessageAddTalent"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageAddTalent }}</div>
+						<div class="alert alert-success" role="alert" data-ng-if="successMessageAddTalent"><span class="glyphicon glyphicon-ok"></span> {{ successMessageAddTalent }}</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Add talent <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li data-ng-repeat="event in eventsNotApplied" data-ng-click="addTalentToEvent(userToView.talent.id, event.id)"><a href="">{{ event.name }}</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="alert alert-danger" role="alert" data-ng-if="errorMessageRemoveTalent"><span class="glyphicon glyphicon-remove"></span> {{ errorMessageRemoveTalent }}</div>
+						<div class="alert alert-success" role="alert" data-ng-if="successMessageRemoveTalent"><span class="glyphicon glyphicon-ok"></span> {{ successMessageRemoveTalent }}</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Remove talent <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li data-ng-repeat="event in eventsApplied" data-ng-click="removeTalentFromEvent(userToView.talent.id, event.id)"><a href="">{{ event.name }}</a></li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>

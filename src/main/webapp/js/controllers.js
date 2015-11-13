@@ -16,6 +16,20 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 		};
 		
 		$scope.$on(events.notAuthenticated, function() {
+			destroySession();
+			
+			$state.go('home');
+		});
+		
+		$scope.$on(events.notAuthorized, function() {
+			destroySession();
+			
+			$state.go('home');
+		});
+		
+		$scope.$on(events.sessionTimeout, function() {
+			destroySession();
+			
 			$state.go('home');
 		});
 
@@ -52,6 +66,12 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 				});
 			}
 			
+			if(Session.user.userRole == roles.agency) {
+				EventCount.countApprovedEventsByAgency({ id: Session.user.agency.id }, function(approvedAgencyEventsCount) {
+					$scope.approvedAgencyEventsCount = approvedAgencyEventsCount;
+				});
+			}
+			
 			if(Session.user.userRole == roles.admin) {
 				EventCount.countForApprovalEvents(function(forApprovalEventsCount) {
 					$scope.forApprovalEventsCount = forApprovalEventsCount;
@@ -73,10 +93,26 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 
 		$scope.$on(events.logoutSuccess, function() {
 			Auth.logout(function() {
-				Session.destroy();
+				destroySession();
+				
 				$state.go('home');
 			});
 		});
+		
+		function destroySession() {
+			Session.destroy();
+			
+			delete $scope.user;
+			
+			delete $scope.approvedTalentsCount;
+			delete $scope.forApprovalTalentsCount;
+			delete $scope.deniedTalentsCount;
+			
+			delete $scope.approvedEventsCount;
+			delete $scope.forApprovalEventsCount;
+			delete $scope.deniedEventsCount;
+			delete $scope.closedEventsCount;
+		}
 	}
 ]);
 
@@ -291,11 +327,47 @@ controllers.controller('RegisterAgencyController', ['$scope', '$rootScope', '$st
 	}
 ]);
 
-controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$state', 'Auth', 'UserProfile', 'Agency', 'Talent', 'ApprovedAgencyEvent',
-	function($scope, $rootScope, $state, Auth, UserProfile, Agency, Talent, ApprovedAgencyEvent) {
-		if(UserProfile.user && ($scope.isAuthorized($scope.userRoles.admin) || $scope.isAuthorized($scope.userRoles.agency))) {
+controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$state', 'Auth', 'UserProfile', 'Agency', 'Talent', 'ApprovedEventsOfAgencyWithTalentApplication',
+	function($scope, $rootScope, $state, Auth, UserProfile, Agency, Talent, ApprovedEventsOfAgencyWithTalentApplication) {
+		if(UserProfile.user) {
 			Auth.viewProfile({ email : UserProfile.user.email }, function(user) {
 				$scope.userToView = user;
+				
+				if($scope.isAuthorized($scope.userRoles.agency)) {
+					retrieveAgencyEvents();
+					
+					$scope.addTalentToEvent = function addTalentToEvent(talentId, eventId) {
+						Agency.addTalentToEvent($.param({ talentId: talentId, eventId: eventId }), function() {
+							$scope.successMessageAddTalent = "Talent has been added to your event!";
+							retrieveAgencyEvents();
+							$scope.userToView.talent.eventSize++;
+							
+							delete $scope.errorMessageAddTalent;
+							delete $scope.errorMessageRemoveTalent;
+							delete $scope.successMessageRemoveTalent;
+						}, function(error) {
+							$scope.errorMessageAddTalent = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+							
+							delete $scope.successMessageAddTalent;
+						});
+					};
+					
+					$scope.removeTalentFromEvent = function removeTalentFromEvent(talentId, eventId) {
+						Agency.removeTalentFromEvent($.param({ talentId: talentId, eventId: eventId }), function() {
+							$scope.successMessageRemoveTalent = "Talent has been removed from your event!";
+							retrieveAgencyEvents();
+							$scope.userToView.talent.eventSize--;
+							
+							delete $scope.errorMessageRemoveTalent;
+							delete $scope.errorMessageAddTalent;
+							delete $scope.successMessageAddTalent;
+						}, function(error) {
+							$scope.errorMessageRemoveTalent = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+							
+							delete $scope.successMessageRemoveTalent;
+						});
+					};
+				}
 			});
 		} else {
 			Auth.viewProfile(function(user) {
@@ -303,21 +375,14 @@ controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$sta
 			});
 		}
 		
-		if($scope.isAuthorized($scope.userRoles.agency)) {
-			ApprovedAgencyEvent.query({ id: $scope.user.agency.id }, function(events) {
-				$scope.events = events;
+		function retrieveAgencyEvents() {
+			ApprovedEventsOfAgencyWithTalentApplication.findApprovedEventsOfAgencyNotAppliedByTalent({ agencyId: $scope.user.agency.id, talentId: $scope.userToView.talent.id }, function(eventsNotApplied) {
+				$scope.eventsNotApplied = eventsNotApplied;
 			});
 			
-			$scope.addTalentToEvent = function addTalentToEvent(talentId, eventId) {
-				Agency.addTalentToEvent($.param({ talentId: talentId, eventId: eventId }), function() {
-					$scope.successMessageAddTalent = "Talent has been added to your event!";
-					delete $scope.errorMessageAddTalent;
-				}, function(error) {
-					$scope.errorMessageAddTalent = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
-					
-					delete $scope.successMessageAddTalent;
-				});
-			}
+			ApprovedEventsOfAgencyWithTalentApplication.findApprovedEventsOfAgencyAppliedByTalent({ agencyId: $scope.user.agency.id, talentId: $scope.userToView.talent.id }, function(eventsApplied) {
+				$scope.eventsApplied = eventsApplied;
+			});
 		}
 		
 		$('#profileTabs a').click(function (e) {

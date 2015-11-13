@@ -7,9 +7,10 @@ import org.geeksexception.project.talent.enums.TalentStatus;
 import org.geeksexception.project.talent.model.Talent;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-public interface TalentRepository extends JpaRepository<Talent, Long> {
+public interface TalentRepository extends JpaRepository<Talent, Long>, JpaSpecificationExecutor<Talent> {
 	
 	@Query("SELECT COUNT(t) FROM Talent t WHERE t.status = ?1")
 	Integer countTalentsByStatus(TalentStatus talentStatus);

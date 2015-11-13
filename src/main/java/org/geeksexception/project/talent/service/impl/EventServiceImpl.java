@@ -160,4 +160,25 @@ public class EventServiceImpl implements EventService {
 		
 	}
 
+	@Override
+	public Integer countApprovedEventsByAgency(Long agencyId) {
+		
+		return eventRepository.countEventsByStatusAndAgency(EventStatus.APPROVED, agencyId);
+		
+	}
+
+	@Override
+	public List<Event> findApprovedEventsOfAgencyNotAppliedByTalent(Long agencyId, Long talentId) {
+		
+		return eventRepository.findApprovedEventsOfAgencyNotAppliedByTalent(agencyId, talentId);
+		
+	}
+
+	@Override
+	public List<Event> findApprovedEventsOfAgencyAppliedByTalent(Long agencyId, Long talentId) {
+		
+		return eventRepository.findApprovedEventsOfAgencyAppliedByTalent(agencyId, talentId);
+		
+	}
+
 }

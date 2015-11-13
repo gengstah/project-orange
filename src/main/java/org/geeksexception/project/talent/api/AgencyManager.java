@@ -120,6 +120,18 @@ public class AgencyManager {
 		
 	}
 	
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/removeTalentFromEvent")
+	public void removeTalentFromEvent(
+			@NotNull(message = "talentId must not be null") @FormParam("talentId") Long talentId, 
+			@NotNull(message = "eventId must not be null") @FormParam("eventId") Long eventId) throws TalentManagementServiceApiException {
+		
+		talentEventService.removeTalentFromEvent(talentId, eventId);
+		
+	}
+	
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)

@@ -221,4 +221,38 @@ public class EventManager {
 		
 	}
 	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/countApprovedEventsByAgency/{agencyId}")
+	public Integer countApprovedEventsByAgency(@NotNull(message = "agencyId must not be null") @PathParam("agencyId") Long agencyId) {
+		
+		return eventService.countApprovedEventsByAgency(agencyId);
+		
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/findApprovedEventsOfAgencyNotAppliedByTalent/{agencyId}/{talentId}")
+	public List<Event> findApprovedEventsOfAgencyNotAppliedByTalent(
+			@NotNull(message = "agencyId must not be null") @PathParam("agencyId") Long agencyId, 
+			@NotNull(message = "talentId must not be null") @PathParam("talentId") Long talentId) {
+		
+		return eventService.findApprovedEventsOfAgencyNotAppliedByTalent(agencyId, talentId);
+		
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON_VALUE)
+	@Produces(MediaType.APPLICATION_JSON_VALUE)
+	@Path("/findApprovedEventsOfAgencyAppliedByTalent/{agencyId}/{talentId}")
+	public List<Event> findApprovedEventsOfAgencyAppliedByTalent(
+			@NotNull(message = "agencyId must not be null") @PathParam("agencyId") Long agencyId, 
+			@NotNull(message = "talentId must not be null") @PathParam("talentId") Long talentId) {
+		
+		return eventService.findApprovedEventsOfAgencyAppliedByTalent(agencyId, talentId);
+		
+	}
+	
 }

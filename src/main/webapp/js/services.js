@@ -241,6 +241,15 @@ services.factory('Agency', ['$resource',
 				headers : { 
 					'Content-Type': 'application/x-www-form-urlencoded' 
 				}
+			},
+			removeTalentFromEvent: {
+				method: 'POST',
+				params: { 
+					action: 'removeTalentFromEvent'
+				},
+				headers : { 
+					'Content-Type': 'application/x-www-form-urlencoded' 
+				}
 			}
 		});
 	}
@@ -254,7 +263,7 @@ services.factory('Event', ['$resource',
 
 services.factory('EventCount', ['$resource', 
    	function($resource) {
-   		return $resource('/api/service/event/:countType', {}, {
+   		return $resource('/api/service/event/:countType/:id', {}, {
    			countApprovedEvents: {
    				method: 'GET',
 				params: { 
@@ -278,6 +287,12 @@ services.factory('EventCount', ['$resource',
 				params: { 
 					countType: 'countClosedEvents'
 				}
+   			},
+   			countApprovedEventsByAgency : {
+   				method: 'GET',
+				params: { 
+					countType: 'countApprovedEventsByAgency'
+				}
    			}
    		});
    	}
@@ -293,6 +308,27 @@ services.factory('AgencyEvent', ['$resource',
 	function($resource) {
 		return $resource('/api/service/event/agency/:id');
 	}
+]);
+
+services.factory('ApprovedEventsOfAgencyWithTalentApplication', ['$resource', 
+ 	function($resource) {
+ 		return $resource('/api/service/event/:action/:agencyId/:talentId', {}, {
+ 			findApprovedEventsOfAgencyNotAppliedByTalent: {
+ 				method: 'GET',
+  				params: { 
+  					action: 'findApprovedEventsOfAgencyNotAppliedByTalent'
+				},
+				isArray: true
+ 			},
+ 			findApprovedEventsOfAgencyAppliedByTalent: {
+ 				method: 'GET',
+  				params: { 
+  					action: 'findApprovedEventsOfAgencyAppliedByTalent'
+				},
+				isArray: true
+ 			}
+ 		});
+ 	}
 ]);
 
 services.factory('ApprovedAgencyEvent', ['$resource', 
