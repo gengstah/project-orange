@@ -30,6 +30,27 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}
 			})
+			.state('for-approval-events', {
+				url: '/events/forApproval', 
+				templateUrl: 'templates/admin/forApproval-events.html',
+				data: {
+					authorizedRoles: [roles.admin, roles.agency]
+				}
+			})
+			.state('denied-events', {
+				url: '/events/denied', 
+				templateUrl: 'templates/admin/denied-events.html',
+				data: {
+					authorizedRoles: [roles.admin, roles.agency]
+				}
+			})
+			.state('closed-events', {
+				url: '/events/closed', 
+				templateUrl: 'templates/admin/closed-events.html',
+				data: {
+					authorizedRoles: [roles.admin, roles.agency]
+				}
+			})
 			.state('add-event', {
 				url: '/event/create', 
 				templateUrl: 'templates/add-event.html',

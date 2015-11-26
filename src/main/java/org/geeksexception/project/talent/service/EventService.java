@@ -13,14 +13,6 @@ public interface EventService {
 	
 	Event save(Event event) throws TalentManagementServiceApiException;
 	
-	List<Event> findAllEvents(Integer page, Integer size);
-	
-	List<Event> findAllApprovedEvents(Integer page, Integer size);
-	
-	List<Event> findAllEventsOfAgency(Long id, Integer page, Integer size);
-	
-	List<Event> findAllApprovedEventsOfAgency(Long id, Integer page, Integer size);
-	
 	List<Event> findAllEventsOfTalent(Long id, Integer page, Integer size);
 	
 	List<Event> searchApprovedEvents(EventCriteria eventCriteria, Integer page, Integer size);

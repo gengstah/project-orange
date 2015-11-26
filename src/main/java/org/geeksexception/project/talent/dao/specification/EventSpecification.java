@@ -33,16 +33,16 @@ public class EventSpecification {
 				}
 				
 				if(eventCriteria.getRunDate() != null) {
-					criteria.add(cb.greaterThanOrEqualTo(root.<Date>get("runDateFrom"), eventCriteria.getRunDate()));
-					criteria.add(cb.lessThanOrEqualTo(root.<Date>get("runDateTo"), eventCriteria.getRunDate()));
+					criteria.add(cb.lessThanOrEqualTo(root.<Date>get("runDateFrom"), eventCriteria.getRunDate()));
+					criteria.add(cb.greaterThanOrEqualTo(root.<Date>get("runDateTo"), eventCriteria.getRunDate()));
 				}
 				
 				if(eventCriteria.getTalentFeeFrom() != null) {
-					criteria.add(cb.greaterThanOrEqualTo(root.<BigDecimal>get("talentFee"), eventCriteria.getTalentFeeFrom()));
+					criteria.add(cb.greaterThanOrEqualTo(root.<BigDecimal>get("actualTalentFee"), eventCriteria.getTalentFeeFrom()));
 				}
 				
 				if(eventCriteria.getTalentFeeTo() != null) {
-					criteria.add(cb.lessThanOrEqualTo(root.<BigDecimal>get("talentFee"), eventCriteria.getTalentFeeTo()));
+					criteria.add(cb.lessThanOrEqualTo(root.<BigDecimal>get("actualTalentFee"), eventCriteria.getTalentFeeTo()));
 				}
 				
 				if(eventCriteria.getDateCreatedFrom() != null) {

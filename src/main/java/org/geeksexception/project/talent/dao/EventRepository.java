@@ -2,7 +2,6 @@ package org.geeksexception.project.talent.dao;
 
 import java.util.List;
 
-import org.geeksexception.project.talent.enums.EventStatus;
 import org.geeksexception.project.talent.model.Event;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

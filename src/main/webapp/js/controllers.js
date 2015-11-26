@@ -656,52 +656,53 @@ controllers.controller('AgencyProfileUpdateController', ['$scope', '$rootScope',
  	}
 ]);
 
-controllers.controller('ApprovedEventController', ['$scope', '$rootScope', '$state', 'Session', 'USER_ROLES', 'Event', 'AgencyEvent', 'ApprovedEvent', 'EventDetail',
-	function($scope, $rootScope, $state, Session, roles, Event, AgencyEvent, ApprovedEvent, EventDetail) {
+controllers.controller('ApprovedEventController', ['$scope', '$rootScope', '$state', 'USER_ROLES', 'Event', 'AgencyEvent', 'EventDetail',
+	function($scope, $rootScope, $state, roles, Event, AgencyEvent, EventDetail) {
 		
+		$("input#runDateStandardFormat").datepicker({
+			autoclose: true,
+			toggleActive: true
+		});
+		
+		$("input#dateCreatedFromStandardFormat").datepicker({
+			autoclose: true,
+			toggleActive: true
+		});
+		
+		$("input#dateCreatedToStandardFormat").datepicker({
+			autoclose: true,
+			toggleActive: true
+		});
+	
 		$scope.eventCriteria = {};
 	
-		if($scope.isAuthorized(roles.admin)) {
-			Event.approved(eventCriteria, function(approvedEvents) {
-				approvedEvents = processIdentities(approvedEvents);
-				
-				$scope.approvedEvents = approvedEvents;
-			});
+		function searchEvents(eventCriteria) {
+			if(eventCriteria.runDateStandardFormat) eventCriteria.runDate = new Date(eventCriteria.runDateStandardFormat);
+			if(eventCriteria.dateCreatedFromStandardFormat) eventCriteria.dateCreatedFrom = new Date(eventCriteria.dateCreatedFromStandardFormat);
+			if(eventCriteria.dateCreatedToStandardFormat) eventCriteria.dateCreatedTo = new Date(eventCriteria.dateCreatedToStandardFormat);
+			
+			if($scope.isAuthorized(roles.admin) || $scope.isAuthorized(roles.user)) {
+				Event.approved(eventCriteria, function(approvedEvents) {
+					approvedEvents = processIdentities(approvedEvents);
+					
+					$scope.approvedEvents = approvedEvents;
+				});
+			}
+			
+			if($scope.isAuthorized(roles.agency)) {
+				AgencyEvent.approved(eventCriteria, function(approvedEvents) {
+					approvedEvents = processIdentities(approvedEvents);
+					
+					$scope.approvedEvents = approvedEvents;
+				});
+			}
 		}
 		
-		if($scope.isAuthorized(roles.agency)) {
-			AgencyEvent.approved(eventCriteria, function(approvedEvents) {
-				approvedEvents = processIdentities(approvedEvents);
-				
-				$scope.approvedEvents = approvedEvents;
-			});
-			
-			AgencyEvent.forApproval(eventCriteria, function(forApprovalEvents) {
-				forApprovalEvents = processIdentities(forApprovalEvents);
-				
-				$scope.forApprovalEvents = forApprovalEvents;
-			});
-			
-			AgencyEvent.denied(eventCriteria, function(deniedEvents) {
-				deniedEvents = processIdentities(deniedEvents);
-				
-				$scope.deniedEvents = deniedEvents;
-			});
-			
-			AgencyEvent.approved(eventCriteria, function(closedEvents) {
-				closedEvents = processIdentities(closedEvents);
-				
-				$scope.closedEvents = closedEvents;
-			});
-		}
+		searchEvents($scope.eventCriteria);
 		
-		if($scope.isAuthorized(roles.user)) {
-			Event.approved(eventCriteria, function(approvedEvents) {
-				approvedEvents = processIdentities(approvedEvents);
-				
-				$scope.approvedEvents = approvedEvents;
-			});
-		}
+		$scope.searchEvent = function searchEvent(eventCriteria) {
+			searchEvents(eventCriteria);
+		};
 		
 		$scope.viewEvent = function viewEvent(event) {
 			EventDetail.create(event);
@@ -711,31 +712,151 @@ controllers.controller('ApprovedEventController', ['$scope', '$rootScope', '$sta
 		$scope.reset = function reset() {
 			$scope.eventCriteria = {};
 		};
-		
-		function processIdentities(events) {
-			var agencies = [];
-			
-			for(var eventIndex = 0;eventIndex < events.length;eventIndex++) {
-				var event = events[eventIndex];
-				var id = event.agency["@identity"];
-				if(typeof event.agency === 'object') {
-					agencies.push({id: id, value: event.agency});
-				} else {
-					var index = -1;
-					for(var agencyIndex in agencies) {
-						if(agencies[agencyIndex].id == event.agency) {
-							index = agencyIndex;
-							break;
-						}
-					}
-					event.agency = agencies[index].value;
-				}
-			}
-			
-			return events;
-		}
 	}
 ]);
+
+controllers.controller('ForApprovalEventController', ['$scope', '$rootScope', '$state', 'USER_ROLES', 'Event', 'AgencyEvent', 'EventDetail',
+   	function($scope, $rootScope, $state, roles, Event, AgencyEvent, EventDetail) {
+   		
+   		$scope.eventCriteria = {};
+   	
+   		function searchEvents(eventCriteria) {
+			if($scope.isAuthorized(roles.admin)) {
+				Event.forApproval(eventCriteria, function(forApprovalEvents) {
+					forApprovalEvents = processIdentities(forApprovalEvents);
+					
+					$scope.forApprovalEvents = forApprovalEvents;
+				});
+			}
+			
+			if($scope.isAuthorized(roles.agency)) {
+				AgencyEvent.forApproval(eventCriteria, function(forApprovalEvents) {
+					forApprovalEvents = processIdentities(forApprovalEvents);
+					
+					$scope.forApprovalEvents = forApprovalEvents;
+				});
+			}
+   		}
+   		
+   		searchEvents($scope.eventCriteria);
+		
+		$scope.searchEvent = function searchEvent(eventCriteria) {
+			searchEvents(eventCriteria);
+		};
+   		
+   		$scope.viewEvent = function viewEvent(event) {
+   			EventDetail.create(event);
+   			$state.go('event-page');
+   		};
+   		
+   		$scope.reset = function reset() {
+   			$scope.eventCriteria = {};
+   		};
+   	}
+]);
+
+controllers.controller('DeniedEventController', ['$scope', '$rootScope', '$state', 'USER_ROLES', 'Event', 'AgencyEvent', 'EventDetail',
+	function($scope, $rootScope, $state, roles, Event, AgencyEvent, EventDetail) {
+		
+		$scope.eventCriteria = {};
+		
+		function searchEvents(eventCriteria) {
+			if($scope.isAuthorized(roles.admin)) {
+				Event.denied(eventCriteria, function(deniedEvents) {
+					deniedEvents = processIdentities(deniedEvents);
+					
+					$scope.deniedEvents = deniedEvents;
+				});
+			}
+			
+			if($scope.isAuthorized(roles.agency)) {
+				AgencyEvent.denied(eventCriteria, function(deniedEvents) {
+					deniedEvents = processIdentities(deniedEvents);
+					
+					$scope.deniedEvents = deniedEvents;
+				});
+			}
+		}
+		
+		searchEvents($scope.eventCriteria);
+		
+		$scope.searchEvent = function searchEvent(eventCriteria) {
+			searchEvents(eventCriteria);
+		};
+		
+		$scope.viewEvent = function viewEvent(event) {
+			EventDetail.create(event);
+			$state.go('event-page');
+		};
+		
+		$scope.reset = function reset() {
+			$scope.eventCriteria = {};
+		};
+	}
+]);
+
+controllers.controller('ClosedEventController', ['$scope', '$rootScope', '$state', 'USER_ROLES', 'Event', 'AgencyEvent', 'EventDetail',
+ 	function($scope, $rootScope, $state, roles, Event, AgencyEvent, EventDetail) {
+ 		
+ 		$scope.eventCriteria = {};
+ 		
+ 		function searchEvents(eventCriteria) {
+			if($scope.isAuthorized(roles.admin)) {
+				Event.closed(eventCriteria, function(closedEvents) {
+					closedEvents = processIdentities(closedEvents);
+					
+					$scope.closedEvents = closedEvents;
+				});
+			}
+			
+			if($scope.isAuthorized(roles.agency)) {
+				AgencyEvent.closed(eventCriteria, function(closedEvents) {
+					closedEvents = processIdentities(closedEvents);
+					
+					$scope.closedEvents = closedEvents;
+				});
+			}
+ 		}
+ 		
+ 		searchEvents($scope.eventCriteria);
+		
+		$scope.searchEvent = function searchEvent(eventCriteria) {
+			searchEvents(eventCriteria);
+		};
+ 		
+ 		$scope.viewEvent = function viewEvent(event) {
+ 			EventDetail.create(event);
+ 			$state.go('event-page');
+ 		};
+ 		
+ 		$scope.reset = function reset() {
+ 			$scope.eventCriteria = {};
+ 		};
+ 	}
+]);
+
+function processIdentities(events) {
+	var agencies = [];
+	
+	for(var eventIndex = 0;eventIndex < events.length;eventIndex++) {
+		var event = events[eventIndex];
+		var id = event.agency["@identity"];
+		if(typeof event.agency === 'object') {
+			agencies.push({id: id, value: event.agency});
+		} else {
+			var index = -1;
+			for(var agencyIndex in agencies) {
+				if(agencies[agencyIndex].id == event.agency) {
+					index = agencyIndex;
+					break;
+				}
+			}
+			event.agency = agencies[index].value;
+		}
+	}
+	
+	return events;
+}
 
 controllers.controller('EventPageController', ['$scope', '$rootScope', '$state', 'EventDetail', 'EventAction', 'TalentApplyEvent', 'TalentWithdrawEvent', 'TalentEventQuery', 'UserProfile',
    	function($scope, $rootScope, $state, EventDetail, EventAction, TalentApplyEvent, TalentWithdrawEvent, TalentEventQuery, UserProfile) {

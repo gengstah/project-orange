@@ -40,20 +40,6 @@ public class EventManager {
 	
 	public EventManager() { }
 	
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON_VALUE)
-	@Produces(MediaType.APPLICATION_JSON_VALUE)
-	public List<Event> findAllEvents(
-			@QueryParam("page") @Min(1) Integer page, 
-			@QueryParam("size") @Min(1) Integer size) {
-		
-		if(page == null) page = 1;
-		if(size == null) size = 20;
-		
-		return eventService.findAllEvents(page - 1, size);
-		
-	}
-	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON_VALUE)
 	@Produces(MediaType.APPLICATION_JSON_VALUE)

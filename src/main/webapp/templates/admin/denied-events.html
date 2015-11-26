@@ -1,4 +1,4 @@
-<div class="row" data-ng-controller="ApprovedEventController">
+<div class="row" data-ng-controller="DeniedEventController">
 	
 	<div class="row">
 		<div class="col-xs-12 col-md-12">
@@ -17,18 +17,18 @@
 				</div>
 				<div class="col-xs-6 col-md-6">
 					<div class="form-group">
-						<input type="text" class="form-control" id="runDateStandardFormat" name="runDate" placeholder="Run Date" data-ng-model="eventCriteria.runDateStandardFormat" />
+						<input type="text" class="form-control" id="runDate" name="runDate" placeholder="Run Date" data-ng-model="eventCriteria.runDate" />
 					</div>
 				</div>
 				
 				<div class="col-xs-6 col-md-3">
 					<div class="form-group">
-						<input type="text" class="form-control" id="dateCreatedFromStandardFormat" name="dateCreatedFrom" placeholder="Date Created From" data-ng-model="eventCriteria.dateCreatedFromStandardFormat" />
+						<input type="number" class="form-control" id="dateCreatedFrom" name="dateCreatedFrom" placeholder="Date Created From" data-ng-model="eventCriteria.dateCreatedFrom" />
 					</div>
 				</div>
 				<div class="col-xs-6 col-md-3">
 					<div class="form-group"> 
-						<input type="text" class="form-control" id="dateCreatedToStandardFormat" name="dateCreatedTo" placeholder="Date Created To" data-ng-model="eventCriteria.dateCreatedToStandardFormat" />
+						<input type="number" class="form-control" id="dateCreatedTo" name="dateCreatedTo" placeholder="Date Created To" data-ng-model="eventCriteria.dateCreatedTo" />
 					</div>
 				</div>
 				<div class="col-xs-6 col-md-3">
@@ -60,7 +60,7 @@
 	
 	<p data-ng-if="events.length == 0">There is no event with the current search filter</p>
 	
-	<div class="media" data-ng-repeat="event in approvedEvents">
+	<div class="media" data-ng-repeat="event in deniedEvents">
 		<div class="media-left media-top">
 			<a href="" data-ng-click="viewEvent(event)">
 				<img class="media-object" src="/img/event.jpg">

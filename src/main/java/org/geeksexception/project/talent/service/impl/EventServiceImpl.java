@@ -61,34 +61,6 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<Event> findAllEvents(Integer page, Integer size) {
-		
-		return eventRepository.findAllEvents(new PageRequest(page, size));
-		
-	}
-	
-	@Override
-	public List<Event> findAllApprovedEvents(Integer page, Integer size) {
-		
-		return eventRepository.findAllApprovedEvents(new PageRequest(page, size));
-		
-	}
-
-	@Override
-	public List<Event> findAllEventsOfAgency(Long id, Integer page, Integer size) {
-		
-		return eventRepository.findAllEventsOfAgency(id, new PageRequest(page, size));
-		
-	}
-	
-	@Override
-	public List<Event> findAllApprovedEventsOfAgency(Long id, Integer page, Integer size) {
-		
-		return eventRepository.findAllApprovedEventsOfAgency(id, new PageRequest(page, size));
-		
-	}
-
-	@Override
 	public List<Event> findAllEventsOfTalent(Long id, Integer page, Integer size) {
 		
 		return eventRepository.findAllEventsOfTalent(id, new PageRequest(page, size));
@@ -214,6 +186,7 @@ public class EventServiceImpl implements EventService {
 		List<Event> events = eventRepository.findAll(eventsMatchingSearchCriteria(eventCriteria, EventStatus.APPROVED), new PageRequest(page, size, new Sort(Direction.DESC, "dateCreated"))).getContent();
 		
 		return events;
+		
 	}
 
 	@Override
