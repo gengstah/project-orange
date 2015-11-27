@@ -25,8 +25,15 @@ import org.springframework.stereotype.Service;
 public class ImageUploadServiceImpl implements ImageUploadService {
 	
 	public ImageUploadServiceImpl() { }
-	
+
 	@Override
+	public ImageUploadResponse uploadImage(Attachment attachment, String sessionId, String tempLocation)
+			throws TalentManagementServiceApiException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/*@Override
 	public ImageUploadResponse uploadImage(Attachment attachment, String sessionId, String tempLocation)
 			throws TalentManagementServiceApiException {
 		
@@ -81,6 +88,6 @@ public class ImageUploadServiceImpl implements ImageUploadService {
 		
 		return response;
 		
-	}
+	}*/
 
 }
