@@ -29,10 +29,10 @@ INSERT INTO TALENT_WORK_EXPERIENCE(TALENT_ID, WORK_EXPERIENCE_ID) VALUES(2, 3);
 INSERT INTO TALENT_WORK_EXPERIENCE(TALENT_ID, WORK_EXPERIENCE_ID) VALUES(2, 4);
 INSERT INTO TALENT_WORK_EXPERIENCE(TALENT_ID, WORK_EXPERIENCE_ID) VALUES(2, 5);
 
-INSERT INTO TALENT_IMAGE(TALENT_IMAGE_ID, FILE_LOCATION, THUMBNAIL_FILE_LOCATION, TALENT_ID) VALUES(1, '/img/talents/mahha-1.jpeg', '/img/talents/thumbnails/mahha-1.jpeg', 1);
-INSERT INTO TALENT_IMAGE(TALENT_IMAGE_ID, FILE_LOCATION, THUMBNAIL_FILE_LOCATION, TALENT_ID) VALUES(2, '/img/talents/mahha-2.jpeg', '/img/talents/thumbnails/mahha-2.jpeg', 1);
-INSERT INTO TALENT_IMAGE(TALENT_IMAGE_ID, FILE_LOCATION, THUMBNAIL_FILE_LOCATION, TALENT_ID) VALUES(3, '/img/talents/mahha-2.jpeg', '/img/talents/thumbnails/mahha-2.jpeg', 2);
-INSERT INTO TALENT_IMAGE(TALENT_IMAGE_ID, FILE_LOCATION, THUMBNAIL_FILE_LOCATION, TALENT_ID) VALUES(4, '/img/talents/mahha-1.jpeg', '/img/talents/thumbnails/mahha-1.jpeg', 2);
+INSERT INTO TALENT_IMAGE(TALENT_IMAGE_ID, FILE_LOCATION, THUMBNAIL_FILE_LOCATION, TALENT_ID) VALUES(1, 'https://s3-ap-southeast-1.amazonaws.com/talent-management/talents/mahha-1.jpeg', 'https://s3-ap-southeast-1.amazonaws.com/talent-management/talents/thumbnails/mahha-1.jpeg', 1);
+INSERT INTO TALENT_IMAGE(TALENT_IMAGE_ID, FILE_LOCATION, THUMBNAIL_FILE_LOCATION, TALENT_ID) VALUES(2, 'https://s3-ap-southeast-1.amazonaws.com/talent-management/talents/mahha-2.jpeg', 'https://s3-ap-southeast-1.amazonaws.com/talent-management/talents/thumbnails/mahha-2.jpeg', 1);
+INSERT INTO TALENT_IMAGE(TALENT_IMAGE_ID, FILE_LOCATION, THUMBNAIL_FILE_LOCATION, TALENT_ID) VALUES(3, 'https://s3-ap-southeast-1.amazonaws.com/talent-management/talents/mahha-2.jpeg', 'https://s3-ap-southeast-1.amazonaws.com/talent-management/talents/thumbnails/mahha-2.jpeg', 2);
+INSERT INTO TALENT_IMAGE(TALENT_IMAGE_ID, FILE_LOCATION, THUMBNAIL_FILE_LOCATION, TALENT_ID) VALUES(4, 'https://s3-ap-southeast-1.amazonaws.com/talent-management/talents/mahha-1.jpeg', 'https://s3-ap-southeast-1.amazonaws.com/talent-management/talents/thumbnails/mahha-1.jpeg', 2);
 INSERT INTO HIBERNATE_SEQUENCES(SEQUENCE_NAME, SEQUENCE_NEXT_HI_VALUE) VALUES('TALENT_IMAGE', 4);
 
 INSERT INTO EVENT(EVENT_ID, NAME, DESCRIPTION, RUN_DATE_FROM, RUN_DATE_TO, TALENT_FEE, ACTUAL_TALENT_FEE, AGENCY_ID, EVENT_STATUS, DATE_CREATED) VALUES(1, 'Sample Event', 'Sample Event Description\nSample Event Description\nSample Event Description\nSample Event Description\nSample Event Description\nSample Event Description\n', DATE '2015-11-01', DATE '2015-11-28', 500, 400, 1, 'APPROVED', now());

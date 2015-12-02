@@ -137,7 +137,7 @@ public class EventManager {
 		
 		setAgencyId(eventCriteria);
 		
-		return eventService.searchApprovedEvents(eventCriteria, page, size);
+		return eventService.searchApprovedEvents(eventCriteria, page - 1, size);
 		
 	}
 	
@@ -155,7 +155,7 @@ public class EventManager {
 		
 		setAgencyId(eventCriteria);
 		
-		return eventService.searchForApprovalEvents(eventCriteria, page, size);
+		return eventService.searchForApprovalEvents(eventCriteria, page - 1, size);
 		
 	}
 	
@@ -173,7 +173,7 @@ public class EventManager {
 		
 		setAgencyId(eventCriteria);
 		
-		return eventService.searchDeniedEvents(eventCriteria, page, size);
+		return eventService.searchDeniedEvents(eventCriteria, page - 1, size);
 		
 	}
 	
@@ -191,7 +191,7 @@ public class EventManager {
 		
 		setAgencyId(eventCriteria);
 		
-		return eventService.searchClosedEvents(eventCriteria, page, size);
+		return eventService.searchClosedEvents(eventCriteria, page - 1, size);
 		
 	}
 

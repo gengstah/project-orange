@@ -71,15 +71,15 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 					$scope.approvedEventsCount = approvedAgencyEventsCount;
 				});
 				
-				EventCount.countApprovedEventsByAgency({ id: Session.user.agency.id }, function(forApprovalAgencyEventsCount) {
+				EventCount.countForApprovalEventsByAgency({ id: Session.user.agency.id }, function(forApprovalAgencyEventsCount) {
 					$scope.forApprovalEventsCount = forApprovalAgencyEventsCount;
 				});
 				
-				EventCount.countApprovedEventsByAgency({ id: Session.user.agency.id }, function(deniedAgencyEventsCount) {
+				EventCount.countDeniedEventsByAgency({ id: Session.user.agency.id }, function(deniedAgencyEventsCount) {
 					$scope.deniedEventsCount = deniedAgencyEventsCount;
 				});
 				
-				EventCount.countApprovedEventsByAgency({ id: Session.user.agency.id }, function(closedAgencyEventsCount) {
+				EventCount.countClosedEventsByAgency({ id: Session.user.agency.id }, function(closedAgencyEventsCount) {
 					$scope.closedEventsCount = closedAgencyEventsCount;
 				});
 			}
