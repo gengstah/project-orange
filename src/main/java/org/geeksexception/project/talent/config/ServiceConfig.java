@@ -25,4 +25,11 @@ public class ServiceConfig {
 		
 	}
 	
+	@Bean
+	public String bucketName() {
+		
+		return System.getenv("BUCKET_NAME");
+		
+	}
+	
 }

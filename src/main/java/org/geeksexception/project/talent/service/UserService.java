@@ -11,11 +11,11 @@ public interface UserService {
 	
 	User findUserByEmail(String email);
 	
-	User saveTalentUser(User user, String imageTempLocation, String reCaptchaResponse) throws TalentManagementServiceApiException;
+	User saveTalentUser(User user, String sessionId, String reCaptchaResponse) throws TalentManagementServiceApiException;
 	
 	User saveAgencyUser(User user, String reCaptchaResponse) throws TalentManagementServiceApiException;
 	
-	User updateTalentUser(User user, String imageTempLocation) throws TalentManagementServiceApiException;
+	User updateTalentUser(User user, String sessionId) throws TalentManagementServiceApiException;
 	
 	User updateAgencyUser(User user) throws TalentManagementServiceApiException;
 	

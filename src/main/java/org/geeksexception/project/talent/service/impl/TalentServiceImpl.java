@@ -2,7 +2,6 @@ package org.geeksexception.project.talent.service.impl;
 
 import static org.geeksexception.project.talent.dao.specification.TalentSpecification.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +32,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+
 @Service
 @Transactional(readOnly = true)
 public class TalentServiceImpl implements TalentService {
@@ -46,6 +48,10 @@ public class TalentServiceImpl implements TalentService {
 	private @Inject ImageService imageService;
 	
 	private @Inject UserService userService;
+	
+	private @Inject AmazonS3 s3Client;
+	
+	private @Inject String bucketName;
 	
 	public TalentServiceImpl() { }
 	
@@ -129,7 +135,7 @@ public class TalentServiceImpl implements TalentService {
 	@Transactional(readOnly = false)
 	public void deleteSavedImage(String fileName, String rootLocation) {
 		
-		String fileLocation = "/img/talents/" + fileName;
+		/*String fileLocation = "/img/talents/" + fileName;
 		Image image = imageService.findImageByFileLocation(fileLocation);
 		User user = userService.getLoggedInUser();
 		
@@ -145,6 +151,22 @@ public class TalentServiceImpl implements TalentService {
 			File imageThumbnailFile = new File(rootLocation + "img/talents/thumbnails/" + fileName);
 			if(imageThumbnailFile.exists()) imageThumbnailFile.delete();
 			
+		}*/
+		
+		String fileLocation = "https://s3-ap-southeast-1.amazonaws.com/" + bucketName + "/talents/" + fileName;
+		Image image = imageService.findImageByFileLocation(fileLocation);
+		User user = userService.getLoggedInUser();
+		
+		if(currentUserOwnsImage(user, image)) {
+			image.setTalent(null);
+			user.getTalent().getImages().remove(image);
+			imageService.delete(image);
+			save(user.getTalent());
+			
+			String imageKey = "talents/" + fileName;
+			String imageThumbnailKey = "talents/thumbnails/" + fileName;
+			s3Client.deleteObject(new DeleteObjectRequest(bucketName, imageKey));
+			s3Client.deleteObject(new DeleteObjectRequest(bucketName, imageThumbnailKey));
 		}
 		
 	}

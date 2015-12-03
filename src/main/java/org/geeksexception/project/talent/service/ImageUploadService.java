@@ -8,4 +8,6 @@ public interface ImageUploadService {
 	
 	ImageUploadResponse uploadImage(Attachment attachment, String sessionId, String tempLocation) throws TalentManagementServiceApiException;
 	
+	void deleteImage(String sessionId, String fileName);
+	
 }

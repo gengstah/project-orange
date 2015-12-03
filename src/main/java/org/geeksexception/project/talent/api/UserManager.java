@@ -1,7 +1,5 @@
 package org.geeksexception.project.talent.api;
 
-import java.io.File;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -63,7 +61,7 @@ public class UserManager {
 	public User registerTalentProfile(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
 		
 		String clearPassword = user.getPassword();
-		User savedUser = userService.saveTalentUser(user, context.getServletContext().getRealPath("/") + "img/temp/" + context.getHttpServletRequest().getSession().getId(), user.getReCaptchaResponse());
+		User savedUser = userService.saveTalentUser(user, context.getHttpServletRequest().getSession().getId(), user.getReCaptchaResponse());
 		
 		if(savedUser != null) authenticateAndLoadUser(savedUser.getEmail(), clearPassword);
 		
@@ -92,7 +90,7 @@ public class UserManager {
 	@Path("/updateTalent")
 	public User updateTalentProfile(@NotNull(message = "There is no user object to register") @Valid User user) throws TalentManagementServiceApiException {
 		
-		return userService.updateTalentUser(user, context.getServletContext().getRealPath("/") + "img/temp/" + context.getHttpServletRequest().getSession().getId());
+		return userService.updateTalentUser(user, context.getHttpServletRequest().getSession().getId());
 		
 	}
 	
@@ -186,8 +184,7 @@ public class UserManager {
 		HttpSession session = context.getHttpServletRequest().getSession();
 		String sessionId = session.getId();
 		
-		File image = new File(session.getServletContext().getRealPath("/") + "img/temp/" + sessionId + "/" + fileName);
-		if(image.exists()) image.delete();
+		imageUploadService.deleteImage(sessionId, fileName);
 		
 	}
 	

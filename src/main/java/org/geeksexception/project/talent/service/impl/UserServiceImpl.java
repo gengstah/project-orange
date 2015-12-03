@@ -3,6 +3,7 @@ package org.geeksexception.project.talent.service.impl;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.geeksexception.project.talent.api.ReCaptchaManager;
 import org.geeksexception.project.talent.dao.AgencyRepository;
@@ -40,6 +40,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CopyObjectRequest;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+
 @Service
 @Transactional(readOnly = true)
 @PropertySource("classpath:/reCaptcha.properties")
@@ -64,6 +72,10 @@ public class UserServiceImpl implements UserService {
 	private @Inject ReCaptchaManager reCaptchaManager;
 	
 	private @Inject Environment env;
+	
+	private @Inject AmazonS3 s3Client;
+	
+	private @Inject String bucketName;
 	
 	public UserServiceImpl() { }
 	
@@ -97,7 +109,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(readOnly = false)
-	public User saveTalentUser(User user, String imageTempLocation, String reCaptchaResponse) throws TalentManagementServiceApiException {
+	public User saveTalentUser(User user, String sessionId, String reCaptchaResponse) throws TalentManagementServiceApiException {
 		
 		validateReCaptchaResponse(reCaptchaResponse);
 		validateEmailIfExisting(user);
@@ -107,7 +119,7 @@ public class UserServiceImpl implements UserService {
 		user.setUserRole(UserRole.ROLE_USER);
 		
 		saveWorkExperiences(user);
-		saveImages(user, imageTempLocation);
+		saveImages(user, sessionId);
 		
 		return userRepository.save(user);
 		
@@ -130,13 +142,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(readOnly = false)
-	public User updateTalentUser(User user, String imageTempLocation) throws TalentManagementServiceApiException {
+	public User updateTalentUser(User user, String sessionId) throws TalentManagementServiceApiException {
 		
 		User savedUser = getLoggedInUser();
 		user.setPassword(savedUser.getPassword());
 		user.getTalent().setImages(savedUser.getTalent().getImages());
 		saveWorkExperiences(user);
-		saveImages(user, imageTempLocation);
+		saveImages(user, sessionId);
 		
 		return userRepository.save(user);
 		
@@ -182,9 +194,53 @@ public class UserServiceImpl implements UserService {
 		
 	}
 	
-	private void saveImages(User user, String imageTempLocation) throws TalentManagementServiceApiException {
+	private void saveImages(User user, String sessionId) throws TalentManagementServiceApiException {
 		
-		File temp = new File(imageTempLocation);
+		ObjectListing objectListing;
+		boolean hasObjects = false;
+		do {
+			objectListing = s3Client.listObjects(new ListObjectsRequest()
+					.withBucketName(bucketName)
+					.withPrefix("temp/" + sessionId));
+			if(objectListing.getObjectSummaries().size() > 0) { hasObjects = true; break; }
+		} while (objectListing.isTruncated());
+		
+		if(hasObjects) {
+			if(user.getTalent().getImages() == null) user.getTalent().setImages(new ArrayList<Image>());
+			for(S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+				String[] keyParts = objectSummary.getKey().split("/");
+				String fileName = keyParts[keyParts.length - 1];
+				Image image = new Image("https://s3-ap-southeast-1.amazonaws.com/" + objectSummary.getBucketName() + "/talents/" + fileName, "https://s3-ap-southeast-1.amazonaws.com/" + objectSummary.getBucketName() + "/talents/thumbnails/" + fileName);
+				image.setTalent(user.getTalent());
+				imageService.save(image);
+				user.getTalent().getImages().add(image);
+				
+				try {
+					URL url = new URL("https://s3-ap-southeast-1.amazonaws.com/" + objectSummary.getBucketName() + "/" + objectSummary.getKey());
+					BufferedImage srcImg = ImageIO.read(url);
+					BufferedImage dstImg = Scalr.resize(srcImg, Scalr.Method.QUALITY, THUMB_WIDTH, THUMB_HEIGHT);
+					
+					File thumbnailImage = new File(System.getProperty("java.io.tmpdir") + "/" + fileName);
+					ImageIO.write(dstImg, fileName.split("\\.")[1], thumbnailImage);
+					s3Client.putObject(new PutObjectRequest(bucketName, "talents/thumbnails/" + fileName, thumbnailImage));
+					s3Client.copyObject(new CopyObjectRequest(objectSummary.getBucketName(), objectSummary.getKey(), bucketName, "talents/" + fileName));
+					s3Client.deleteObject(new DeleteObjectRequest(objectSummary.getBucketName(), objectSummary.getKey()));
+				} catch(IOException e) {
+					throw new TalentManagementServiceApiException(
+							"Error while creating thumbnails", 
+							new Errors()
+								.addError(new Error("image", "Error while creating thumbnails")), e);
+				}
+			}
+		} else if(user.getTalent().getImages() != null) {
+			
+		} else if(!hasObjects)
+			throw new TalentManagementServiceApiException(
+					"Please upload at least 1 image", 
+					new Errors()
+						.addError(new Error("image", "Please upload at least 1 image")));
+		
+		/*File temp = new File(imageTempLocation);
 		File thumbnailTemp = new File(imageTempLocation + "/thumbnails");
 		if(temp.exists()) {
 			File[] files = temp.listFiles();
@@ -233,7 +289,7 @@ public class UserServiceImpl implements UserService {
 					"Please upload at least 1 image", 
 					new Errors()
 						.addError(new Error("image", "Please upload at least 1 image")));
-		}
+		}*/
 		
 	}
 
