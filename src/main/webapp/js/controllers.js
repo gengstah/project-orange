@@ -136,10 +136,16 @@ controllers.controller('HeaderController', ['$scope', '$rootScope', 'AUTH_EVENTS
   	}
 ]);
 
-controllers.controller('HomeController', ['$scope', '$rootScope', '$state', 'Auth', 'Session', 'AUTH_EVENTS',
-    function($scope, $rootScope, $state, Auth, Session, events) {
+controllers.controller('HomeController', ['$scope', '$rootScope', '$state',
+    function($scope, $rootScope, $state) {
 		
 	}
+]);
+
+controllers.controller('RegistrationController', ['$scope', '$rootScope', '$state',
+    function($scope, $rootScope, $state) {
+		
+    }
 ]);
 
 controllers.controller('LoginController', ['$scope', '$rootScope', '$state', 'Auth', 'Session', 'AUTH_EVENTS',
