@@ -58,9 +58,9 @@
 	</div>
 	<hr />
 	
-	<p data-ng-if="events.length == 0">There is no event with the current search filter</p>
+	<p data-ng-if="approvedEvents.length == 0">There is no event with the current search filter</p>
 	
-	<div class="media" data-ng-repeat="event in approvedEvents">
+	<div class="media wow fadeInUp" data-ng-repeat="event in approvedEvents">
 		<div class="media-left media-top">
 			<a href="" data-ng-click="viewEvent(event)">
 				<img class="media-object" src="/img/event.jpg">

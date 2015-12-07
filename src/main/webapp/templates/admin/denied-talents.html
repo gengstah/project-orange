@@ -1,8 +1,96 @@
 <div data-ng-controller="DeniedTalentController">
 	
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#searchCriteria" aria-expanded="false" aria-controls="searchCriteria">
+				Search Filters
+			</button>
+		</div>
+	</div>
+	<div class="collapse" id="searchCriteria">
+		<form name="talentSearchForm" role="form" method="POST" data-ng-submit="searchTalent(talentCriteria)" novalidate="novalidate">
+			<div class="row">
+				<div class="col-xs-6 col-md-6">
+					<div class="form-group">
+						<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" data-ng-model="talentCriteria.firstName" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-6">
+					<div class="form-group">
+						<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" data-ng-model="talentCriteria.lastName" />
+					</div>
+				</div>
+				
+				<div class="col-xs-6 col-md-3">
+					<div class="form-group">
+						<input type="number" class="form-control" id="ageFrom" name="ageFrom" placeholder="Age From" data-ng-model="talentCriteria.ageFrom" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="form-group"> 
+						<input type="number" class="form-control" id="ageTo" name="ageTo" placeholder="Age To" data-ng-model="talentCriteria.ageTo" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="form-group">
+						<input type="number" class="form-control" id="talentFeeFrom" name="talentFeeFrom" placeholder="Talent Fee From" data-ng-model="talentCriteria.talentFeeFrom" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3">
+					<div class="form-group"> 
+						<input type="number" class="form-control" id="talentFeeTo" name="talentFeeTo" placeholder="Talent Fee To" data-ng-model="talentCriteria.talentFeeTo" />
+					</div>
+				</div>
+				
+				
+				<div class="col-xs-6 col-md-6">
+					<div class="form-group">
+						<label class="radio-inline">
+							<input type="radio" name="gender" value="M" data-ng-model="talentCriteria.gender"> Male
+						</label>
+						<label class="radio-inline" style="margin-left: 0px;">
+							<input type="radio" name="gender" value="F" data-ng-model="talentCriteria.gender"> Female
+						</label>
+					</div>
+				</div>
+				
+				<div class="col-xs-6 col-md-6">
+					<div class="form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="talentClass" value="AA" data-ng-model="talentCriteria.talentClassAA"> AA
+						</label>
+						<label class="checkbox-inline" style="margin-left: 0px;">
+							<input type="checkbox" name="talentClass" value="A" data-ng-model="talentCriteria.talentClassA"> A
+						</label>
+						<label class="checkbox-inline" style="margin-left: 0px;">
+							<input type="checkbox" name="talentClass" value="B" data-ng-model="talentCriteria.talentClassB"> B
+						</label>
+						<label class="checkbox-inline" style="margin-left: 0px;">
+							<input type="checkbox" name="talentClass" value="C" data-ng-model="talentCriteria.talentClassC"> C
+						</label>
+					</div>
+				</div>
+				
+				<div class="col-xs-6 col-md-6">
+					<div class="form-group">
+						<input type="text" class="form-control" id="city" name="city" placeholder="City" data-ng-model="talentCriteria.city" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-6">
+					<button id="searchButton" type="submit" class="btn btn-primary" data-loading-text="Searching...">
+						<span class="glyphicon glyphicon-ok-sign"></span> Search
+					</button>
+					<button id="resetButton" type="button" class="btn btn-default" data-ng-click="reset()">
+						Reset
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<hr />
 	<p data-ng-if="deniedTalents.length == 0">There is no talent with the current search filter</p>
 	<div class="col-sm-6 col-md-4" data-ng-repeat="talent in deniedTalents">
-		<div class="thumbnail">
+		<div class="thumbnail wow bounceIn">
 			<a href="" data-ng-click="viewProfile(talent.user)">
 				<img src="/img/talents/mahha-1.jpeg" alt="..." data-ng-src="{{ talent.images[0].fileLocation }}" />
 			</a>

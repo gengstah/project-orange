@@ -90,7 +90,7 @@
 	<hr />
 	<p data-ng-if="approvedTalents.length == 0">There is no talent with the current search filter</p>
 	<div class="col-sm-6 col-md-4" data-ng-repeat="talent in approvedTalents">
-		<div class="thumbnail">
+		<div class="thumbnail wow bounceIn">
 			<a href="" data-ng-click="viewProfile(talent.user)">
 				<img src="/img/talents/mahha-1.jpeg" alt="..." data-ng-src="{{ talent.images[0].fileLocation }}" />
 			</a>
