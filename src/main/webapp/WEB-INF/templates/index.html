@@ -53,7 +53,7 @@
 <!-- "pattern-1 ... pattern-9": background patterns for boxed layout mode e.g. <body class="boxed pattern-1"> -->
 <!-- "transparent-header": makes the header transparent and pulls the banner to top -->
 <!-- "page-loader-1 ... page-loader-6": add a page loader to the page (more info @components-page-loaders.html) -->
-<body class="no-trans front-page transparent-header">
+<body class="no-trans front-page transparent-header" data-ng-controller="ApplicationController">
 
 	<!-- scrollToTop -->
 	<!-- ================ -->
@@ -104,9 +104,9 @@
 									</div>
 								</div>
 								<ul class="list-inline hidden-sm hidden-xs">
-									<li><i class="fa fa-map-marker pr-5 pl-10"></i>One Infinity Loop Av, Tk 123456</li>
-									<li><i class="fa fa-phone pr-5 pl-10"></i>+12 123 123 123</li>
-									<li><i class="fa fa-envelope-o pr-5 pl-10"></i> theproject@mail.com</li>
+									<li><i class="fa fa-map-marker pr-5 pl-10"></i>Norma St. B. Balic, Sampaloc, Manila, 1008</li>
+									<li><i class="fa fa-phone pr-5 pl-10"></i>+63 927 474 2769</li>
+									<li><i class="fa fa-envelope-o pr-5 pl-10"></i> mhaj_saleh@yahoo.com</li>
 								</ul>
 							</div>
 							<!-- header-top-first end -->
@@ -119,7 +119,7 @@
 
 								<!-- header top dropdowns start -->
 								<!-- ================ -->
-								<div class="header-top-dropdown text-right">
+								<div class="header-top-dropdown text-right" data-ng-if="!isAuthenticated()">
 									<div class="btn-group">
 										<a href="#!/register" class="btn btn-default btn-sm"><i class="fa fa-user pr-10"></i> Sign Up</a>
 									</div>
@@ -127,20 +127,58 @@
 										<button type="button" class="btn dropdown-toggle btn-default btn-sm" data-toggle="dropdown"><i class="fa fa-lock pr-10"></i> Login</button>
 										<ul class="dropdown-menu dropdown-menu-right dropdown-animation">
 											<li>
-												<form class="login-form margin-clear">
+												<form class="login-form margin-clear" name="loginForm" role="form" method="POST" data-ng-submit="login(credentials)">
 													<div class="form-group has-feedback">
-														<label class="control-label">Username</label>
-														<input type="text" class="form-control" placeholder="" />
+														<label class="control-label">Email</label>
+														<input type="email" class="form-control" id="email" name="email" placeholder="" required="required" data-ng-model="credentials.email" />
 														<i class="fa fa-user form-control-feedback"></i>
 													</div>
 													<div class="form-group has-feedback">
 														<label class="control-label">Password</label>
-														<input type="password" class="form-control" placeholder="" />
+														<input type="password" class="form-control" id="password1" name="password1" placeholder="" required="required" data-ng-model="credentials.password" />
 														<i class="fa fa-lock form-control-feedback"></i>
 													</div>
 													<button type="submit" class="btn btn-gray btn-sm">Log In</button>
 													<span class="pl-5 pr-5">or</span>
-													<button type="submit" class="btn btn-default btn-sm">Sing Up</button>
+													<!-- <button type="submit" class="btn btn-default btn-sm">Sign Up</button> -->
+													<a href="#!/register" class="btn btn-default btn-sm">Sign Up</a>
+													<ul>
+														<li><a href="#">Forgot your password?</a></li>
+													</ul>
+													<!-- <span class="text-center">Login with</span>
+													<ul class="social-links circle small colored clearfix">
+														<li class="facebook"><a target="_blank" href="http://www.facebook.com"><i class="fa fa-facebook"></i></a></li>
+														<li class="twitter"><a target="_blank" href="http://www.twitter.com"><i class="fa fa-twitter"></i></a></li>
+														<li class="googleplus"><a target="_blank" href="http://plus.google.com"><i class="fa fa-google-plus"></i></a></li>
+													</ul> -->
+												</form>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<!--  header top dropdowns end -->
+								
+								<!-- header top dropdowns start -->
+								<!-- ================ -->
+								<div class="header-top-dropdown text-right" data-ng-if="isAuthenticated()">
+									<div class="btn-group dropdown">
+										<button type="button" class="btn dropdown-toggle btn-default btn-sm" data-toggle="dropdown"><i class="fa fa-lock pr-10"></i> <span data-ng-bind="user.email">Geng</span></button>
+										<ul class="dropdown-menu dropdown-menu-right dropdown-animation">
+											<li>
+												<!-- <form class="login-form margin-clear" name="loginForm" role="form" method="POST" data-ng-submit="login(credentials)">
+													<div class="form-group has-feedback">
+														<label class="control-label">Email</label>
+														<input type="email" class="form-control" id="email" name="email" placeholder="" required="required" data-ng-model="credentials.email" />
+														<i class="fa fa-user form-control-feedback"></i>
+													</div>
+													<div class="form-group has-feedback">
+														<label class="control-label">Password</label>
+														<input type="password" class="form-control" id="password1" name="password1" placeholder="" required="required" data-ng-model="credentials.password" />
+														<i class="fa fa-lock form-control-feedback"></i>
+													</div>
+													<button type="submit" class="btn btn-gray btn-sm">Log In</button>
+													<span class="pl-5 pr-5">or</span>
+													<button type="submit" class="btn btn-default btn-sm">Sign Up</button>
 													<ul>
 														<li><a href="#">Forgot your password?</a></li>
 													</ul>
@@ -150,7 +188,9 @@
 														<li class="twitter"><a target="_blank" href="http://www.twitter.com"><i class="fa fa-twitter"></i></a></li>
 														<li class="googleplus"><a target="_blank" href="http://plus.google.com"><i class="fa fa-google-plus"></i></a></li>
 													</ul>
-												</form>
+												</form> -->
+												<a href="#!/talent/profile" class="btn btn-default btn-sm">Profile</a>
+												<a href="" data-ng-click="logout()" class="btn btn-default btn-sm">Sign Out</a>
 											</li>
 										</ul>
 									</div>
@@ -587,67 +627,7 @@
 													</ul>
 												</li>
 											</ul>
-											<!-- main-menu end -->
-											
-											<!-- header dropdown buttons -->
-											<div class="header-dropdown-buttons hidden-xs ">
-												<div class="btn-group dropdown">
-													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-search"></i></button>
-													<ul class="dropdown-menu dropdown-menu-right dropdown-animation">
-														<li>
-															<form role="search" class="search-box margin-clear">
-																<div class="form-group has-feedback">
-																	<input type="text" class="form-control" placeholder="Search" />
-																	<i class="icon-search form-control-feedback"></i>
-																</div>
-															</form>
-														</li>
-													</ul>
-												</div>
-												<div class="btn-group dropdown">
-													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-basket-1"></i><span class="cart-count default-bg">8</span></button>
-													<ul class="dropdown-menu dropdown-menu-right dropdown-animation cart">
-														<li>
-															<table class="table table-hover">
-																<thead>
-																	<tr>
-																		<th class="quantity">QTY</th>
-																		<th class="product">Product</th>
-																		<th class="amount">Subtotal</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<tr>
-																		<td class="quantity">2 x</td>
-																		<td class="product"><a href="shop-product.html">Android 4.4 Smartphone</a><span class="small">4.7" Dual Core 1GB</span></td>
-																		<td class="amount">$199.00</td>
-																	</tr>
-																	<tr>
-																		<td class="quantity">3 x</td>
-																		<td class="product"><a href="shop-product.html">Android 4.2 Tablet</a><span class="small">7.3" Quad Core 2GB</span></td>
-																		<td class="amount">$299.00</td>
-																	</tr>
-																	<tr>
-																		<td class="quantity">3 x</td>
-																		<td class="product"><a href="shop-product.html">Desktop PC</a><span class="small">Quad Core 3.2MHz, 8GB RAM, 1TB Hard Disk</span></td>
-																		<td class="amount">$1499.00</td>
-																	</tr>
-																	<tr>
-																		<td class="total-quantity" colspan="2">Total 8 Items</td>
-																		<td class="total-amount">$1997.00</td>
-																	</tr>
-																</tbody>
-															</table>
-															<div class="panel-body text-right">	
-																<a href="shop-cart.html" class="btn btn-group btn-gray btn-sm">View Cart</a>
-																<a href="shop-checkout.html" class="btn btn-group btn-gray btn-sm">Checkout</a>
-															</div>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<!-- header dropdown buttons end-->
-											
+											<!-- main-menu end -->											
 										</div>
 
 									</div>
@@ -828,9 +808,9 @@
 									</ul>
 									<div class="separator-2"></div>
 									<ul class="list-icons">
-										<li><i class="fa fa-map-marker pr-10 text-default"></i> One infinity loop, 54100</li>
-										<li><i class="fa fa-phone pr-10 text-default"></i> +00 1234567890</li>
-										<li><a href="mailto:info@theproject.com"><i class="fa fa-envelope-o pr-10"></i>info@theproject.com</a></li>
+										<li><i class="fa fa-map-marker pr-10 text-default"></i> Norma St. B. Balic, Sampaloc, Manila, 1008</li>
+										<li><i class="fa fa-phone pr-10 text-default"></i> +63 927 474 2769</li>
+										<li><a href="mailto:mhaj_saleh@yahoo.com"><i class="fa fa-envelope-o pr-10"></i>mhaj_saleh@yahoo.com</a></li>
 									</ul>
 								</div>
 							</div>
@@ -847,7 +827,7 @@
 					<div class="subfooter-inner">
 						<div class="row">
 							<div class="col-md-12">
-								<p class="text-center">Copyright © 2015 The Project by <a target="_blank" href="http://htmlcoder.me">HtmlCoder</a>. All Rights Reserved</p>
+								<p class="text-center">Copyright &copy; 2015 The Project by <a target="_blank" href="http://htmlcoder.me">HtmlCoder</a>. All Rights Reserved</p>
 							</div>
 						</div>
 					</div>

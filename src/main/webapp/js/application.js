@@ -91,6 +91,7 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 			.state('registerAgency', {
 				url: '/agency/register', 
 				templateUrl: 'templates/agency/register.html',
+				controller: 'RegisterAgencyController',
 				data: {
 					authorizedRoles: [roles.all]
 				}
@@ -98,6 +99,7 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 			.state('login', {
 				url: '/login', 
 				templateUrl: 'templates/login.html',
+				controller: 'LoginController',
 				data: {
 					authorizedRoles: [roles.all]
 				}

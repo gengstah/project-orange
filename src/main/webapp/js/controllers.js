@@ -4,12 +4,30 @@
 
 var controllers = angular.module('TalentManagementControllers', []);
 
-controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES', 'AuthService', 'AUTH_EVENTS', 'Session', 'Auth', 'Talent', 'EventCount',
-	function($scope, $state, roles, AuthService, events, Session, Auth, Talent, EventCount) {
+controllers.controller('ApplicationController', ['$rootScope', '$scope', '$state', 'USER_ROLES', 'AuthService', 'AUTH_EVENTS', 'Session', 'Auth', 'Talent', 'EventCount',
+	function($rootScope, $scope, $state, roles, AuthService, events, Session, Auth, Talent, EventCount) {
 		$scope.user = Session.user;
 		$scope.userRoles = roles;
 		$scope.isAuthenticated = AuthService.isAuthenticated;
 		$scope.isAuthorized = AuthService.isAuthorized;
+		
+		$scope.login = function login(credentials) {
+			Auth.authenticate($.param({email: credentials.email, password: credentials.password}), function(user) {
+				delete $scope.loginErrors;
+				$scope.credentials = {};
+				Session.create(user);
+				$rootScope.$broadcast(events.loginSuccess);
+			}, function(error) {
+				$state.go('login');
+				$scope.loginErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
+				console.log($scope.loginErrors);
+				$rootScope.$broadcast(events.loginFailed);
+			});
+		};
+		
+		$scope.logout = function logout() {
+			$rootScope.$broadcast(events.logoutSuccess);
+		};
 		
 		$scope.setCurrentUser = function (user) {
 			$scope.user = user;
@@ -130,22 +148,16 @@ controllers.controller('ApplicationController', ['$scope', '$state', 'USER_ROLES
 
 controllers.controller('HeaderController', ['$scope', '$rootScope', 'AUTH_EVENTS',
 	function($scope, $rootScope, events, Talent, Session, roles) {
-		$scope.logout = function logout() {
+		/*$scope.logout = function logout() {
 			$rootScope.$broadcast(events.logoutSuccess);
-		};
+		};*/
   	}
 ]);
 
-controllers.controller('HomeController', ['$scope', '$rootScope', '$state',
-    function($scope, $rootScope, $state) {
+controllers.controller('HomeController', ['$scope', '$rootScope', '$state', 'Auth', 'Session', 'AUTH_EVENTS',
+    function($scope, $rootScope, $state, Auth, Session, events) {
 		
 	}
-]);
-
-controllers.controller('RegistrationController', ['$scope', '$rootScope', '$state',
-    function($scope, $rootScope, $state) {
-		
-    }
 ]);
 
 controllers.controller('LoginController', ['$scope', '$rootScope', '$state', 'Auth', 'Session', 'AUTH_EVENTS',
@@ -153,21 +165,18 @@ controllers.controller('LoginController', ['$scope', '$rootScope', '$state', 'Au
 	
 		$scope.credentials = {};
 		
-		$scope.login = function login(credentials) {
-			var $loginButton = $("#loginButton").button("loading");
+		/*$scope.login = function login(credentials) {
 			Auth.authenticate($.param({email: $scope.credentials.email, password: $scope.credentials.password}), function(user) {
 				delete $scope.loginErrors;
 				$scope.credentials = {};
 				Session.create(user);
-				$loginButton.button("reset");
 				$rootScope.$broadcast(events.loginSuccess);
 			}, function(error) {
 				$scope.loginErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
 				console.log($scope.loginErrors);
-				$loginButton.button("reset");
 				$rootScope.$broadcast(events.loginFailed);
 			});
-		};
+		};*/
 		
   	}
 ]);

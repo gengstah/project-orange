@@ -1,4 +1,4 @@
-<div class="row" data-ng-controller="RegisterAgencyController">
+<!-- <div class="row" data-ng-controller="RegisterAgencyController">
 	<div class="col-md-1"></div>
 	
 	<div class="col-md-10">
@@ -118,4 +118,111 @@
 	</div>
 	
 	<div class="col-md-1"></div>
+</div> -->
+
+<!-- breadcrumb start -->
+<!-- ================ -->
+<div class="breadcrumb-container">
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><i class="fa fa-home pr-10"></i><a href="#!/">Home</a></li>
+			<li><i class="fa fa-user pr-10"></i><a href="#!/register">Page Sign Up</a></li>
+			<li class="active">Agency Sign Up</li>
+		</ol>
+	</div>
 </div>
+<!-- breadcrumb end -->
+
+<!-- main-container start -->
+<!-- ================ -->
+<div class="main-container dark-translucent-bg" style="background-image:url('images/background-img-6.jpg');">
+	<div class="container">
+		<div class="row">
+			<!-- main start -->
+			<!-- ================ -->
+			<div class="main object-non-visible" data-animation-effect="fadeInUpSmall" data-effect-delay="100">
+				<div class="form-block center-block p-30 light-gray-bg border-clear">
+					<h2 class="title">Sign Up</h2>
+					<form class="form-horizontal" name="agencySignUpForm" role="form" method="POST" data-ng-submit="agencySignUp(user)">
+						<div class="form-group has-feedback" data-ng-class="{ 'has-success' : agencySignUpForm.firstName.$valid, 'has-error' : agencySignUpForm.firstName.$invalid  }">
+							<label for="firstName" class="col-sm-3 control-label">First Name <span class="text-danger small">*</span></label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required="required" data-ng-model="user.agency.firstName" />
+								<i class="fa fa-pencil form-control-feedback"></i>
+							</div>
+						</div>
+						<div class="form-group has-feedback" data-ng-class="{ 'has-success' : agencySignUpForm.lastName.$valid, 'has-error' : agencySignUpForm.lastName.$invalid  }">
+							<label for="lastName" class="col-sm-3 control-label">Last Name <span class="text-danger small">*</span></label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required="required" data-ng-model="user.agency.lastName" />
+								<i class="fa fa-pencil form-control-feedback"></i>
+							</div>
+						</div>
+						<div class="form-group has-feedback" data-ng-class="{ 'has-success' : agencySignUpForm.agencyName.$valid, 'has-error' : agencySignUpForm.agencyName.$invalid  }">
+							<label for="agencyName" class="col-sm-3 control-label">Agency Name <span class="text-danger small">*</span></label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="agencyName" name="agencyName" placeholder="Agency Name" required="required" data-ng-model="user.agency.agencyName" />
+								<i class="fa fa-pencil form-control-feedback"></i>
+							</div>
+						</div>
+						<div class="form-group has-feedback">
+							<label for="agencyAddress" class="col-sm-3 control-label">Agency Address</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="agencyAddress" name="agencyAddress" placeholder="Agency Address" required="required" data-ng-model="user.agency.agencyAddress" />
+								<i class="fa fa-pencil form-control-feedback"></i>
+							</div>
+						</div>
+						<div class="form-group has-feedback" data-ng-class="{ 'has-success' : agencySignUpForm.contactNo.$valid, 'has-error' : agencySignUpForm.contactNo.$invalid  }">
+							<label for="contactNo" class="col-sm-3 control-label">Contact No <span class="text-danger small">*</span></label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact No" required="required" data-ng-model="user.agency.contactNo" />
+								<i class="fa fa-pencil form-control-feedback"></i>
+							</div>
+						</div>
+						<div class="form-group has-feedback" data-ng-class="{ 'has-success' : agencySignUpForm.email.$valid, 'has-error' : agencySignUpForm.email.$invalid }">
+							<label for="email" class="col-sm-3 control-label">Email <span class="text-danger small">*</span></label>
+							<div class="col-sm-8">
+								<input type="email" class="form-control" id="email" name="email" placeholder="Email" required="required" data-ng-model="user.email" />
+								<i class="fa fa-envelope form-control-feedback"></i>
+							</div>
+						</div>
+						<div class="form-group has-feedback" data-ng-class="{ 'has-success' : agencySignUpForm.password1.$valid, 'has-error' : agencySignUpForm.password1.$invalid }">
+							<label for="password1" class="col-sm-3 control-label">Password <span class="text-danger small">*</span></label>
+							<div class="col-sm-8">
+								<input type="password" class="form-control" id="password1" name="password1" placeholder="Password" required="required" data-ng-model="user.password" />
+								<i class="fa fa-lock form-control-feedback"></i>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-8">
+								<div
+									vc-recaptcha
+									theme="'light'"
+									key="model.key"
+									on-create="setWidgetId(widgetId)"
+									on-success="setResponse(response)"
+									on-expire="cbExpiration()"></div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-8">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" required> Accept our <a href="#">privacy policy</a> and <a href="#">customer agreement</a>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-8">
+								<button type="submit" class="btn btn-group btn-default btn-animated">Sign Up <i class="fa fa-check"></i></button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- main end -->
+		</div>
+	</div>
+</div>
+<!-- main-container end -->
