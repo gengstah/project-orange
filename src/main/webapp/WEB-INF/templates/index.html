@@ -189,7 +189,8 @@
 														<li class="googleplus"><a target="_blank" href="http://plus.google.com"><i class="fa fa-google-plus"></i></a></li>
 													</ul>
 												</form> -->
-												<a href="#!/talent/profile" class="btn btn-default btn-sm">Profile</a>
+												<a href="#!/talent/profile" class="btn btn-default btn-sm" data-ng-if="isAuthorized(userRoles.user)">Profile</a>
+												<a href="#!/agency/profile" class="btn btn-default btn-sm" data-ng-if="isAuthorized(userRoles.agency)">Profile</a>
 												<a href="" data-ng-click="logout()" class="btn btn-default btn-sm">Sign Out</a>
 											</li>
 										</ul>

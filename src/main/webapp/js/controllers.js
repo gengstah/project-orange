@@ -263,7 +263,6 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 		$scope.talentSignUp = function talentSignUp(user) {			
 			var $signUpButton = $("#signUpButton").button("loading");
 			user.talent.birthDate = new Date(user.talent.birthDateStandardFormat);
-			if(user.password != user.password2) return false;
 			
 			var workExperiences = [];
 			var exps = user.talent.exp.split(",");
@@ -275,11 +274,9 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 			
 			var exp = user.talent.exp;
 			var birthDateStandardFormat = user.talent.birthDateStandardFormat;
-			var password2 = user.password2;
 			
 			delete user.talent.exp;
 			delete user.talent.birthDateStandardFormat;
-			delete user.password2;
 			var response = vcRecaptchaService.getResponse($scope.widgetId);
 			user.reCaptchaResponse = response;
 			Auth.registerTalent(user, function(userResponse) {
@@ -292,7 +289,6 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 			}, function(error) {
 				user.talent.exp = exp;
 				user.talent.birthDateStandardFormat = birthDateStandardFormat;
-				user.password2 = password2;
 				$signUpButton.button("reset");
 				vcRecaptchaService.reload();
 				$scope.userSignUpErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
@@ -329,10 +325,6 @@ controllers.controller('RegisterAgencyController', ['$scope', '$rootScope', '$st
 		
 		$scope.agencySignUp = function agencySignUp(user) {			
 			var $signUpButton = $("#signUpButton").button("loading");
-			if(user.password != user.password2) return false;
-			
-			var password2 = user.password2;
-			delete user.password2;
 			
 			var response = vcRecaptchaService.getResponse($scope.widgetId);
 			user.reCaptchaResponse = response;
@@ -344,7 +336,6 @@ controllers.controller('RegisterAgencyController', ['$scope', '$rootScope', '$st
 				delete $scope.user;
 				delete $scope.userSignUpErrors;
 			}, function(error) {
-				user.password2 = password2;
 				$signUpButton.button("reset");
 				vcRecaptchaService.reload();
 				$scope.userSignUpErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
