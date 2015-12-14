@@ -108,34 +108,86 @@
 
 </div> -->
 
+<!-- breadcrumb start -->
+<!-- ================ -->
+<div class="breadcrumb-container">
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><i class="fa fa-home pr-10"></i><a href="#!/">Home</a></li>
+			<li class="active">Talents</li>
+		</ol>
+	</div>
+</div>
+<!-- breadcrumb end -->
+
+<!-- main-container start -->
+<!-- ================ -->
 <section class="main-container">
+
 	<div class="container">
 		<div class="row">
+
+			<!-- main start -->
+			<!-- ================ -->
 			<div class="main col-md-12">
-				<div class="row grid-space-10">
-					<div class="col-sm-6 col-md-3" data-ng-repeat="talent in approvedTalents">
-						<div class="team-member image-box style-2 mb-20 dark-bg text-center">
-							<div class="overlay-container overlay-visible">
-								<img alt="" data-ng-src="{{ talent.images[0].fileLocation }}">
-								<div class="overlay-bottom">
-									<ul class="social-links circle dark margin-clear">
-										<li class="skype"><a target="_blank" href="http://www.skype.com"><i class="fa fa-skype"></i></a></li>
-										<li class="linkedin"><a target="_blank" href="http://www.linkedin.com"><i class="fa fa-linkedin"></i></a></li>
-										<li class="xing"><a target="_blank" href="https://www.xing.com/"><i class="fa fa-xing"></i></a></li>
-									</ul>
+
+				<!-- page-title start -->
+				<!-- ================ -->
+				<h1 class="page-title">Talents</h1>
+				<div class="separator-2"></div>
+				<!-- page-title end -->
+				<p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit Illo quaerat <br> commodi excepturi dignissimos!</p>
+
+				<!-- isotope filters start -->
+				<div class="filters">
+					<ul class="nav nav-pills">
+						<li class="active"><a href="#" data-filter="*">All</a></li>
+						<li><a href="#" data-filter=".classAA">AA</a></li>
+						<li><a href="#" data-filter=".classA">A</a></li>
+						<li><a href="#" data-filter=".classB">B</a></li>
+						<li><a href="#" data-filter=".classC">C</a></li>
+					</ul>
+				</div>
+				<!-- isotope filters end -->
+
+				<div class="isotope-container row grid-space-10">
+					<div class="col-md-4 col-sm-6 isotope-item" data-ng-repeat="talent in approvedTalents" data-ng-class="{classAA: talent.talentClass == 'AA',classA: talent.talentClass == 'A',classB: talent.talentClass == 'B',classC: talent.talentClass == 'C'}">
+						<div id="carousel-portfolio-{{$index}}" class="carousel slide" data-ride="carousel">
+							<!-- Indicators -->
+							<ol class="carousel-indicators">
+								<li data-target="#carousel-portfolio-{{$parent.$index}}" data-slide-to="{{$index}}" data-ng-class="{active: $first}" data-ng-repeat="image in talent.images"></li>
+								<!-- <li data-target="#carousel-portfolio" data-slide-to="1"></li>
+								<li data-target="#carousel-portfolio" data-slide-to="2"></li> -->
+							</ol>
+
+							<!-- Wrapper for slides -->
+							<div class="carousel-inner" role="listbox">
+								<div class="item" data-ng-repeat="image in talent.images" data-ng-class="{active: $first}">
+									<div class="image-box shadow bordered text-center mb-20">
+										<div class="overlay-container">
+											<img data-ng-src="{{ talent.images[$index].fileLocation }}" alt="">
+											<div class="overlay-top">
+												<div class="text">
+													<h3><a href="" data-ng-click="viewProfile(talent.user)">{{talent.firstName}} {{talent.lastName}}</a></h3>
+													<p class="small">{{ talent.birthDate | ageFilter }}, {{talent.gender}}, {{talent.city}}</p>
+												</div>
+											</div>
+											<div class="overlay-bottom">
+												<div class="links">
+													<a href="" class="btn btn-gray-transparent btn-animated btn-sm" data-ng-click="viewProfile(talent.user)">View Details <i class="pl-10 fa fa-arrow-right"></i></a>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
-							</div>
-							<div class="body">
-								<h3 class="margin-clear">{{talent.firstName}} {{talent.lastName}}</h3>
-								<small>{{ talent.birthDate | ageFilter }}, {{talent.gender}}, {{talent.city}}</small>
-								<div class="separator mt-10"></div>
-								<p class="small margin-clear">Lorem ipsum dolor sit amet, consectetur adipisicing elit!</p>
-								<!-- <a href="mailto:info@theproject.com" class="btn btn-lg-link link-light"><i class="pr-10 fa fa-envelope-o"></i>Contact Me</a> -->
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<!-- main end -->
+
 		</div>
 	</div>
 </section>
+<!-- main-container end -->

@@ -10,6 +10,7 @@ controllers.controller('ApplicationController', ['$rootScope', '$scope', '$state
 		$scope.userRoles = roles;
 		$scope.isAuthenticated = AuthService.isAuthenticated;
 		$scope.isAuthorized = AuthService.isAuthorized;
+		$scope.credentials = {};
 		
 		$scope.login = function login(credentials) {
 			Auth.authenticate($.param({email: credentials.email, password: credentials.password}), function(user) {
@@ -18,10 +19,11 @@ controllers.controller('ApplicationController', ['$rootScope', '$scope', '$state
 				Session.create(user);
 				$rootScope.$broadcast(events.loginSuccess);
 			}, function(error) {
+				$scope.credentials = {};
 				$state.go('login');
 				$scope.loginErrors = JSON.parse(error.headers('X-TalentManagementServiceApi-Exception'));
-				console.log($scope.loginErrors);
 				$rootScope.$broadcast(events.loginFailed);
+				$('.dropdown.open .dropdown-toggle').dropdown('toggle');
 			});
 		};
 		
@@ -995,7 +997,9 @@ controllers.controller('ApprovedTalentController', ['$scope', '$rootScope', '$st
 		$scope.reset = function reset() {
 			$scope.talentCriteria = {};
 		};
-	
+		
+		$(".masonry-grid").isotope({itemSelector:".masonry-grid-item",layoutMode:"masonry"}),$(".masonry-grid-fitrows").isotope({itemSelector:".masonry-grid-item",layoutMode:"fitRows"}),$(".isotope-container").fadeIn();var o=$(".isotope-container").isotope({itemSelector:".isotope-item",layoutMode:"masonry",transitionDuration:"0.6s",filter:"*"});$(".isotope-container-fitrows").fadeIn();var t=$(".isotope-container-fitrows").isotope({itemSelector:".isotope-item",layoutMode:"fitRows",transitionDuration:"0.6s",filter:"*"});$(".filters").on("click","ul.nav li a",function(){var a=$(this).attr("data-filter");return $(".filters").find("li.active").removeClass("active"),$(this).parent().addClass("active"),o.isotope({filter:a}),t.isotope({filter:a}),!1});
+		
 	}
 ]);
 

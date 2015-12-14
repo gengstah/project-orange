@@ -20,6 +20,10 @@
 			<div class="main object-non-visible" data-animation-effect="fadeInUpSmall" data-effect-delay="100">
 				<div class="form-block center-block p-30 light-gray-bg border-clear">
 					<h2 class="title">Login</h2>
+					<div class="alert  alert-icon alert-danger" role="alert" data-ng-show="loginErrors">
+						<i class="fa fa-times"></i>
+						<div data-ng-repeat="loginError in loginErrors track by $index">{{ loginError.message }}</div>
+					</div>
 					<form class="form-horizontal" name="loginForm" role="form" method="POST" data-ng-submit="login(credentials)">
 						<div class="form-group has-feedback">
 							<label for="email" class="col-sm-3 control-label">Email</label>
@@ -56,7 +60,7 @@
 						</div>
 					</form>
 				</div>
-				<p class="text-center space-top">Don't have an account yet? <a href="page-signup.html">Sign up</a> now.</p>
+				<p class="text-center space-top">Don't have an account yet? <a href="#!/register">Sign up</a> now.</p>
 			</div>
 			<!-- main end -->
 		</div>

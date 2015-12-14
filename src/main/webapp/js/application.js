@@ -24,6 +24,34 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 					authorizedRoles: [roles.all]
 				}
 			})
+			.state('about', {
+				url: '/about', 
+				templateUrl: 'templates/about.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
+			})
+			.state('services', {
+				url: '/services', 
+				templateUrl: 'templates/services.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
+			})
+			.state('contact', {
+				url: '/contact', 
+				templateUrl: 'templates/contact.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
+			})
+			.state('team', {
+				url: '/team', 
+				templateUrl: 'templates/team.html',
+				data: {
+					authorizedRoles: [roles.all]
+				}
+			})
 			.state('events', {
 				url: '/events', 
 				templateUrl: 'templates/approved-events.html',
