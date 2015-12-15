@@ -363,6 +363,29 @@
 	
 		<data-ui-view></data-ui-view>
 		
+		<!-- footer top start -->
+		<!-- ================ -->
+		<div class="dark-bg  default-hovered footer-top animated-text" data-ng-if="!isAuthenticated() &amp;&amp; $state.current.name !== 'home'">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="call-to-action text-center">
+							<div class="row">
+								<div class="col-sm-8">
+									<h2>Powerful Talent Management Platform</h2>
+									<h2>Waste no more time</h2>
+								</div>
+								<div class="col-sm-4">
+									<p class="mt-10"><a href="#!/register" class="btn btn-animated btn-lg btn-gray-transparent ">Register<i class="fa fa-user-plus pl-20"></i></a></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- footer top end -->
+			
 		<!-- footer start (Add "dark" class to #footer in order to enable dark footer) -->
 		<!-- ================ -->
 		<footer id="footer" class="clearfix ">
@@ -380,10 +403,10 @@
 									<div class="separator-2"></div>
 									<nav>
 										<ul class="nav nav-pills nav-stacked">
-											<li><a target="_blank" href="http://htmlcoder.me/support">Support</a></li>
-											<li><a href="#">Privacy</a></li>
-											<li><a href="#">Terms</a></li>
-											<li><a href="page-about.html">About</a></li>
+											<li><a target="_blank" href="#!/">Support</a></li>
+											<li><a href="#!/">Privacy</a></li>
+											<li><a href="#!/">Terms</a></li>
+											<li><a href="#!/about">About</a></li>
 										</ul>
 									</nav>
 								</div>
