@@ -1,4 +1,4 @@
-<div class="row" data-ng-controller="TalentProfileController">
+<!-- <div class="row" data-ng-controller="TalentProfileController">
 	<div class="col-md-1"></div>
 	
 	<div class="col-md-10">
@@ -60,18 +60,18 @@
 							</dd>
 						</dl>
 						
-						<!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
+						The Bootstrap Image Gallery lightbox, should be a child element of the document body
 						<div id="blueimp-gallery" class="blueimp-gallery">
-						    <!-- The container for the modal slides -->
+						    The container for the modal slides
 						    <div class="slides"></div>
-						    <!-- Controls for the borderless lightbox -->
+						    Controls for the borderless lightbox
 						    <h3 class="title"></h3>
 						    <a class="prev">‹</a>
 						    <a class="next">›</a>
 						    <a class="close">×</a>
 						    <a class="play-pause"></a>
 						    <ol class="indicator"></ol>
-						    <!-- The modal dialog, which will be used to wrap the lightbox content -->
+						    The modal dialog, which will be used to wrap the lightbox content
 						    <div class="modal fade">
 						        <div class="modal-dialog">
 						            <div class="modal-content">
@@ -170,4 +170,238 @@
 	</div>
 	
 	<div class="col-md-1"></div>
+</div> -->
+
+<!-- breadcrumb start -->
+<!-- ================ -->
+<div class="breadcrumb-container">
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><i class="fa fa-home pr-10"></i><a class="link-dark" href="#!/">Home</a></li>
+			<li><a class="link-dark" href="#!/talents">Talents</a></li>
+			<li class="active">Profile</li>
+		</ol>
+	</div>
 </div>
+<!-- breadcrumb end -->
+
+<!-- main-container start -->
+<!-- ================ -->
+<section class="main-container">
+
+	<div class="container">
+		<div class="row">
+
+			<!-- main start -->
+			<!-- ================ -->
+			<div class="main col-md-12">
+
+				<!-- page-title start -->
+				<!-- ================ -->
+				<h1 class="page-title">{{userToView.talent.firstName}} {{userToView.talent.lastName}}</h1>
+				<div class="separator-2"></div>
+				<!-- page-title end -->
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="image-box team-member shadow mb-20 object-non-visible" data-animation-effect="fadeInDownSmall" data-effect-delay="400">
+							<div class="overlay-container overlay-visible">
+								<img data-ng-src="{{userToView.talent.images[0].fileLocation}}" alt="">
+								<a data-ng-href="{{userToView.talent.images[0].fileLocation}}" class="popup-img overlay-link" title="{{userToView.talent.firstName}} {{userToView.talent.lastName}} - {{userToView.talent.city}}"><i class="icon-plus-1"></i></a>
+								<div class="overlay-bottom">
+									<div class="text">
+										<h3 class="title margin-clear">{{userToView.talent.firstName}} {{userToView.talent.lastName}}</h3>
+										<p class="margin-clear" data-ng-if="isAuthorized([userRoles.admin, userRoles.agency])">Class {{userToView.talent.talentClass}} - {{userToView.talent.city}}</p>
+										<p class="margin-clear" data-ng-if="isAuthorized(userRoles.user)">{{userToView.talent.city}}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-5">
+						<!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus nam, vitae autem quis, deserunt pariatur! At, atque inventore.</p>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam esse laudantium maiores aperiam illo fugit laboriosam velit repellendus quod cumque ea vero vitae quo enim fugiat itaque harum assumenda aut quis, dolore. Sit reiciendis eligendi, recusandae eaque est optio reprehenderit!</p>
+						<div class="progress style-2 dark">
+							<span class="text"></span>
+							<div class="progress-bar progress-bar-white" role="progressbar" data-animate-width="95%">
+								<span class="label object-non-visible" data-animation-effect="fadeInLeftSmall" data-effect-delay="1000">CSS</span>
+							</div>
+						</div>
+						<div class="progress style-2 dark">
+							<span class="text"></span>
+							<div class="progress-bar progress-bar-white" role="progressbar" data-animate-width="85%">
+								<span class="label object-non-visible" data-animation-effect="fadeInLeftSmall" data-effect-delay="1000">HTML5</span>
+							</div>
+						</div>
+						<div class="progress style-2 dark">
+							<span class="text"></span>
+							<div class="progress-bar progress-bar-white" role="progressbar" data-animate-width="95%">
+								<span class="label object-non-visible" data-animation-effect="fadeInLeftSmall" data-effect-delay="1000">Design</span>
+							</div>
+						</div>
+						<div class="progress style-2 dark">
+							<span class="text"></span>
+							<div class="progress-bar progress-bar-white" role="progressbar" data-animate-width="80%">
+								<span class="label object-non-visible" data-animation-effect="fadeInLeftSmall" data-effect-delay="1000">PHP</span>
+							</div>
+						</div> -->
+						<h3 class="title">Basic Info</h3>
+						<ul class="list-icons">
+							<li><i class="fa pr-10 text-default" data-ng-class="{ 'fa-female' : userToView.talent.gender == 'F', 'fa-male' : userToView.talent.gender == 'M' }"></i> <span data-ng-if="userToView.talent.gender == 'F'">Female</span><span data-ng-if="userToView.talent.gender == 'M'">Male</span></li>
+							<li><i class="fa fa-location-arrow pr-10 text-default"></i> {{ userToView.talent.city }}</li>
+							<li><i class="fa fa-calendar pr-10 text-default"></i> Born on {{userToView.talent.birthDate | date:'mediumDate'}} ({{ userToView.talent.birthDate | ageFilter }})</li>
+							<li><i class="fa fa-calendar pr-10 text-default"></i> Joined on {{userToView.dateCreated | date:'mediumDate'}}</li>
+							<li><i class="fa fa-arrows-v pr-10 text-default"></i> {{ userToView.talent.feet }}" {{ userToView.talent.inches }}'</li>
+							<li><i class="fa fa-arrows-h pr-10 text-default"></i> {{ userToView.talent.weight }} kgs</li>
+							<li><i class="fa fa-check-square pr-10 text-default"></i> {{ userToView.talent.vital1 }} - {{ userToView.talent.vital2 }} - {{ userToView.talent.vital3 }}</li>
+							<li><i class="fa fa-money pr-10 text-default"></i> {{ userToView.talent.expectedSalary | number }}</li>
+						</ul>
+					</div>
+					<div class="col-sm-3 col-lg-offset-1">
+						<h3 class="title" data-ng-if="isAuthorized([userRoles.admin, userRoles.user])">Contact Me</h3>
+						<ul class="list-icons" data-ng-if="isAuthorized([userRoles.admin, userRoles.user])">
+							<li><i class="fa fa-phone pr-10 text-default"></i> {{ userToView.talent.contactNo }}</li>
+							<li><i class="fa fa-mobile pr-10 text-default"></i> {{ userToView.talent.contactNo }}</li>
+							<li><a href="mailto:{{ userToView.email }}"><i class="fa fa-envelope-o pr-10"></i>{{ userToView.email }}</a></li>
+						</ul>
+						<!-- <h3>Follow Me</h3>
+						<div class="separator-2"></div>
+						<a target="_blank" href="https://www.linkedin.com" class="btn btn-animated linkedin btn-sm">Linkedin<i class="pl-10 fa fa-linkedin"></i></a>
+						<a target="_blank" href="https://www.xing.com/" class="btn btn-animated xing btn-sm">Xing<i class="fa fa-xing"></i></a> -->
+						<h3>See My Photos</h3>
+						<a class="btn btn-gray collapsed btn-animated" data-toggle="collapse" href="#collapseContent" aria-expanded="false" aria-controls="collapseContent">Photos <i class="fa fa-plus"></i></a>
+					</div>
+				</div>
+
+			</div>
+			<!-- main end -->
+
+		</div>
+	</div>
+</section>
+<!-- main-container end -->
+
+<!-- section start -->
+<!-- ================ -->
+<section id="collapseContent" class="collapse pv-20 light-gray-bg clearfix">
+	<div class="container">
+		<h3>{{userToView.talent.firstName}} {{userToView.talent.lastName}} <strong>Photos</strong></h3>
+		<div class="separator-2 mb-20"></div>
+		<div class="image-box style-3-b">
+			<!-- <div class="row">
+				<div class="col-sm-6 col-md-3">
+					<div class="overlay-container">
+						<img src="images/portfolio-1.jpg" alt="">
+						<div class="overlay-to-top">
+							<p class="small margin-clear"><em>{{userToView.talent.firstName}} {{userToView.talent.lastName}} <br> {{userToView.talent.city}}</em></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-9">
+					<div class="body">
+						<h3 class="title">{{userToView.talent.firstName}} {{userToView.talent.lastName}}</h3>
+						<p class="small mb-10"><i class="icon-calendar"></i> Feb, 2015 <i class="pl-10 icon-tag-1"></i> Web Design</p>
+						<div class="separator-2"></div>
+						<p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam atque ipsam nihialal. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam laudantium, provident culpa saepe.</p>
+						<a href="#" class="btn btn-default btn-sm btn-hvr hvr-shutter-out-horizontal margin-clear">Read More<i class="fa fa-arrow-right pl-10"></i></a>
+					</div>
+				</div>
+			</div> -->
+			<div class="row">
+				<div class="col-sm-4" data-ng-repeat="image in userToView.talent.images">
+					<div class="image-box team-member shadow text-center mb-20">
+						<div class="overlay-container overlay-visible">
+							<img data-ng-src="{{ image.fileLocation }}" alt="">
+							<a data-ng-href="{{ image.fileLocation }}" class="popup-img overlay-link" title="{{userToView.talent.firstName}} {{userToView.talent.lastName}} - {{userToView.talent.city}}"><i class="icon-plus-1"></i></a>
+							<div class="overlay-bottom hidden-xs">
+								<div class="text">
+									<p class="lead margin-clear">{{userToView.talent.firstName}} {{userToView.talent.lastName}}</p>
+								</div>
+							</div>											
+						</div>
+					</div>
+				</div>
+				<!-- <div class="col-sm-4">
+					<div class="image-box shadow text-center mb-20">
+						<div class="overlay-container overlay-visible">
+							<img src="images/portfolio-5.jpg" alt="">
+							<a href="portfolio-item.html" class="overlay-link"><i class="fa fa-link"></i></a>
+							<div class="overlay-bottom hidden-xs">
+								<div class="text">
+									<p class="lead margin-clear">Image caption lorem ipsum</p>
+								</div>
+							</div>											
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="image-box shadow text-center mb-20">
+						<div class="overlay-container overlay-visible">
+							<img src="images/portfolio-6.jpg" alt="">
+							<a href="portfolio-item.html" class="overlay-link"><i class="fa fa-link"></i></a>
+							<div class="overlay-bottom hidden-xs">
+								<div class="text">
+									<p class="lead margin-clear">Image caption lorem ipsum</p>
+								</div>
+							</div>											
+						</div>
+					</div>
+				</div> -->
+			</div>
+		</div>
+		<!-- <div class="image-box style-3-b">
+			<div class="row">
+				<div class="col-sm-6 col-md-3">
+					<div class="overlay-container">
+						<img src="images/portfolio-2.jpg" alt="">
+						<div class="overlay-to-top">
+							<p class="small margin-clear"><em>Some info <br> Lorem ipsum dolor sit</em></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-9">
+					<div class="body">
+						<h3 class="title">Project Title</h3>
+						<p class="small mb-10"><i class="icon-calendar"></i> Feb, 2015 <i class="pl-10 icon-tag-1"></i> Web Design</p>
+						<div class="separator-2"></div>
+						<p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam atque ipsam nihialal. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam laudantium, provident culpa saepe.</p>
+						<a href="#" class="btn btn-default btn-sm btn-hvr hvr-shutter-out-horizontal margin-clear">Read More<i class="fa fa-arrow-right pl-10"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="image-box style-3-b">
+			<div class="row">
+				<div class="col-sm-6 col-md-3">
+					<div class="overlay-container">
+						<img src="images/portfolio-3.jpg" alt="">
+						<div class="overlay-to-top">
+							<p class="small margin-clear"><em>Some info <br> Lorem ipsum dolor sit</em></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-9">
+					<div class="body">
+						<h3 class="title">Project Title</h3>
+						<p class="small mb-10"><i class="icon-calendar"></i> Feb, 2015 <i class="pl-10 icon-tag-1"></i> Web Design</p>
+						<div class="separator-2"></div>
+						<p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam atque ipsam nihialal. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam laudantium, provident culpa saepe.</p>
+						<a href="#" class="btn btn-default btn-sm btn-hvr hvr-shutter-out-horizontal margin-clear">Read More<i class="fa fa-arrow-right pl-10"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<nav>
+			<ul class="pagination">
+				<li><a href="#" aria-label="Previous"><i class="fa fa-angle-left"></i></a></li>
+				<li class="active"><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+				<li><a href="#">5</a></li>
+				<li><a href="#" aria-label="Next"><i class="fa fa-angle-right"></i></a></li>
+			</ul>
+		</nav> -->
+
+	</div>
+</section>
+<!-- section end -->

@@ -135,6 +135,7 @@ config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvi
 			.state('talentProfile', {
 				url: '/talent/profile', 
 				templateUrl: 'templates/talent/profile-page.html',
+				controller: 'TalentProfileController',
 				data: {
 					authorizedRoles: [roles.user, roles.agency, roles.admin]
 				}

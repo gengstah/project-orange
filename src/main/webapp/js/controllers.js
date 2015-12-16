@@ -460,6 +460,7 @@ controllers.controller('TalentProfileController', ['$scope', '$rootScope', '$sta
 				delete $scope.successMessageDeny;
 			});
 		};
+		
 	}
 ]);
 
