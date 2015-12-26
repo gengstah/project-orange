@@ -262,6 +262,8 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 				typeahead: [null, { source: engine.ttAdapter() }]
 			});
 			
+			$('.tokenfield').css('height', 'auto');
+			
 		});
 		
 		$scope.talentSignUp = function talentSignUp(user) {			
