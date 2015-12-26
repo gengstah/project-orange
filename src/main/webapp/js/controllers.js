@@ -222,6 +222,8 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 		$("#fileInput").fileinput({
 			uploadUrl: "/api/service/user/uploadImage",
 		    uploadAsync: true,
+		    showCaption: false,
+		    showUpload: false,
 			minFileCount: 1,
 		    maxFileCount: 5,
 		    validateInitialCount: true,
@@ -229,12 +231,12 @@ controllers.controller('RegisterTalentController', ['$scope', '$rootScope', '$st
 		    initialPreviewShowDelete: true,
 	        allowedFileExtensions : ['jpg', 'jpeg', 'png','gif'],
 	        previewFileType: "image",
-	        browseClass: "btn btn-success",
+	        browseClass: "btn btn-group btn-success btn-animated",
 	        browseLabel: "Pick Image",
-	        browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
-	        removeClass: "btn btn-danger",
+	        browseIcon: "<i class=\"fa fa-picture-o\"></i> ",
+	        removeClass: "btn btn-group btn-danger btn-animated",
 	        removeLabel: "Delete",
-	        removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> "
+	        removeIcon: "<i class=\"fa fa-trash-o\"></i> "
 	    });
 		
 		WorkExperience.query(function(exps) {
